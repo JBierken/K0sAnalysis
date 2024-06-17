@@ -25,9 +25,9 @@ if __name__=='__main__':
         simlabel = 'Simulation'
         for year in years:
           for v0type in v0types:
-            datafinloc = os.path.join(inputdir,'{}_invmass_{}_data.root'.format(v0type,year))
-            simfinloc = os.path.join(inputdir,'{}_invmass_{}_sim.root'.format(v0type,year))
-            outputfile = os.path.join(inputdir,'{}_invmass_{}_fig'.format(v0type,year))
+            datafinloc  = os.path.join(inputdir,    '{}_invmass_{}_data.root'.format(v0type,year))
+            simfinloc   = os.path.join(inputdir,    '{}_invmass_{}_sim.root'.format(v0type,year))
+            outputfile  = os.path.join(inputdir,    '{}_invmass_{}_fig'.format(v0type,year))
             cmd = 'python fitinvmass_fancy_plot.py'
             cmd += ' ' + datafinloc
             cmd += ' ' + datalabel
@@ -41,26 +41,26 @@ if __name__=='__main__':
     # second case: all command line arguments are given
  
     # initialization of intput files
-    datafinloc = sys.argv[1] # input data file
-    datalabel = sys.argv[2] # legend entry for data
-    simfinloc = sys.argv[3] # simlation input file
-    simlabel = sys.argv[4] # legend entry for simulation
-    v0type = sys.argv[5] # either ks or la
-    outfile = sys.argv[6] # output file
+    datafinloc  = sys.argv[1]       # input data file
+    datalabel   = sys.argv[2]       # legend entry for data
+    simfinloc   = sys.argv[3]       # simlation input file
+    simlabel    = sys.argv[4]       # legend entry for simulation
+    v0type      = sys.argv[5]       # either ks or la
+    outfile     = sys.argv[6]       # output file
 
     # load all objects from input files
-    datahistlist = ht.loadallhistograms( datafinloc )
-    datafin = ROOT.TFile.Open( datafinloc )
-    divbins = datafin.Get("divbins_w")
-    divbins = [divbins[j] for j in range(len(datahistlist)+1)]
-    divvarname = str(datafin.Get("divvarname_w").GetTitle())
-    divvarlabel = str(datafin.Get("divvarlabel_w").GetTitle())
-    lumi = float(datafin.Get("lumi_w")[0])
+    datahistlist    = ht.loadallhistograms( datafinloc )
+    datafin         = ROOT.TFile.Open( datafinloc )
+    divbins         = datafin.Get("divbins_w")
+    divbins         = [divbins[j] for j in range(len(datahistlist)+1)]
+    divvarname      = str(datafin.Get("divvarname_w").GetTitle())
+    divvarlabel     = str(datafin.Get("divvarlabel_w").GetTitle())
+    lumi            = float(datafin.Get("lumi_w")[0])
     datafin.Close()
-    simhistlist = ht.loadallhistograms( simfinloc )
-    simfin = ROOT.TFile.Open( simfinloc )
-    simdivbins = simfin.Get("divbins_w")
-    simdivbins = [simdivbins[j] for j in range(len(simhistlist)+1)]
+    simhistlist     = ht.loadallhistograms( simfinloc )
+    simfin          = ROOT.TFile.Open( simfinloc )
+    simdivbins      = simfin.Get("divbins_w")
+    simdivbins      = [simdivbins[j] for j in range(len(simhistlist)+1)]
     if simdivbins != divbins:
 	raise Exception('ERROR: divbins in data and simulation file do not agree;'
 			+' found {} and {}'.format(divbins,simdivbins))
@@ -84,24 +84,24 @@ if __name__=='__main__':
     # add histograms from several divider bins
     datahisttot = datahistlist[0].Clone()
     for hist in datahistlist[1:]: datahisttot.Add(hist)
-    simhisttot = simhistlist[0].Clone()
+    simhisttot  = simhistlist[0].Clone()
     for hist in simhistlist[1:]: simhisttot.Add(hist)
     datahistlist.append(datahisttot)
     simhistlist.append(simhisttot)
 
     # initialization of fit settings
-    polydegree = 1 # degree of background polynomial fit 
-    xlow = datahistlist[0].GetBinLowEdge(1)
-    xhigh = (datahistlist[0].GetBinLowEdge(datahistlist[0].GetNbinsX())
-	     +datahistlist[0].GetBinWidth(datahistlist[0].GetNbinsX()))
-    fitrange = [xlow,xhigh] # range to fit in
-    xcenter = (xhigh+xlow)/2. # initial guess of peak center
-    xwidth = (xhigh-xlow)/4. # initial guess of peak width 
+    polydegree  = 1                     # degree of background polynomial fit 
+    xlow        = datahistlist[0].GetBinLowEdge(1)
+    xhigh       = (datahistlist[0].GetBinLowEdge(datahistlist[0].GetNbinsX())
+	                +datahistlist[0].GetBinWidth(datahistlist[0].GetNbinsX()))
+    fitrange    = [xlow,xhigh] # range to fit in
+    xcenter     = (xhigh+xlow)/2.       # initial guess of peak center
+    xwidth      = (xhigh-xlow)/4.       # initial guess of peak width 
 
     # initialization of plot settings
     xaxtitle = 'Invariant mass (GeV)'
-    if v0type.lower()=='ks': xaxtitle = 'm(#pi^{+},#pi^{-}) (GeV)'
-    elif v0type.lower()=='la': xaxtitle = 'm(p,#pi) (GeV)'
+    if v0type.lower()=='ks':    xaxtitle = 'm(#pi^{+},#pi^{-}) (GeV)'
+    elif v0type.lower()=='la':  xaxtitle = 'm(p,#pi) (GeV)'
     yaxtitle = 'Reconstructed vertices'
 
     # normalization method 1: normalize each simulated histogram to data
@@ -114,12 +114,12 @@ if __name__=='__main__':
     #	simhistlist[j].Scale(scale)
 
     for j in range(len(datahistlist)):
-	datahist = datahistlist[j]
-	simhist = simhistlist[j]
+	datahist    = datahistlist[j]
+	simhist     = simhistlist[j]
 	# step 1: remove middle band and fit sidebands to obtain background
-	histclone = datahist.Clone()
-	binlow = histclone.FindBin(xcenter-xwidth)
-	binhigh = histclone.FindBin(xcenter+xwidth)
+	histclone   = datahist.Clone()
+	binlow      = histclone.FindBin(xcenter-xwidth)
+	binhigh     = histclone.FindBin(xcenter+xwidth)
 	for i in range(binlow,binhigh):
 	    histclone.SetBinContent(i,0)
 	guess = [0.]*(polydegree+1)
@@ -128,8 +128,15 @@ if __name__=='__main__':
 	# step 2: do simultaneous fit with previous fit parameters as initial guesses
 	guess = [xcenter,average*10,0.005,average*10,0.01]
 	for i in range(polydegree+1):
-	    guess.append(paramdict["a"+str(i)])
+	    #guess.append(paramdict["a"+str(i)])
+    guess.append(0.)
+
 	totfit,paramdict = ft.poly_plus_doublegauss_fit(datahist,fitrange,guess)
+        
+    # separate background component of fit
+    backfit = ROOT.TF1("fitfunc","pol1(0)", fitrange[0], fitrange[1])
+    backfit.SetParameters(paramdict['a0'], paramdict['a1'])
+        
 	print('Fitted parameters:')
 	for el in paramdict:
 	    print('    '+el+': '+str(paramdict[el]))

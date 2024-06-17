@@ -108,6 +108,26 @@ def plot_fit_mcvsdata(datahist, simhist, figname, fitfunc=None, backfit=None,
         fitfunc.SetLineColor(ROOT.kRed)
         fitfunc.SetLineWidth(3)
         leg.AddEntry(fitfunc,fitfunclabel,'l')
+             
+        # draw fitted gauss components
+        #gaus1  = ROOT.TF1("gaus1","gaus(0)", fitrange[0], fitrange[1])
+        gaus1  = ROOT.TF1("gaus1","gaus(0)")
+        gaus1.SetParameters(paramdict[r'A_{1}'], paramdict[r'#mu'], paramdict[r'#sigma_{1}'])
+        gaus1.SetLineColor(ROOT.kYellow)
+        gaus1.SetLineWidth(3)
+        gaus1.Draw("SAME")
+        leg.AddEntry(gaus1,'gaus 1','l')
+        leg.Draw()
+    
+        #gaus2  = ROOT.TF1("gaus2","gaus(0)", fitrange[0], fitrange[1])
+        gaus2  = ROOT.TF1("gaus2","gaus(0)")
+        gaus2.SetParameters(paramdict[r'A_{2}'], paramdict[r'#mu'], paramdict[r'#sigma_{2}'])
+        gaus2.SetLineColor(ROOT.kOrange+4)
+        gaus2.SetLineWidth(3)
+        gaus2.Draw("SAME")
+        leg.AddEntry(gaus2,'gaus 2','l')
+        leg.Draw()
+
 
     # redraw objects in correct order
     datahist.Draw('e1 x0') # to make sure axes are correct

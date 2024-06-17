@@ -11,7 +11,7 @@ import argparse
 
 if __name__=='__main__':
 
-    '''yeardict = ({
+    yeardict = ({
       'DoubleMuon_Run2016PreVFP': [
         'DoubleMuon_crab_Run2016B-ver2_HIPM_UL2016_MiniAODv2-v1',
         'DoubleMuon_crab_Run2016C-HIPM_UL2016_MiniAODv2-v1',
@@ -37,9 +37,8 @@ if __name__=='__main__':
         'DoubleMuon_crab_Run2018C-UL2018_MiniAODv2-v1_data_doublemuon',
         'DoubleMuon_crab_Run2018D-UL2018_MiniAODv2-v1_data_doublemuon'
       ]
-    })'''
-
-    yeardict = ({
+    })
+    '''yeardict = ({
       'DoubleMuon_Run2016': [
         'DoubleMuon_crab_Run2016B-17Jul2018_ver2-v1_data_Run2016_DoubleMuon',
         'DoubleMuon_crab_Run2016C-17Jul2018-v1_data_Run2016_DoubleMuon',
@@ -73,12 +72,11 @@ if __name__=='__main__':
         'DoubleMuon_crab_Run2018C-17Sep2018-v1_data_Run2018_DoubleMuon',
         'DoubleMuon_crab_Run2018D-PromptReco-v2_data_Run2018_DoubleMuon'
       ]
-    })
-
+    })'''
     # command line arguments
     parser = argparse.ArgumentParser( description = 'Merge V0 files' )
     parser.add_argument('-i', '--filedir', required=True, type=os.path.abspath)
-    parser.add_argument('-o', '--outputfile', default='merged.root')
+    parser.add_argument('-o', '--outputfile', default='selected.root')
     parser.add_argument('-f', '--force', default=False, action='store_true')
     args = parser.parse_args()
 

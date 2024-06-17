@@ -157,11 +157,11 @@ if __name__=='__main__':
     hist = hists[i]
 
     # fit range settings
-    xlow = variable['bins'][0]
-    xhigh = variable['bins'][-1]
-    fitrange = [xlow, xhigh]
-    xcenter = (xhigh + xlow)/2.
-    xwidth = (xhigh - xlow)/4.
+    xlow        = variable['bins'][0]
+    xhigh       = variable['bins'][-1]
+    fitrange    = [xlow, xhigh]
+    xcenter     = (xhigh + xlow)/2.
+    xwidth      = (xhigh - xlow)/4.
 
     # remove middle band and fit sidebands to obtain background
     histclone = hist.Clone()
@@ -184,6 +184,11 @@ if __name__=='__main__':
     for degree in range(args.polydegree+1):
         guess.append(paramdict["a"+str(degree)])
     totfit, paramdict, fitobj2 = ft.poly_plus_doublegauss_fit(hist,fitrange,guess)
+        
+    # separate background component of fit
+    backfit = ROOT.TF1("fitfunc","pol1(0)", fitrange[0], fitrange[1])
+    backfit.SetParameters(paramdict['a0'], paramdict['a1'])
+        
     print('Fitted parameters:')
     for el in paramdict: print('    '+el+': '+str(paramdict[el]))
     print('Fit quality:')

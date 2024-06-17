@@ -64,6 +64,7 @@ if __name__=='__main__':
   with uproot.open(args.inputfile) as f:
     fkeys = [key.split(';')[0] for key in f.keys()]
     tree = f["blackJackAndHookers"]["blackJackAndHookersTree"]
+    nVertices = f["blackJackAndHookers"]["nVertices"]
 
     # read counter histograms
     isdata = False
@@ -99,7 +100,8 @@ if __name__=='__main__':
     branches = tree.arrays(branchnames, entry_stop=entry_stop)
 
   # switch between older and newer variable naming conventions
-  vnametype = 'old'
+  #vnametype = 'old'
+  vnametype = 'new'
   if vnametype=='new':
     rpvsigkey = 'RPVSig'
     rbssigkey = 'RBSSig'
@@ -208,6 +210,7 @@ if __name__=='__main__':
   laurelin['_runNb'] = ak.flatten( (branches['_V0Pt'][laurelinmask]>-1.)*branches['_runNb'] )
   laurelin['_lumiBlock'] = ak.flatten( (branches['_V0Pt'][laurelinmask]>-1.)*branches['_lumiBlock'] )
   laurelin['_eventNb'] = ak.flatten( (branches['_V0Pt'][laurelinmask]>-1.)*branches['_eventNb'] )
+  #laurelin['_nVertices'] = nVertices
   if not isdata:
     laurelin['_weight'] = ak.flatten( (branches['_V0Pt'][laurelinmask]>-1.)*branches['_weight'] )
     laurelin['_nTrueInt'] = ak.flatten( (branches['_V0Pt'][laurelinmask]>-1.)*branches['_nTrueInt'] )
@@ -250,6 +253,7 @@ if __name__=='__main__':
     f['celeborn'] = celeborn
     f['laurelin'] = laurelin
     f['telperion'] = telperion
+    f['nVertices'] = nVertices
     if not isdata:
         f['hCounter'] = hcounter
         f['nTrueInteractions'] = ntrueint

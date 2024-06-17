@@ -25,13 +25,15 @@ def plot_fit(hist, figname, style='hist', fitfunc=None, backfit=None,
         pt.setTDRstyle()
 
         # initialization of canvas
-        c1 = ROOT.TCanvas("c1","c1")
+        c1          = ROOT.TCanvas("c1","c1")
         c1.SetCanvasSize(800,800)
-        titlefont = 4; titlesize = 30
-        labelfont = 4; labelsize = 30
-        axtitlefont = 4; axtitlesize = 35
-        infofont = 4; infosize = 25
-        legendfont = 4; legendsize = 30
+        
+        titlefont   = 4;    titlesize   = 30
+        labelfont   = 4;    labelsize   = 30
+        axtitlefont = 4;    axtitlesize = 35
+        infofont    = 4;    infosize    = 25
+        legendfont  = 4;    legendsize  = 30
+        
         c1.SetBottomMargin(0.1)
         c1.SetTopMargin(0.06)
         c1.SetLeftMargin(0.15)
@@ -103,6 +105,14 @@ def plot_fit(hist, figname, style='hist', fitfunc=None, backfit=None,
             leg.AddEntry(backfit,'Background fit','l')
             leg.Draw()
 
+        # display additional info
+        tinfo.SetTextFont(10*infofont+3)
+        tinfo.SetTextSize(infosize)
+        if paramdict is not None:
+            for i,key in enumerate(paramdict):
+                info = key+' : {0:.4E}'.format(paramdict[key])
+                tinfo.DrawLatexNDC(0.65,0.65-i*0.035,info)
+
         # draw fitted function
         if fitfunc is not None:
             fitfunc.SetLineColor(ROOT.kRed)
@@ -112,22 +122,52 @@ def plot_fit(hist, figname, style='hist', fitfunc=None, backfit=None,
             leg.Draw()
 
             # display additional info
-            tinfo.SetTextFont(10*infofont+3)
-            tinfo.SetTextSize(infosize)
+            #tinfo.SetTextFont(10*infofont+3)
+            #tinfo.SetTextSize(infosize)
             if fitfunc.GetNDF()==0: normchi2 = 0
             else: normchi2 = fitfunc.GetChisquare()/fitfunc.GetNDF()
             if paramdict is not None:
-                for i,key in enumerate(paramdict):
-                    info = key+' : {0:.4E}'.format(paramdict[key])
-                    tinfo.DrawLatexNDC(0.65,0.65-i*0.035,info)
+                #for i,key in enumerate(paramdict):
+                #    info = key+' : {0:.4E}'.format(paramdict[key])
+                #    tinfo.DrawLatexNDC(0.65,0.65-i*0.035,info)
                 info = r"#frac{#chi^{2}}{ndof}"+' of fit: {0:.2E}'.format(normchi2)
                 tinfo.DrawLatexNDC(0.65,0.65-(len(paramdict)+1)*0.035,info)
-       
+            
+            # draw fitted gauss components
+            if len(paramdict) == 7:
+                #gaus1  = ROOT.TF1("gaus1","gaus(0)", fitrange[0], fitrange[1])
+                gaus1  = ROOT.TF1("gaus1","gaus(0)")
+                gaus1.SetParameters(paramdict[r'A_{1}'], paramdict[r'#mu'], paramdict[r'#sigma_{1}'])
+                gaus1.SetLineColor(ROOT.kYellow)
+                gaus1.SetLineWidth(3)
+                gaus1.Draw("SAME")
+                leg.AddEntry(gaus1,'Gaussian 1','l')
+                leg.Draw()
+                
+                #gaus2  = ROOT.TF1("gaus2","gaus(0)", fitrange[0], fitrange[1])
+                gaus2  = ROOT.TF1("gaus2","gaus(0)")
+                gaus2.SetParameters(paramdict[r'A_{2}'], paramdict[r'#mu'], paramdict[r'#sigma_{2}'])
+                gaus2.SetLineColor(ROOT.kOrange+2)
+                gaus2.SetLineWidth(3)
+                gaus2.Draw("SAME")
+                leg.AddEntry(gaus2,'Gaussian 2','l')
+                leg.Draw()
+            else:
+                gaus  = ROOT.TF1("gaus","gaus(0)")
+                gaus.SetParameters(paramdict[r'A'], paramdict[r'#mu'], paramdict[r'#sigma'])
+                gaus.SetLineColor(ROOT.kYellow)
+                gaus.SetLineWidth(3)
+                gaus.Draw("SAME")
+                leg.AddEntry(gaus,'Gaussian','l')
+                leg.Draw()
+
+
+
         # draw vertical lines for sideband
         if sideband is not None:
             linestyle = 9
             linewidth = 2
-            linecolor = ROOT.kBlue
+            linecolor = ROOT.kGray+2
             adhocymin = hist.GetMinimum()
             adhocymax = hist.GetMaximum()*0.5
             lines = []

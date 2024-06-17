@@ -68,7 +68,7 @@ if __name__=='__main__':
             print('number of processed events: '+str(i))
         tree.GetEntry(i)
         # apply pt selection
-        if getattr(tree,ptvar) < ptbins[ptindex]: continue
+        if getattr(tree,ptvar) < ptbins[ptindex]:   continue
         if getattr(tree,ptvar) > ptbins[ptindex+1]: continue
         # determine value for requested variable in this entry
         varvalue = getattr(tree,drvar['name'])
@@ -76,9 +76,9 @@ if __name__=='__main__':
         hist.Fill(varvalue)
 
     # determine the label
-    if ptindex==0: label = 'p_{T} < ' + '{} GeV'.format(ptbins[1])
-    elif ptindex==len(ptbins)-2: label = 'p_{T} > ' + '{} GeV'.format(ptbins[-2])
-    else: label = '{}'.format(ptbins[ptindex]) + ' < p_{T} < ' + '{} GeV'.format(ptbins[ptindex+1])
+    if ptindex==0:                  label = 'p_{T} < ' + '{} GeV'.format(ptbins[1])
+    elif ptindex==len(ptbins)-2:    label = 'p_{T} > ' + '{} GeV'.format(ptbins[-2])
+    else:                           label = '{}'.format(ptbins[ptindex]) + ' < p_{T} < ' + '{} GeV'.format(ptbins[ptindex+1])
     hist.SetTitle(label)
 
     # add histogram to list
