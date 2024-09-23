@@ -174,9 +174,9 @@ if __name__=='__main__':
             
             # make extra info to display on plot
             extrainfos = []
-            if 'extrainfos' in variable.keys(): extrainfos = variable['extrainfos'][:]
-            if 'info' in bkgmode.keys(): extrainfos.append(bkgmode['info'])
-            if 'info' in norm.keys(): extrainfos.append(norm['info'])
+            if 'extrainfos' in variable.keys():     extrainfos = variable['extrainfos'][:]
+            if 'info' in bkgmode.keys():            extrainfos.append(bkgmode['info'])
+            if 'info' in norm.keys():               extrainfos.append(norm['info'])
             doextrainfos = True if len(extrainfos)>0 else False
            
             # make command for filling
@@ -230,6 +230,7 @@ if __name__=='__main__':
               if '2016' in era['label']:            cmd += ' --do2016pixel'
               if '2017' in era['label']:            cmd += ' --do20172018pixel'
               if '2018' in era['label']:            cmd += ' --do20172018pixel'
+            extrainfos2 = extrainfos
             if exe=='mcvsdataplotter2d.py':
               cmd += ' --outrootfile {}'.format(outroot)  
               eratxt = era['label']
@@ -304,10 +305,65 @@ if __name__=='__main__':
               cmd2 = cmd + ' -o {}'.format(outputfile.replace('.png','_log.png'))
               cmd2 += ' --logy'
               cmds.append(cmd2)
+             
+            # ------------------------------------------------------------------------------------------
+            # make basic command for plotting (data@95%MC) vs (data) 
+            # ------------------------------------------------------------------------------------------
+            histname = histfile.split(".")
+            histname = histname[0] + "_confidence.root"
+            exe = 'mcvsdataplotter.py'
+            if 'yvariablename' in variable.keys(): exe = 'datavsdataplotter2d.py'
+            cmd = 'python3 ../plotting/{}'.format(exe)
+            cmd += ' -i {}'.format(histname)
+            cmd += ' --xaxtitle \'{}\''.format(variable['xaxtitle'])
+            cmd += ' --extracmstext Preliminary'
+            # special cases for plotting command
+            # note: bin width is added to y-axis title (on request),
+            #       this assumes all bins have equal width...
+            #       it will give nonsense on non-equal binnings,
+            #       but some people have very strong feelings about this,
+            #       so temporarily implemented this comment anyway,
+            #       comment out if not needed.
+            yaxtitle = variable['yaxtitle']
+            #yaxtitle += ' (/ {:.1f} cm)'.format(bins[1]-bins[0])
+            cmd += ' --yaxtitle \'{}\''.format(yaxtitle)
+            if args.version=='run2ul':              cmd += ' --extralumitext Legacy'
+            if args.version=='run2preul':           cmd += ' --extralumitext Pre-legacy'
+            if args.dodetector:
+              if '2016' in era['label']:            cmd += ' --do2016pixel'
+              if '2017' in era['label']:            cmd += ' --do20172018pixel'
+              if '2018' in era['label']:            cmd += ' --do20172018pixel'
+            if exe=='datavsdataplotter2d.py':
+              outroot = outroot.split(".")
+              outroot = outroot[0] + "_data_vs_data.root"
+              cmd += ' --outrootfile {}'.format(outroot)  
+              eratxt = era['label']
+              if eratxt=='run2': eratxt = 'Run-II'
+              eratxt = eratxt.replace('PreVFP', ' (old APV)')
+              eratxt = eratxt.replace('PostVFP', ' (new APV)')
+              extrainfos2 = [r'{} '.format(eratxt) + r'$N_{data}^{2\sigma_{data}} / N_{data}^{2\sigma_{MC}}$.'] + extrainfos2
+              #extrainfos2 = ['{} .'.format(eratxt)] + ['data@95%MC / data.'] + extrainfos2
+              doextrafinos = True
+            if doextrainfos:
+              cmd += ' --doextrainfos'
+              cmd += ' --extrainfos \'{}\''.format(','.join(extrainfos2))
             
+            # first variation: default
+            outputfile = outputfile.split(".")
+            outputfile = outputfile[0] + "_data_vs_data.png"
+            cmd1 = cmd + ' -o {}'.format(outputfile)
+            cmds.append(cmd1)
+            
+            # second variation: y-axis in log scale (only for 1D plots)
+            if exe=='mcvsdataplotter.py':
+              cmd2 = cmd + ' -o {}'.format(outputfile.replace('.png','_log.png'))
+              cmd2 += ' --logy'
+              cmds.append(cmd2)
+
             # ------------------------------------------------------------------------------------------
             # run or submit commands
             # ------------------------------------------------------------------------------------------
+            print(cmds)
             scriptname = 'cjob_mcvsdata_submit.sh'
             if args.runmode=='local':
               for cmd in cmds: os.system(cmd)

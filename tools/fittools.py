@@ -83,7 +83,7 @@ def poly_plus_gauss(x, par, degree=-1):
     return res + par[1]*np.exp(-0.5*arg1*arg1)
 
 #def poly_plus_gauss_fit(hist, fitrange, initialguesses, optionstring="WLQSE0"):
-def poly_plus_gauss_fit(hist, fitrange, initialguesses, optionstring="RQSE0"):
+def poly_plus_gauss_fit(hist, fitrange, initialguesses, optionstring="RMQSE0"):
     # args: - histogram to be fitted on
     #        - tuple or list representing range to take into account for fit
     #        - (ordered) list of initial parameter guesses
@@ -95,7 +95,6 @@ def poly_plus_gauss_fit(hist, fitrange, initialguesses, optionstring="RQSE0"):
     # (note: use -4 since len=3 implies no polynomial, i.e. should be set to -1)
     fitobj                  = partial(poly_plus_gauss, degree=degree)
     fitfunc                 = ROOT.TF1("fitfunc", fitobj, fitrange[0], fitrange[1], len(initialguesses))
-    #fitfunc                 = ROOT.TF1("fitfunc", "gaus(0) + pol1(3)", fitrange[0], fitrange[1], len(initialguesses))
     for i,val in enumerate(initialguesses):
         fitfunc.SetParameter(i,val)
         fitfunc.SetParError(i,0)                                # Set initial error to zero (before fit)
@@ -106,8 +105,6 @@ def poly_plus_gauss_fit(hist, fitrange, initialguesses, optionstring="RQSE0"):
     paramdict               = collections.OrderedDict()
     paramdict['#mu']        = float(    fitfunc.GetParameter(0))
     paramdict['A']          = float(    fitfunc.GetParameter(1))
-    #paramdict['#mu']        = float(    fitfunc.GetParameter(1))
-    #paramdict['A']          = float(    fitfunc.GetParameter(0))
     paramdict[r'#sigma']    = float(abs(fitfunc.GetParameter(2)))
     for i in range(3,len(initialguesses)):
         paramdict['a'+str(i-3)] = float(fitfunc.GetParameter(i))
@@ -134,7 +131,7 @@ def poly_plus_doublegauss(x, par, degree=-1):
     return res + par[1]*np.exp(-0.5*arg1*arg1) + par[3]*np.exp(-0.5*arg2*arg2)
 
 #def poly_plus_doublegauss_fit(hist, fitrange, initialguesses, optionstring="WLQSE0"):
-def poly_plus_doublegauss_fit(hist, fitrange, initialguesses, optionstring="RQSE0"):
+def poly_plus_doublegauss_fit(hist, fitrange, initialguesses, optionstring="RMQSE0"):
     # args: - histogram to be fitted on
     #        - tuple or list representing rang:we to take into account for fit
     #        - (ordered) list of initial parameter guesses
@@ -145,7 +142,6 @@ def poly_plus_doublegauss_fit(hist, fitrange, initialguesses, optionstring="RQSE
     # (note: use -6 since len=5 implies no polynomial, i.e. should be set to -1)
     fitobj                      = partial(poly_plus_doublegauss, degree=degree)
     fitfunc                     = ROOT.TF1("fitfunc", fitobj, fitrange[0], fitrange[1], len(initialguesses))
-    #fitfunc                     = ROOT.TF1("fitfunc", "gaus(o) + [3] * exp( -0.5((x -[1])/[4] +  pol1(5)", fitrange[0], fitrange[1], len(initialguesses))
     
     for i,val in enumerate(initialguesses):
         fitfunc.SetParameter(i,val)
@@ -159,8 +155,6 @@ def poly_plus_doublegauss_fit(hist, fitrange, initialguesses, optionstring="RQSE
     paramdict                   = collections.OrderedDict()
     paramdict[r'#mu']           = float(    fitfunc.GetParameter(0))
     paramdict[r'A_{1}']         = float(    fitfunc.GetParameter(1))
-    #paramdict[r'#mu']           = float(    fitfunc.GetParameter(1))
-    #paramdict[r'A_{1}']         = float(    fitfunc.GetParameter(0))
     paramdict[r'#sigma_{1}']    = float(abs(fitfunc.GetParameter(2)))
     paramdict[r'A_{2}']         = float(    fitfunc.GetParameter(3))
     paramdict[r'#sigma_{2}']    = float(abs(fitfunc.GetParameter(4)))

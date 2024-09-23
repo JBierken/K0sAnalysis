@@ -6,11 +6,13 @@ import os
 import sys
 import numpy as np
 import ROOT
+sys.path.append('/user/jbierken/CMSSW_12_4_12/src/K0sAnalysis/tools')
+import pileuptools as pu
 
 
 def get_pileup_profile(campaign, year):
   ### help function to get correct pileup profile file
-  path = '/user/llambrec/K0sAnalysis/reweighting/pileup/data'
+  path = '/user/jbierken/CMSSW_12_4_12/src/K0sAnalysis/reweighting/pileup/data'
   if campaign=='run2preul':
     path = os.path.join(path, campaign)
     if year.startswith('2016'): year = '2016'
@@ -39,28 +41,34 @@ class PileupReweighter(object):
     
   def __init__(self, campaign, year, pufile=None, histname=None):
     ### initialize a pileup reweighter
-    self.campaign = campaign
-    self.year = year
+    self.campaign   = campaign
+    self.year       = year
+    
     # get correct file
     if( pufile is None or histname is None ):
       (self.pufile, self.histname) = get_pileup_profile(campaign, year)
     else: (self.pufile, self.histname) = (pufile, histname)
+    
     # open the file and get the histogram
     f = ROOT.TFile.Open(self.pufile)
+    
     try:
       self.puhist = f.Get(self.histname)
       _ = self.puhist.GetBinContent(0)
     except:
       msg = 'ERROR: pileup profile in data could not be loaded.'
       raise Exception(msg)
+    
     self.puhist.SetDirectory(ROOT.gROOT)
     f.Close()
+    
     # initialize scale histogram
     # note: for pre-UL analyses, the scale histogram should be calculated
     #       for each sample separately, given the pileup distribution in data
     #       and the one for the specific sample;
     #       while for UL analyses, the pileup histogram loaded above
     #       gives directly the required ratio.
+    
     self.scalehist = None
     if self.campaign=='run2ul': self.scalehist = self.puhist.Clone()
 
@@ -92,10 +100,12 @@ class PileupReweighter(object):
     if self.scalehist is None:
       msg = 'ERROR: pileup reweighter not yet initialized with a sample'
       raise Exception(msg)
+
     isscalar = False
     if( isinstance(ntrueint, int) or isinstance(ntrueint, float) ):
       isscalar = True
       ntrueint = np.array([ntrueint])
+
     res = np.zeros(len(ntrueint))
     for i in range(len(ntrueint)):
       res[i] = self.scalehist.GetBinContent(self.scalehist.GetXaxis().FindBin(ntrueint[i]))
