@@ -101,7 +101,8 @@ def count_peak(hist, label, extrainfo, gargs, mode='subtract'):
     if(mode=='gfit' or mode=='hybrid'):
         # If more than 50 events --> use Double Gauss
         # Else                   --> use Single Gauss
-        if(hist.GetEffectiveEntries() <= 100):
+        singleGauss          =200
+        if(hist.GetEffectiveEntries() <= singleGauss):
             guess = [
                     fitcenter,                              # peak position
                     hist.GetMaximum()/2,                    # peak 1 height
@@ -179,13 +180,16 @@ def count_peak(hist, label, extrainfo, gargs, mode='subtract'):
                 
         # Calculate the event count (integral) and statistical error
         if hist.GetEffectiveEntries()                           > 20:                               # Calculate integral
-            if hist.GetEffectiveEntries()                       <= 100: 
+            if hist.GetEffectiveEntries()                       <= singleGauss: 
                 sigfit                                          = ROOT.TF1("signal","gaus(0)")
                 sigfit.SetParameters(paramdict[r'A'], paramdict[r'#mu'], paramdict[r'#sigma'])
+                print(f'sigma = ', abs(globfit.GetParameter(2)), ' +- ', abs(globfit2.GetParError(2)))
             else:                                
                 sigfit                                          = ROOT.TF1("signal","gaus(0)+gaus(3)")
                 sigfit.SetParameters(paramdict[r'A_{1}'], paramdict[r'#mu'], paramdict[r'#sigma_{1}'],
                                                                 paramdict[r'A_{2}'], paramdict[r'#mu'], paramdict[r'#sigma_{2}'])
+                print(f'sigma_1 = ', abs(globfit.GetParameter(2)), ' +- ', abs(globfit2.GetParError(2)))
+                print(f'sigma_2 = ', abs(globfit.GetParameter(4)), ' +- ', abs(globfit2.GetParError(4)))
             
             # Determine general fit parameters required for integration 
             params                                              = globres.GetParams()
@@ -195,16 +199,18 @@ def count_peak(hist, label, extrainfo, gargs, mode='subtract'):
             # calculate number of instances instead of integral
             
             # Subtract background (only if total fit worked but background fit failed)
-            if backfit2.GetMinimum(fitrange[0],fitrange[1]) < -5: 
-                npeak                                               = globfit.Integral(fitrange[0],fitrange[1]) / sidexbinwidth
-                npeak_error                                         = globfit.IntegralError(fitrange[0],fitrange[1], params, cov.GetMatrixArray()) / sidexbinwidth
+            if backfit2.GetMinimum(fitrange[0],fitrange[1]) < -5:
+                # calculate number of instances instead of integral
+                npeak                                           = globfit.Integral(fitrange[0],fitrange[1]) / sidexbinwidth
+                npeak_error                                     = globfit.IntegralError(fitrange[0],fitrange[1], params, cov.GetMatrixArray()) / sidexbinwidth
             else:
-                npeak                                               = sigfit.Integral(fitrange[0],fitrange[1]) / sidexbinwidth
-                npeak_error                                         = globfit.IntegralError(fitrange[0],fitrange[1], params, cov.GetMatrixArray()) / sidexbinwidth
+                npeak                                           = sigfit.Integral(fitrange[0],fitrange[1]) / sidexbinwidth
+                npeak_error                                     = globfit.IntegralError(fitrange[0],fitrange[1], params, cov.GetMatrixArray()) / sidexbinwidth
 
             # Calculate peak width and error for confidence study
             confidence                                          = float(abs(globfit2.GetParameter(2)))
             conf_error                                          = float(abs(globfit2.GetParError(2)))
+
         else:                                                                                       # Cut and Count method
             histclone2                                          = hist.Clone()
             if backfit.GetMinimum(fitrange[0],fitrange[1]) > 0: histclone2.Add(backfit,-1)          # Subtract background (only if background fit is physical)
@@ -220,9 +226,8 @@ def count_peak(hist, label, extrainfo, gargs, mode='subtract'):
             # Calculate peak width and error for confidence study
             confidence                                          = float(abs(histclone2.GetRMS()))
             conf_error                                          = float(abs(histclone2.GetRMSError()))
-            #confidence                                          = float(abs(globfit2.GetParameter(2)))
-            #conf_error                                          = float(abs(globfit2.GetParError(2)))
         
+        print(f'Integral = ',   npeak,      ' +- ', npeak_error)
         print(f'Confidence = ', confidence, ' +- ', conf_error )
 
         return (npeak, npeak_error, confidence, conf_error)

@@ -173,23 +173,23 @@ if __name__=='__main__':
     # open the file and read hcounter
     print('Now running on file {}...'.format(inputfile))
     with uproot.open(inputfile) as f:
-      sumweights     = 1             # default case for data, overwritten for simulation below
-      prescale       = None          # to implement later
+      sumweights            = 1             # default case for data, overwritten for simulation below
+      prescale              = None          # to implement later
       if not isdata:
-        try: sumweights = f[hcountername].values()[0]
+        try: sumweights     = f[hcountername].values()[0]
         except:
-          msg = 'WARNING: isdata was set to False, but no valid hCounter found in file'
-          msg += ' (for provided key {}),'.format(hcountername)
-          msg += ' will use sum of weights = 1 for this sample.'
-          msg += ' Valid keys are {}'.format(f.keys())
+          msg               = 'WARNING: isdata was set to False, but no valid hCounter found in file'
+          msg               += ' (for provided key {}),'.format(hcountername)
+          msg               += ' will use sum of weights = 1 for this sample.'
+          msg               += ' Valid keys are {}'.format(f.keys())
           print(msg)
       
       # get main tree and manage number of entries
-      tree              = f[treename]
-      nentries_reweight = 1.
+      tree                  = f[treename]
+      nentries_reweight     = 1.
       
       if( nentries is not None and nentries>0 and nentries<tree.num_entries ):
-        nentries_reweight = tree.num_entries / nentries
+        nentries_reweight   = tree.num_entries / nentries
       else: nentries = tree.num_entries
       msg   =   'Tree {} was found to have {} entries,'.format(                     treename, tree.num_entries)
       msg   +=  ' of which {} will be read (using reweighting factor {}).'.format(  nentries, nentries_reweight)
@@ -250,19 +250,23 @@ if __name__=='__main__':
                                 bins=(variable['bins'], yvariable['bins']),
                                 weights=weights)[0]
         confidence          = np.zeros((len(variable['bins'])-1, len(yvariable['bins'])-1))
-        errors              = np.sqrt(np.histogram2d(varvalues, yvarvalues,
-                                bins=(variable['bins'], yvariable['bins']), 
-                                weights=np.power(weights,2))[0])
+        errors              = np.sqrt(np.histogram2d(
+                                        varvalues, 
+                                        yvarvalues,
+                                        bins            = (variable['bins'], yvariable['bins']), 
+                                        weights         = np.power(weights,2))[0])
        
       # do background subtraction
       if sidevariable is not None:
         # get values of sideband variable
         sidebandvalues          = tree[sidevariable['variable']].array(library='np', entry_stop=nentries)
+        
         # initialize final histograms
         counts                  = np.zeros((len(variable['bins'])-1, len(yvariable['bins'])-1))
         confidence              = np.zeros((len(variable['bins'])-1, len(yvariable['bins'])-1))
         errors                  = np.zeros((len(variable['bins'])-1, len(yvariable['bins'])-1))
         confidence_error        = np.zeros((len(variable['bins'])-1, len(yvariable['bins'])-1))
+        
         # loop over main variable bins and secondary variable bins
         for i, (low, high) in enumerate(zip(variable['bins'][:-1], variable['bins'][1:])):
           for j, (ylow, yhigh) in enumerate(zip(yvariable['bins'][:-1], yvariable['bins'][1:])):
@@ -271,6 +275,7 @@ if __name__=='__main__':
                                     & (yvarvalues > ylow) & (yvarvalues < yhigh))
             thissidebandvalues  = sidebandvalues[mask]
             thisweights         = weights[mask]
+            
             # make extra info
             extrainfo           = '{0:.2f} < '.format(low)
             extrainfo           += variable['label']
@@ -284,16 +289,17 @@ if __name__=='__main__':
             histlabel = 'Data' if isdata else 'Simulation'
             histname                = '{}_bin{}'.format(label, i)
             if dim==2: histname     += '_ybin{}'.format(j)
+            
             (npeak, nerror, conf, conf_error)   = count_peak_unbinned(
                                         thissidebandvalues,
                                         thisweights,
                                         sidevariable,
-                                        mode            ='hybrid',
-                                        label           =histlabel,
-                                        lumi            =lumi,
-                                        extrainfo       =extrainfo,
-                                        histname        =histname,
-                                        plotdir         =args.sideplotdir
+                                        mode            = 'hybrid',
+                                        label           = histlabel,
+                                        lumi            = lumi,
+                                        extrainfo       = extrainfo,
+                                        histname        = histname,
+                                        plotdir         = args.sideplotdir
                                       )
             
             counts[i,j]             = npeak

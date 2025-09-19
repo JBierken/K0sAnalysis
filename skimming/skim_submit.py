@@ -27,12 +27,12 @@ if __name__=='__main__':
   
   # read command line arguments
   parser = argparse.ArgumentParser( description = 'Submitter for skimming jobs' )
-  parser.add_argument('-i', '--samplelist', required=True, type=os.path.abspath)
-  parser.add_argument('-o', '--outputdir', required=True, type=os.path.abspath)
-  parser.add_argument('-s', '--skimmer', default='skim_ztomumu')
-  parser.add_argument('-n', '--nfilesperjob', default=5, type=int)
-  parser.add_argument('--recoverytag', default=None)
-  parser.add_argument('--runmode', default='condor', choices=['local', 'condor'])
+  parser.add_argument(  '-i',       '--samplelist',                             required=True,  type=os.path.abspath)
+  parser.add_argument(  '-o',       '--outputdir',                              required=True,  type=os.path.abspath)
+  parser.add_argument(  '-s',       '--skimmer',        default='skim_ztomumu')
+  parser.add_argument(  '-n',       '--nfilesperjob',   default=5,                              type=int)
+  parser.add_argument(              '--recoverytag',    default=None)
+  parser.add_argument(              '--runmode',        default='condor',       choices=['local', 'condor'])
   args = parser.parse_args()
 
   # check if samplelist exists

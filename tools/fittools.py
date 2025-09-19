@@ -82,8 +82,7 @@ def poly_plus_gauss(x, par, degree=-1):
     arg1 = (x[0]-par[0])/par[2]
     return res + par[1]*np.exp(-0.5*arg1*arg1)
 
-#def poly_plus_gauss_fit(hist, fitrange, initialguesses, optionstring="WLQSE0"):
-def poly_plus_gauss_fit(hist, fitrange, initialguesses, optionstring="RMQSE0"):
+def poly_plus_gauss_fit(hist, fitrange, initialguesses, optionstring="RMSE0"):
     # args: - histogram to be fitted on
     #        - tuple or list representing range to take into account for fit
     #        - (ordered) list of initial parameter guesses
@@ -131,7 +130,7 @@ def poly_plus_doublegauss(x, par, degree=-1):
     return res + par[1]*np.exp(-0.5*arg1*arg1) + par[3]*np.exp(-0.5*arg2*arg2)
 
 #def poly_plus_doublegauss_fit(hist, fitrange, initialguesses, optionstring="WLQSE0"):
-def poly_plus_doublegauss_fit(hist, fitrange, initialguesses, optionstring="RMQSE0"):
+def poly_plus_doublegauss_fit(hist, fitrange, initialguesses, optionstring="RMSE0"):
     # args: - histogram to be fitted on
     #        - tuple or list representing rang:we to take into account for fit
     #        - (ordered) list of initial parameter guesses

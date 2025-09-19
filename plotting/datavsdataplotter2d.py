@@ -131,21 +131,22 @@ def plotmcvsdata2d( mchistlist,
         for j in range(nybins):
             # width in \sigma_data corresponding to 2\sigma_mc
             if hist0.GetBinContent(i+1, j+1) == 0. and mchistsum.GetBinContent(i+1,j+1) == 0.: 
-                z                                           = (2 * mchistsum.GetBinContent(i+1,j+1)) / 1  # in order to avoid devide by zero error
+                z                                           = (2.5 * mchistsum.GetBinContent(i+1,j+1)) / 1  # in order to avoid devide by zero error
                 AF_z                                        = z * ((mchistsum.GetBinError(i+1,j+1)) + (hist0.GetBinError(i+1,j+1) ))
             elif hist0.GetBinContent(i+1, j+1) == 0.: 
-                z                                           = (2 * mchistsum.GetBinContent(i+1,j+1)) / 1  # in order to avoid devide by zero error
+                z                                           = (2.5 * mchistsum.GetBinContent(i+1,j+1)) / 1  # in order to avoid devide by zero error
                 AF_z                                        = z * ((mchistsum.GetBinError(i+1,j+1) / mchistsum.GetBinContent(i+1,j+1)) + (hist0.GetBinError(i+1,j+1) / 1)) 
             elif mchistsum.GetBinContent(i+1, j+1) == 0.: 
-                z                                           = (2 * mchistsum.GetBinContent(i+1,j+1)) / 1  # in order to avoid devide by zero error
+                z                                           = (2.5 * mchistsum.GetBinContent(i+1,j+1)) / 1  # in order to avoid devide by zero error
                 AF_z                                        = z * (mchistsum.GetBinError(i+1,j+1)   + (hist0.GetBinError(i+1,j+1) / hist0.GetBinContent(i+1,j+1)))
             else:                                       
-                z                                           = (2 * mchistsum.GetBinContent(i+1,j+1)) / hist0.GetBinContent(i+1,j+1)
+                z                                           = (2.5 * mchistsum.GetBinContent(i+1,j+1)) / hist0.GetBinContent(i+1,j+1)
                 AF_z                                        = z * ((mchistsum.GetBinError(i+1,j+1) / mchistsum.GetBinContent(i+1,j+1)) + (hist0.GetBinError(i+1,j+1) / hist0.GetBinContent(i+1,j+1))) 
             
 
             # Calculate proportion of data corresponding to 95% MC level
-            proportion                                      = 0.95 / erf(z / np.sqrt(2))
+            #proportion                                      = 0.95 / erf(z / np.sqrt(2))
+            proportion                                      = 0.9875 / erf(z / np.sqrt(2))
             proportion_error                                = abs((erf((z  / np.sqrt(2)) + AF_z) - erf((z  / np.sqrt(2)) - AF_z)) / 2 ) 
             
             histratio.SetBinContent(   i+1, j+1, proportion)

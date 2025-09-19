@@ -341,7 +341,7 @@ if __name__=='__main__':
               if eratxt=='run2': eratxt = 'Run-II'
               eratxt = eratxt.replace('PreVFP', ' (old APV)')
               eratxt = eratxt.replace('PostVFP', ' (new APV)')
-              extrainfos2 = [r'{} '.format(eratxt) + r'$N_{data}^{2\sigma_{data}} / N_{data}^{2\sigma_{MC}}$.'] + extrainfos2
+              extrainfos2 = [r'{} '.format(eratxt) + r'$N_{data}^{2.5\sigma_{data}} / N_{data}^{2.5\sigma_{MC}}$.'] + extrainfos2
               #extrainfos2 = ['{} .'.format(eratxt)] + ['data@95%MC / data.'] + extrainfos2
               doextrafinos = True
             if doextrainfos:
@@ -363,7 +363,7 @@ if __name__=='__main__':
             # ------------------------------------------------------------------------------------------
             # run or submit commands
             # ------------------------------------------------------------------------------------------
-            print(cmds)
+            #print(cmds)
             scriptname = 'cjob_mcvsdata_submit.sh'
             if args.runmode=='local':
               for cmd in cmds: os.system(cmd)

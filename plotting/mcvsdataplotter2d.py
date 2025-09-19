@@ -36,17 +36,17 @@ def plotmcvsdata2d( mchistlist, datahistlist, outfile,
     # -------------------------------------------------------------------------------------
     pt.setTDRstyle()
     ROOT.gROOT.SetBatch(ROOT.kTRUE)
-    c1                              = ROOT.TCanvas("c1","c1")
+    c1                                              = ROOT.TCanvas("c1","c1")
     c1.SetCanvasSize(1200,600)
-    pad1                            = ROOT.TPad("pad1","",0.,0.,1.,1.)
+    pad1                                            = ROOT.TPad("pad1","",0.,0.,1.,1.)
     pad1.Draw()
-    titlefont                       = 4
-    if titlesize is None: titlesize = 25
-    labelfont   = 4; labelsize      = 25
-    axtitlefont = 4
-    if axtitlesize is None: axtitlesize = 25
-    infofont    = 4; infosize   = 20
-    legendfont  = 4; legendsize = 20
+    titlefont                                       = 4
+    if titlesize        is None: titlesize          = 25
+    labelfont           = 4;     labelsize          = 25
+    axtitlefont                                     = 4
+    if axtitlesize      is None: axtitlesize        = 25
+    infofont            = 4;     infosize            = 20
+    legendfont          = 4;     legendsize         = 20
     if p1bottommargin   is None: p1bottommargin     = 0.15
     if p1topmargin      is None: p1topmargin        = 1.
     if p1leftmargin     is None: p1leftmargin       = 0.1
@@ -113,38 +113,26 @@ def plotmcvsdata2d( mchistlist, datahistlist, outfile,
         vals.append([])
         ers.append([])
         for j in range(nybins):
+            # OPTION 1: Take default Divide behaviour
+            vals[i].append(histratio.GetBinContent(i+1,j+1))
+            ers[i].append(histratio.GetBinError(i+1,j+1))
+            
+            # OPTION 2: Modify default Divide behaviour
             ndata   = hist0.GetBinContent(i+1,j+1)
             nmc     = mchistsum.GetBinContent(i+1,j+1)
             edata   = hist0.GetBinError(i+1,j+1)
             emc     = mchistsum.GetBinError(i+1,j+1)
-            """
-            if ndata<1 or nmc<1e-12:
-                vals[i].append(0.)
-                ers[i].append(0.)
-                histratio.SetBinContent(i+1,j+1,0.)
-                histratio.SetBinError(i+1,j+1,0.)
-            # option 1: take default Divide behaviour
-            else:
-                vals[i].append(histratio.GetBinContent(i+1,j+1))
-                ers[i].append(histratio.GetBinError(i+1,j+1))
-            """
-            vals[i].append(histratio.GetBinContent(i+1,j+1))
-            ers[i].append(histratio.GetBinError(i+1,j+1))
-            # option 2: modify default Divide behaviour
-            '''else:
-                val = ndata/nmc
-                vals[i].append(val)
-                #error = np.sqrt(ndata/nmc**2+ndata**2/nmc**3)
-                error = val*np.sqrt((edata/ndata)**2+(emc/nmc)**2)
-                ers[i].append(error)
-                histratio.SetBinContent(i+1,j+1,val)
-                histratio.SetBinError(i+1,j+1,error)'''
+
+            val     = ndata/nmc
+            error   = val*np.sqrt((edata/ndata)**2+(emc/nmc)**2)
+            
             # printouts for testing
-            #print('bin {}/{}:'.format(i+1,j+1))
-            #print('histratio bincontent: {}'.format(histratio.GetBinContent(i+1,j+1)))
-            #print('histratio binerror: {}'.format(histratio.GetBinError(i+1,j+1)))
-            #print('manual ratio: {}'.format(vals[i][j]))
-            #print('manual error: {}'.format(ers[i][j]))
+            print('bin {}/{}:'.format(i+1,j+1))
+            print('histratio bincontent: {}'.format(histratio.GetBinContent(i+1,j+1)))
+            print('histratio binerror: {}'.format(histratio.GetBinError(i+1,j+1)))
+            print('manual ratio: {}'.format(val))
+            print('manual error: {}'.format(error))
+
 
     # -------------------------------------------------------------------------------------
     # Write the output root file if requested:
