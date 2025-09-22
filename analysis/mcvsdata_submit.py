@@ -11,7 +11,7 @@ import numpy as np
 sys.path.append('../')
 import tools.condortools as ct
 from mcvsdata_getfiles import getfiles
-CMSSW = '/user/jbierken/CMSSW_12_4_12'
+CMSSW = '/user/jbierken/CMSSW_14_0_15'
 
 
 if __name__=='__main__':
@@ -366,6 +366,7 @@ if __name__=='__main__':
             #print(cmds)
             scriptname = 'cjob_mcvsdata_submit.sh'
             if args.runmode=='local':
-              for cmd in cmds: os.system(cmd)
+                for cmd in cmds: os.system(cmd)
             else:
-              ct.submitCommandsAsCondorJob(scriptname, cmds, cmssw_version=CMSSW)
+                store_dir = CMSSW + '/src/K0sAnalysis/log_automatic_jobs/'
+                ct.submitCommandsAsCondorJob(store_dir + scriptname, cmds, cmssw_version=CMSSW)

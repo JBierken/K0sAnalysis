@@ -13,6 +13,7 @@
 
 ### ignore crab job files
 cjob_*
+log_automatic_jobs
 
 ### ignore output directories
 */output_*

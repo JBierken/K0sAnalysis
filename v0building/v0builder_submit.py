@@ -12,8 +12,7 @@ from six.moves import input
 # import framework modules
 sys.path.append('../tools')
 import condortools as ct
-#CMSSW = '/user/llambrec/CMSSW_12_4_6'
-CMSSW = '/user/jbierken/CMSSW_12_4_12'
+CMSSW = '/user/jbierken/CMSSW_14_0_15'
 import listtools as lt
 import sampletools as st
 
@@ -90,4 +89,5 @@ if args.runmode=='local':
         print(cmd)
         os.system(cmd)
 elif args.runmode=='condor':
-    ct.submitCommandsAsCondorCluster('cjob_v0builder', cmds, cmssw_version=CMSSW)
+    store_dir = CMSSW + '/src/K0sAnalysis/log_automatic_jobs/'
+    ct.submitCommandsAsCondorCluster(store_dir + 'cjob_v0builder', cmds, cmssw_version=CMSSW)
