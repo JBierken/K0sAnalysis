@@ -1,0 +1,2 @@
+# 2022 simulation
+/pnfs/iihe/cms/store/user/jbierken/K0sAnalysis/NTuples/MINIAOD/sim/v0/DYJetsToLL_M-50_TuneCP5_13p6TeV-madgraphMLM-pythia8/Run3Summer22MiniAODv4-130X_mcRun3_2022_realistic_v5-v2

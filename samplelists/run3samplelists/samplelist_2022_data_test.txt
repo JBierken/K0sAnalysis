@@ -1,0 +1,2 @@
+# 2022 data
+/pnfs/iihe/cms/store/user/jbierken/K0sAnalysis/NTuples/MINIAOD/data/v0/DoubleMuon/Run2022B-22Sep2023-v1
