@@ -12,23 +12,128 @@ import tools.lumitools as lt
 def getfiles( filedir, includelist, version, check_exist=False, **kwargs ):
     if      version=='run2preul':   eralist = getfiles_run2preul(   filedir, includelist, **kwargs )
     elif    version=='run2ul':      eralist = getfiles_run2ul(      filedir, includelist, **kwargs )
+    elif    version=='run3':        eralist = getfiles_run3(        filedir, includelist, **kwargs )
     else:   raise Exception('ERROR: version {} not recognized'.format(version))
 
     if check_exist:
       # check if all files exist
-      allexist = True
+      allexist                  = True
       for era in eralist:
         for mcfile in era['mcin']:
             if not os.path.exists(mcfile['file']):
                 print('ERROR: following input file does not exist: '+mcfile['file'])
-                allexist = False
+                allexist        = False
         for datafile in era['datain']:
             if not os.path.exists(datafile['file']):
                 print('ERROR: following input file does not exist: '+datafile['file'])
-                allexist = False
+                allexist        = False
       if not allexist: raise Exception('ERROR: some requested files do not exist.')
 
     return eralist
+
+def getfiles_run3( filedir, includelist ):
+    
+    # initializations
+    eralist                     = []
+    mcdirdict                   = {}
+
+    mcdirdict['2022preEE']      = 'DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8_crab_RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1_sim_dyjetstoll'
+    mcdirdict['2022postEE']     = 'DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8_crab_RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v1_sim_dyjetstoll'
+    
+    mcdirdict['2022']           = 'DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8_crab_RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1_sim_dyjetstoll'
+    
+    datadirdict                 = {}
+    
+    datadirdict['2022preEE']    = 'DoubleMuon_Run2016PreVFP'
+    datadirdict['2022preEEB']   = 'DoubleMuon_crab_Run2016B-ver2_HIPM_UL2016_MiniAODv2-v1_data_doublemuon'
+    datadirdict['2022preEEC1']  = 'DoubleMuon_crab_Run2016C-HIPM_UL2016_MiniAODv2-v1_data_doublemuon'
+    datadirdict['2022preEEC2']  = 'DoubleMuon_crab_Run2016C-HIPM_UL2016_MiniAODv2-v1_data_doublemuon'
+    datadirdict['2022preEED']   = 'DoubleMuon_crab_Run2016D-HIPM_UL2016_MiniAODv2-v1_data_doublemuon'
+    
+    datadirdict['2022postEE']   = 'DoubleMuon_Run2016PostVFP'
+    datadirdict['2022postEEF']  = 'DoubleMuon_crab_Run2016F-UL2016_MiniAODv2-v1_data_doublemuon'
+    datadirdict['2022postEEG']  = 'DoubleMuon_crab_Run2016G-UL2016_MiniAODv2-v1_data_doublemuon'
+    datadirdict['2022postEEE']  = 'DoubleMuon_crab_Run2016H-UL2016_MiniAODv2-v2_data_doublemuon'
+    
+    datadirdict['2022']         = 'DoubleMuon_Run2016'
+
+    filename                    = 'selected.root'
+
+    # loop over eras
+    for era in includelist:
+
+        # skip special cases (consider them later)
+        if era=='run3':         continue
+        if era=='2022':         continue
+        
+        # derive year from era name
+        year                    = era.rstrip('ABCDEFGH')
+        # set MC file and data file
+        mcdir                   = mcdirdict[year]
+        datadir                 = datadirdict[era]
+        
+        # make an entry for this era
+        eralabel                = era
+        eralabel                = eralabel.replace('preVFP', ' (old EE)')
+        eralabel                = eralabel.replace('postVFP', ' (new EE)')
+        
+        mcin                    = ([{  
+                                    'file':         os.path.join(filedir, mcdir, filename),
+                                    'label':        eralabel+' sim.', 'xsection':6077.22,           # Is this cross-section still valid for run-3?
+                                    'luminosity':   lt.getlumi('run3', era)*1000,
+                                    'era':          era, 
+                                    'year':         year, 
+                                    'campaign':     'run3'
+                                }])
+        
+        datain                  = ([{
+                                    'file':         os.path.join(filedir, datadir, filename),
+                                    'label':        eralabel+' data',
+                                    'luminosity':   lt.getlumi('run3', era)*1000,
+                                    'era':          era, 
+                                    'year':         year, 
+                                    'campaign':     'run3'
+                                }])
+        
+        label                   = era
+        eralist.append({
+                        'mcin':     mcin, 
+                        'datain':   datain, 
+                        'label':    label
+        })
+
+    # special case
+    if '2022' in includelist:
+        mcin, datain            = [], []
+        
+        for year in ['2022preEE', '2022postEE']:
+            eralabel = year
+            eralabel = eralabel.replace('PreEE', ' (old EE)')
+            eralabel = eralabel.replace('PostEE', ' (new EE)')
+            
+            mcin.append({   
+                        'file':         os.path.join(filedir, mcdirdict[year], filename),
+                        'label':        '{} sim.'.format(year), 'xsection':6077.22,                 # Is this cross-section still valid for run-3?
+                        'luminosity':   lt.getlumi('run3', year)*1000,
+                        'era':          year, 
+                        'year':         year, 
+                        'campaign':     'run3'
+            })
+            datain.append({ 
+                        'file':         os.path.join(filedir, datadirdict[year], filename),
+                        'label':        '{} data'.format(year),
+                        'luminosity':   lt.getlumi('run2ul', year)*1000,
+                        'era':          year, 
+                        'year':         year, 
+                        'campaign':     'run2ul'
+            })
+
+        label                   = '2022'
+        eralist.append({    
+                        'mcin':         mcin, 
+                        'datain':       datain, 
+                        'label':        label
+        })
 
 
 def getfiles_run2ul( filedir, includelist ):

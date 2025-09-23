@@ -154,7 +154,7 @@ if __name__=='__main__':
                                 'phi':              branches['_V0PhiNeg'],
                                 'mass':             0.
                             })
-  trackdRi                  = posp4.deltaR(negp4)
+  trackdR                   = posp4.deltaR(negp4)
 
   # make masks for quality selections
   print('Performing selections')

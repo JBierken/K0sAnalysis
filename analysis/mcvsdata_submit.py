@@ -31,153 +31,179 @@ if __name__=='__main__':
   args = parser.parse_args()
 
   # manage input arguments to get files
-  includelist = args.eras
+  includelist           = args.eras
   if 'default' in includelist:
     if args.version=='run2preul':
-        includelist = ([
-          '2016PreVFP', # split of 2016 file based on run ranges
-          '2016PostVFP', # split of 2016 file based on run ranges
-          '2016',
-          '2017',
-          '2018',
-          'run2'
-        ])
+        includelist     = ([
+                            '2016PreVFP',       # split of 2016 file based on run ranges
+                            '2016PostVFP',      # split of 2016 file based on run ranges
+                            '2016',
+                            '2017',
+                            '2018',
+                            'run2'
+                        ])
     elif args.version=='run2ul':
-        includelist = ([
-          #'2016PreVFP',
-          #'2016PostVFP',
-          #'2016',
-          '2017',
-          #'2018',
-          #'run2'
-        ])
+        includelist     = ([
+                            #'2016PreVFP',
+                            #'2016PostVFP',
+                            #'2016',
+                            '2017',
+                            #'2018',
+                            #'run2'
+                        ])
+    elif args.version=='run3':
+        includelist     = ([
+                            '2022',
+                            #'2022EE',
+                            #'2023',
+                            #'2023BPix',
+                            #'2024',
+                            #'run3'
+                        ])
   elif 'perera' in includelist:
     if args.version=='run2preul':
-      includelist = ['2016B','2016C','2016D','2016E','2016F','2016G','2016H']
+      includelist       = [
+                            '2016B',
+                            '2016C',
+                            '2016D',
+                            '2016E',
+                            '2016F',
+                            '2016G',
+                            '2016H'
+                        ]
     elif args.version=='run2ul':
-      includelist = ([
-        '2016PreVFPB',
-        '2016PreVFPC',
-        '2016PreVFPD',
-        '2016PreVFPE',
-        '2016PreVFPF',
-        '2016PostVFPF',
-        '2016PostVFPG',
-        '2016PostVFPH'
-      ])
+      includelist       = ([
+                            '2016PreVFPB',
+                            '2016PreVFPC',
+                            '2016PreVFPD',
+                            '2016PreVFPE',
+                            '2016PreVFPF',
+                            '2016PostVFPF',
+                            '2016PostVFPG',
+                            '2016PostVFPH'
+                        ])
   elif 'detector' in includelist:
     if args.version=='run2preul':
-      includelist = ([
-        '2016PreVFP',
-        '2016PostVFP',
-        '2016',
-        '2017',
-        '2018',
-        '20172018'
-      ])
+      includelist       = ([
+                            '2016PreVFP',
+                            '2016PostVFP',
+                            '2016',
+                            '2017',
+                            '2018',
+                            '20172018'
+                        ])
     elif args.version=='run2ul':
-      includelist = ([
-        '2016PreVFP',
-        '2016PostVFP',
-        '2016',
-        '2017',
-        '2018',
-        '20172018',
-      ])
-  kwargs = {}
+      includelist       = ([
+                            '2016PreVFP',
+                            '2016PostVFP',
+                            '2016',
+                            '2017',
+                            '2018',
+                            '20172018',
+                        ])
+    elif args.version=='run3':
+        includelist     = ([
+                            '2022',
+                            #'2022EE',
+                            #'2023',
+                            #'2023BPix',
+                            #'2024',
+                            #'run3'
+                        ])
+  kwargs                = {}
   if args.version=='run2preul':
-    kwargs['filemode'] = 'new' # hard-coded setting to run on either new or old convention
+    kwargs['filemode']  = 'new' # hard-coded setting to run on either new or old convention
 
   # fill eralist with files to run on and related properties
-  eralist = getfiles( args.filedir, includelist, args.version, 
-                      check_exist=True, **kwargs)
+  eralist               = getfiles( args.filedir, includelist, args.version, 
+                            check_exist=True, **kwargs)
 
   # read variable configuration
   if args.config.endswith('.json'):
     with open(args.config) as f:
-      settings = json.load(f)
+      settings          = json.load(f)
   elif args.config.endswith('.py'):
-    settings = importlib.import_module(args.config.replace('.py','')).config
+    settings            = importlib.import_module(args.config.replace('.py','')).config
   else:
     msg = 'ERROR: file extension not recognized for config file {}'.format(args.config)
     raise Exception(msg)
-  varnames = list(settings.keys())
+  varnames              = list(settings.keys())
 
   # loop over eras
   for era in eralist:
     # set output directory
-    thiseradir = os.path.join(args.outputdir,era['label'])
+    thiseradir              = os.path.join(args.outputdir,era['label'])
     if not os.path.exists(thiseradir): os.makedirs(thiseradir)
     
     # write input configuration
-    configjson = os.path.join(thiseradir, 'config.json')
+    configjson              = os.path.join(thiseradir, 'config.json')
     with open(configjson, 'w') as f:
       json.dump(era, f)
     
     # loop over variables and corresponding settings
     for varname in varnames:
-      variable = settings[varname]
+      variable              = settings[varname]
       for bkgmodename, bkgmode in variable['bkgmodes'].items():
-        for normname, norm in variable['normalization'].items():
+        for normname, norm  in variable['normalization'].items():
           for binname, bins in variable['bins'].items():
             # define output directory
-            subfolder   = '{}_{}_{}_{}'.format(varname, bkgmodename, normname, binname)
-            thisvardir  = os.path.join(thiseradir, subfolder)
+            subfolder       = '{}_{}_{}_{}'.format(varname, bkgmodename, normname, binname)
+            thisvardir      = os.path.join(thiseradir, subfolder)
             if not os.path.exists(thisvardir): os.makedirs(thisvardir)
             # handle cases of 1D or 2D binning
             if 'yvariablename' in variable.keys():
-              ybins     = bins['ybins']
-              bins      = bins['xbins']
+              ybins         = bins['ybins']
+              bins          = bins['xbins']
             # write main variable
-            variabledict = ({
-              'name':       varname,
-              'label':      variable['xaxtitle'],
-              'variable':   variable['variablename'],
-              'bins':       list(bins)
-            })
-            varjson = os.path.join(thisvardir, 'variable.json')
+            variabledict    = ({
+                                'name':       varname,
+                                'label':      variable['xaxtitle'],
+                                'variable':   variable['variablename'],
+                                'bins':       list(bins)
+                            })
+            varjson         = os.path.join(thisvardir, 'variable.json')
             with open(varjson, 'w') as f:
               json.dump(variabledict, f)
             # write secondary variable
             if 'yvariablename' in variable.keys():
               yvariabledict = ({
-                'name':     varname,
-                'label':    variable['yaxtitle'],
-                'variable': variable['yvariablename'],
-                'bins':     list(ybins)
-              })
-              yvarjson = os.path.join(thisvardir, 'yvariable.json')
+                                'name':     varname,
+                                'label':    variable['yaxtitle'],
+                                'variable': variable['yvariablename'],
+                                'bins':     list(ybins)
+                            })
+              yvarjson      = os.path.join(thisvardir, 'yvariable.json')
               with open(yvarjson, 'w') as f:
                 json.dump(yvariabledict, f)
             # write normalization variable
             if norm['type']=='range':
               normvariabledict = ({
-                'name':     norm['normvariable'],
-                'label':    norm['normvariable'],
-                'variable': norm['normvariable'],
-                'bins':     list(norm['normrange'])
-              })
-              normvarjson = os.path.join(thisvardir, 'normvariable.json')
+                                'name':     norm['normvariable'],
+                                'label':    norm['normvariable'],
+                                'variable': norm['normvariable'],
+                                'bins':     list(norm['normrange'])
+                            })
+              normvarjson   = os.path.join(thisvardir, 'normvariable.json')
               with open(normvarjson, 'w') as f:
                 json.dump(normvariabledict, f)
             # write sideband variable
             if bkgmode['type']=='sideband':
               sidevariabledict = ({
-                'name':     bkgmode['sidevariable'],
-                'label':    bkgmode['sidevariable'],
-                'variable': bkgmode['sidevariable'],
-                'bins':     list(bkgmode['sidebins'])
-              })
-              sidevarjson = os.path.join(thisvardir, 'sidevariable.json')
+                                'name':     bkgmode['sidevariable'],
+                                'label':    bkgmode['sidevariable'],
+                                'variable': bkgmode['sidevariable'],
+                                'bins':     list(bkgmode['sidebins'])
+                            })
+              sidevarjson   = os.path.join(thisvardir, 'sidevariable.json')
               with open(sidevarjson, 'w') as f:
                 json.dump(sidevariabledict, f)
             
             # make extra info to display on plot
-            extrainfos = []
+            extrainfos      = []
             if 'extrainfos' in variable.keys():     extrainfos = variable['extrainfos'][:]
             if 'info' in bkgmode.keys():            extrainfos.append(bkgmode['info'])
             if 'info' in norm.keys():               extrainfos.append(norm['info'])
-            doextrainfos = True if len(extrainfos)>0 else False
+            doextrainfos    = True if len(extrainfos)>0 else False
            
             # make command for filling
             cmds                                        = []
@@ -329,6 +355,7 @@ if __name__=='__main__':
             cmd += ' --yaxtitle \'{}\''.format(yaxtitle)
             if args.version=='run2ul':              cmd += ' --extralumitext Legacy'
             if args.version=='run2preul':           cmd += ' --extralumitext Pre-legacy'
+            if args.version=='run3':                cmd += ' --extralumitext Run-3'
             if args.dodetector:
               if '2016' in era['label']:            cmd += ' --do2016pixel'
               if '2017' in era['label']:            cmd += ' --do20172018pixel'
