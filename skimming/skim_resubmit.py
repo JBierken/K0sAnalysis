@@ -7,12 +7,14 @@ import sys
 from six.moves import input
 sys.path.append('../tools')
 import jobcheck as jc
+CMSSW  = '/user/jbierken/CMSSW_14_0_15'
  
 if __name__=='__main__':
 
     # find the relevant error log files
     allefiles = []
-    allefiles += [fname for fname in os.listdir(os.getcwd()) 
+    #allefiles += [fname for fname in os.listdir(os.getcwd()) 
+    allefiles += [fname for fname in os.listdir(CMSSW + '/src/K0sAnalysis/log_automatic_jobs') 
                     if ('cjob_skim' in fname and '_err_' in fname)]
     print('found {} error log files.'.format(len(allefiles)))
     print('start scanning...')

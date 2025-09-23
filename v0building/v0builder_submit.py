@@ -19,17 +19,17 @@ import sampletools as st
 
 # read command line arguments
 parser = argparse.ArgumentParser( description = 'Perform V0 candidate selection' )
-parser.add_argument('-i', '--inputdir', required=True, type=os.path.abspath)
-parser.add_argument('-o', '--outputdir', required=True, type=os.path.abspath)
-parser.add_argument('-s', '--selection', default='legacy')
-parser.add_argument('--transfer', default=False, action='store_true')
-parser.add_argument('--runmode', default='condor', choices=['local', 'condor'])
+parser.add_argument(    '-i',   '--inputdir',                       required=True, type=os.path.abspath)
+parser.add_argument(    '-o',   '--outputdir',                      required=True, type=os.path.abspath)
+parser.add_argument(    '-s',   '--selection',  default='legacy')
+parser.add_argument(            '--transfer',   default=False,      action='store_true')
+parser.add_argument(            '--runmode',    default='condor',   choices=['local', 'condor'])
 args = parser.parse_args()
 
 # check selection name
-allowed_selections = [
-  'legacy',
-]
+allowed_selections  = [
+                        'legacy',
+                    ]
 if args.selection not in allowed_selections:
     raise Exception('ERROR: selection '+args.selection+' not recognized.')
 
@@ -39,13 +39,13 @@ if not os.path.exists(args.inputdir):
     sys.exit()
 
 # gather input files
-inputfiles = {}
-ninputfiles = 0
+inputfiles          = {}
+ninputfiles         = 0
 # loop over input directory
 for root,dirs,files in os.walk(args.inputdir):
     for dirname in dirs:
-        dirname = os.path.join(root,dirname)
-        flist = [f for f in os.listdir(dirname) if f[-5:]=='.root']
+        dirname     = os.path.join(root,dirname)
+        flist       = [f for f in os.listdir(dirname) if f[-5:]=='.root']
         if len(flist)>0: 
             inputfiles[os.path.relpath(dirname,args.inputdir)] = sorted(flist)
             ninputfiles += len(flist)
@@ -58,23 +58,23 @@ for dirname in sorted(inputfiles.keys()):
         print('        '+f)
 print('total number of files: {}'.format(ninputfiles))
 print('Continue (y/n)?')
-go = input()
+go                  = input()
 if not go=='y':
     sys.exit()
 
-workdir = os.getcwd()
-cmds = []
+workdir             = os.getcwd()
+cmds                = []
 # loop over input directories
 for indirname in sorted(inputfiles.keys()):
-    outdirname = os.path.join(args.outputdir, indirname)
+    outdirname      = os.path.join(args.outputdir, indirname)
     # clean outputdir if it exists, else create it
     if os.path.exists(outdirname):
         os.system('rm -r '+outdirname)
     os.makedirs(outdirname)
     # loop over input files
     for inputfile in inputfiles[indirname]:
-        outputfile = os.path.join(outdirname,inputfile.replace('.root','_selected.root'))
-        inputfile = os.path.join(args.inputdir,indirname,inputfile)
+        outputfile  = os.path.join(outdirname,inputfile.replace('.root','_selected.root'))
+        inputfile   = os.path.join(args.inputdir,indirname,inputfile)
         # make command
         cmd = 'python3 v0builder.py'
         cmd += ' -i {}'.format(inputfile)
@@ -86,8 +86,8 @@ for indirname in sorted(inputfiles.keys()):
 # submit jobs
 if args.runmode=='local':
     for cmd in cmds:
-        print(cmd)
-        os.system(cmd)
+        print(      cmd)
+        os.system(  cmd)
 elif args.runmode=='condor':
     store_dir = CMSSW + '/src/K0sAnalysis/log_automatic_jobs/'
     ct.submitCommandsAsCondorCluster(store_dir + 'cjob_v0builder', cmds, cmssw_version=CMSSW)
