@@ -219,7 +219,7 @@ if __name__=='__main__':
                 sumweights          = np.sum(weights)
                 error               = np.sqrt(np.sum(np.power(weights, 2)))
             
-                return (sumweights, error)
+                return (sumweights, error, 0, 0)
 
             # get the variable and some masks
             varvalues             = tree[variable['variable']].array(library='np', entry_stop=nentries)
@@ -327,7 +327,8 @@ if __name__=='__main__':
             errors = errors[:,0]
 
         # return hist gram with counts and corresponding errors
-        #return (counts, errors)
+        if sidevariable is None:
+            return (counts, errors, 0, 0)
         return (counts, errors, confidence, confidence_error)
  
     # ------------------------------------------------------------------------
@@ -337,7 +338,6 @@ if __name__=='__main__':
     for datadict in datain:
         print('Now running on data file {}...'.format(datadict['file']))
         lumi                        = datadict['luminosity']
-        #counts, errors              = get_histogram(
         counts, errors, confidences, conf_errors = get_histogram(
                                                 datadict['file'], 
                                                 args.treename,
@@ -609,82 +609,83 @@ if __name__=='__main__':
     treename_st.Write()
     f.Close()
 
-    # write histogram for confidence count
-    outputname = args.outputfile.split(".")
-    outputname = outputname[0] + "_confidence.root"
-    f2 = ROOT.TFile.Open(outputname, "recreate")
-    # write histograms
-    for ddict in simin + datain:
-        confidences = ddict['confidences']
-        errors      = ddict['conf_errors']
-    
-        # conversion to ROOT.TH1
-        if(len(confidences.shape)==1):
-            hist2 = ROOT.TH1F(
-                    ddict['label'] + " confidence", 
-                    ddict['label'] + " confidence", 
-                    len(variable['bins'])-1,
-                    array('f', variable['bins'])
-                )
-      
-            for i, (confidence, error) in enumerate(zip(confidences, errors)):
-                hist2.SetBinContent( i+1, confidence)
-                hist2.SetBinError(   i+1, error)
-    
-        # converstion to ROOT.TH2
-        elif(len(confidences.shape)==2):
-            hist2 = ROOT.TH2F(
-                    ddict['label'], 
-                    ddict['label'], 
-                    len(variable['bins'])-1, 
-                    array('f', variable['bins']),
-                    len(yvariable['bins'])-1, 
-                    array('f', yvariable['bins'])
-                )
-            for i in range(confidences.shape[0]):
-                for j in range(confidences.shape[1]):
-                    hist2.SetBinContent(   i+1, j+1, confidences[i,j])
-                    hist2.SetBinError(     i+1, j+1, errors[i,j])
+    if sidevariable is not None:
+        # write histogram for confidence count
+        outputname = args.outputfile.split(".")
+        outputname = outputname[0] + "_confidence.root"
+        f2 = ROOT.TFile.Open(outputname, "recreate")
+        # write histograms
+        for ddict in simin + datain:
+            confidences = ddict['confidences']
+            errors      = ddict['conf_errors']
+        
+            # conversion to ROOT.TH1
+            if(len(confidences.shape)==1):
+                hist2 = ROOT.TH1F(
+                        ddict['label'] + " confidence", 
+                        ddict['label'] + " confidence", 
+                        len(variable['bins'])-1,
+                        array('f', variable['bins'])
+                    )
           
-        else:
-            msg = 'ERROR: shape of counts array could not be converted to TH1 or TH2.'
-            raise Exception(msg)
-            hist2.Write(hist2.GetName())
-  
-    # write variable
-    varname_st        = ROOT.TNamed('variable', variable['name'])
-    varname_st.Write()
-  
-    # write secondary variable
-    if yvariable is not None:
-        yvarname_st     = ROOT.TNamed('yvariable', yvariable['name'])
-        yvarname_st.Write()
-  
-    # write normalization
-    normalization_st  = ROOT.TNamed('normalization', str(args.normmode))
-    normalization_st.Write()
-  
-    # write norm range
-    if args.normmode in ['range']:
-        normrange_st    = ROOT.TVectorD(2)
-        normrange_st[0] = normvariable['bins'][0]
-        normrange_st[1] = normvariable['bins'][1]
-        normrange_st.Write("normrange")
-        normvariable_st = ROOT.TNamed('normvariable', normvariable['name'])
-        normvariable_st.Write()
-  
-    # write luminosity
-    lumi_st           = ROOT.TVectorD(1)
-    lumi_st[0]        = totallumi
-    lumi_st.Write("lumi")
-  
-    # write background mode
-    bkgmode_st        = ROOT.TNamed('bkgmode', str(args.bkgmode))
-    bkgmode_st.Write()
-  
-    # write tree name
-    treename_st       = ROOT.TNamed('treename', str(args.treename))
-    treename_st.Write()
-    f2.Close()
-    
+                for i, (confidence, error) in enumerate(zip(confidences, errors)):
+                    hist2.SetBinContent( i+1, confidence)
+                    hist2.SetBinError(   i+1, error)
+        
+            # converstion to ROOT.TH2
+            elif(len(confidences.shape)==2):
+                hist2 = ROOT.TH2F(
+                        ddict['label'], 
+                        ddict['label'], 
+                        len(variable['bins'])-1, 
+                        array('f', variable['bins']),
+                        len(yvariable['bins'])-1, 
+                        array('f', yvariable['bins'])
+                    )
+                for i in range(confidences.shape[0]):
+                    for j in range(confidences.shape[1]):
+                        hist2.SetBinContent(   i+1, j+1, confidences[i,j])
+                        hist2.SetBinError(     i+1, j+1, errors[i,j])
+              
+            else:
+                msg = 'ERROR: shape of counts array could not be converted to TH1 or TH2.'
+                raise Exception(msg)
+                hist2.Write(hist2.GetName())
+      
+        # write variable
+        varname_st        = ROOT.TNamed('variable', variable['name'])
+        varname_st.Write()
+      
+        # write secondary variable
+        if yvariable is not None:
+            yvarname_st     = ROOT.TNamed('yvariable', yvariable['name'])
+            yvarname_st.Write()
+      
+        # write normalization
+        normalization_st  = ROOT.TNamed('normalization', str(args.normmode))
+        normalization_st.Write()
+      
+        # write norm range
+        if args.normmode in ['range']:
+            normrange_st    = ROOT.TVectorD(2)
+            normrange_st[0] = normvariable['bins'][0]
+            normrange_st[1] = normvariable['bins'][1]
+            normrange_st.Write("normrange")
+            normvariable_st = ROOT.TNamed('normvariable', normvariable['name'])
+            normvariable_st.Write()
+      
+        # write luminosity
+        lumi_st           = ROOT.TVectorD(1)
+        lumi_st[0]        = totallumi
+        lumi_st.Write("lumi")
+      
+        # write background mode
+        bkgmode_st        = ROOT.TNamed('bkgmode', str(args.bkgmode))
+        bkgmode_st.Write()
+      
+        # write tree name
+        treename_st       = ROOT.TNamed('treename', str(args.treename))
+        treename_st.Write()
+        f2.Close()
+        
     sys.stderr.write('###done###\n')
