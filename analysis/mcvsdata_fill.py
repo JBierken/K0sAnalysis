@@ -52,11 +52,11 @@ if __name__=='__main__':
     # load input configuration
     # ------------------------------------------------------------------------
     with open(args.inputconfig) as f:
-        temp                    = json.load(f)
-        datain                  = temp['datain']
-        simin                   = temp['mcin']
-        ndatafiles              = len(datain)
-        nsimfiles               = len(simin)
+        temp        = json.load(f)
+    datain        = temp['datain']
+    simin         = temp['mcin']
+    ndatafiles    = len(datain)
+    nsimfiles     = len(simin)
 
     # prints for checking
     print('Found following input configuration:')
@@ -70,7 +70,7 @@ if __name__=='__main__':
             print('    {}: {}'.format(key, val))
 
     # check if all input files exist
-    missing                   = []
+    missing = []
     for sample in simin + datain:
         if not os.path.exists(sample['file']):
             missing.append(sample['file'])
@@ -80,8 +80,8 @@ if __name__=='__main__':
         raise Exception(msg)
 
     # check luminosity
-    totallumi                 = sum([sample['luminosity'] for sample in simin])
-    lumitest                  = sum([sample['luminosity'] for sample in datain])
+    totallumi = sum([sample['luminosity'] for sample in simin])
+    lumitest  = sum([sample['luminosity'] for sample in datain])
     if( abs(lumitest-totallumi)/float(totallumi)>0.001 ):
         print('WARNING: total luminosity for data and simulation do not agree!')
         print(' (luminosity values for data are only used for plot labels;')
@@ -92,54 +92,55 @@ if __name__=='__main__':
     # ------------------------------------------------------------------------
     # load main variable
     with open(args.variable) as f:
-        variable                = json.load(f)
-        print('Found following main variable:')
-        for key,val in variable.items(): print('  {}: {}'.format(key,val))
+        variable = json.load(f)
+    print('Found following main variable:')
+    for key,val in variable.items(): print('  {}: {}'.format(key,val))
 
     # load sideband variable
-    sidevariable              = None      # default case if no background subtraction
+    sidevariable = None # default case if no background subtraction
     if args.bkgmode in ['sideband']:
         if args.sidevariable is None:
-            msg                   = 'ERROR: requested background subtraction via sideband,'
-            msg                   += ' but sideband variable was not specified.'
-            raise Exception(      msg)
-    with open(args.sidevariable) as f:
-        sidevariable          = json.load(f)
+            msg = 'ERROR: requested background subtraction via sideband,'
+            msg += ' but sideband variable was not specified.'
+            raise Exception(msg)
+        with open(args.sidevariable) as f:
+            sidevariable = json.load(f)
         print('Found following sideband variable:')
-    for key,val in sidevariable.items(): print('  {}: {}'.format(key,val))
+        for key,val in sidevariable.items(): print('  {}: {}'.format(key,val))
 
     # load normalization variable
-    normvariable              = None      # default case if no normalization in range
+    normvariable = None # default case if no normalization in range
     if args.normmode in ['range']:
         if args.normvariable is None:
-        msg                   = 'ERROR: requested normalization in range,'
-        msg                   += ' but normalization variable was not specified.'
-        raise Exception(      msg)
-    with open(args.normvariable) as f:
-        normvariable          = json.load(f)
+            msg = 'ERROR: requested normalization in range,'
+            msg += ' but normalization variable was not specified.'
+            raise Exception(msg)
+        with open(args.normvariable) as f:
+            normvariable = json.load(f)
         print('Found following normalization variable:')
-    for key,val in normvariable.items(): print('  {}: {}'.format(key,val))
-    # do check on binning of normalization variable
-    if len(normvariable['bins'])>2:
-        msg                   = 'WARNING: found more than one bin for normalization variable'
-        msg                   += ' but only min and max are taken into account for normalization range;'
-        msg                   += ' intermediate bin edges are ignored.'
-        print(                msg)
-        normvariable['bins']  = [normvariable['bins'][0], normvariable['bins'][-1]]
+        for key,val in normvariable.items(): print('  {}: {}'.format(key,val))
+        # do check on binning of normalization variable
+        if len(normvariable['bins'])>2:
+            msg = 'WARNING: found more than one bin for normalization variable'
+            msg += ' but only min and max are taken into account for normalization range;'
+            msg += ' intermediate bin edges are ignored.'
+            print(msg)
+            normvariable['bins'] = [normvariable['bins'][0], normvariable['bins'][-1]]
 
     # load secondary variable
-    yvariable                 = None # default case if no secondary variable
+    yvariable = None # default case if no secondary variable
     if args.yvariable is not None:
         with open(args.yvariable) as f:
-            yvariable             = json.load(f)
-            print('Found following secondary variable:')
-    for key,val in yvariable.items(): print('  {}: {}'.format(key,val))
+            yvariable = json.load(f)
+        print('Found following secondary variable:')
+        for key,val in yvariable.items(): print('  {}: {}'.format(key,val))
 
     # set luminosity and xsection for simulation to 1 if no lumi scaling is requested
     if args.normmode is None:
         for simdict in simin:
             simdict['luminosity'] = 1
             simdict['xsection']   = 1
+
 
     # ------------------------------------------------------------------------
     # define help function to process a single file:
@@ -254,8 +255,6 @@ if __name__=='__main__':
                                         bins    = (variable['bins'], yvariable['bins']),
                                         weights = weights
                                     )[0]
-                #confidence          = np.zeros((len(variable['bins'])-1, len(yvariable['bins'])-1))
-                #confidence_error    = np.zeros((len(variable['bins'])-1, len(yvariable['bins'])-1))
                 errors              = np.sqrt(np.histogram2d(
                                             varvalues, 
                                             yvarvalues,
@@ -271,8 +270,8 @@ if __name__=='__main__':
                 # initialize final histograms
                 counts                  = np.zeros((len(variable['bins'])-1, len(yvariable['bins'])-1))
                 errors                  = np.zeros((len(variable['bins'])-1, len(yvariable['bins'])-1))
-                #confidence              = np.zeros((len(variable['bins'])-1, len(yvariable['bins'])-1))
-                #confidence_error        = np.zeros((len(variable['bins'])-1, len(yvariable['bins'])-1))
+                confidence              = np.zeros((len(variable['bins'])-1, len(yvariable['bins'])-1))
+                confidence_error        = np.zeros((len(variable['bins'])-1, len(yvariable['bins'])-1))
             
                 # loop over main variable bins and secondary variable bins
                 for i, (low, high) in enumerate(zip(variable['bins'][:-1], variable['bins'][1:])):
@@ -312,8 +311,8 @@ if __name__=='__main__':
                 
                         counts[i,j]             = npeak
                         errors[i,j]             = nerror
-                        #confidence[i,j]         = conf
-                        #confidence_error[i,j]   = conf_error
+                        confidence[i,j]         = conf
+                        confidence_error[i,j]   = conf_error
             
                 # Calculate the error on the confidence method
                 #conf_error      = np.zeros((len(variable['bins'])-1, len(yvariable['bins'])-1))
@@ -328,8 +327,8 @@ if __name__=='__main__':
             errors = errors[:,0]
 
         # return hist gram with counts and corresponding errors
-        return (counts, errors)
-        #return (counts, errors, confidence, confidence_error)
+        #return (counts, errors)
+        return (counts, errors, confidence, confidence_error)
  
     # ------------------------------------------------------------------------
     # loop over input files and fill histograms
@@ -338,8 +337,8 @@ if __name__=='__main__':
     for datadict in datain:
         print('Now running on data file {}...'.format(datadict['file']))
         lumi                        = datadict['luminosity']
-        counts, errors              = get_histogram(
-        #counts, errors, confidences, conf_errors = get_histogram(
+        #counts, errors              = get_histogram(
+        counts, errors, confidences, conf_errors = get_histogram(
                                                 datadict['file'], 
                                                 args.treename,
                                                 variable        = variable,
@@ -352,15 +351,15 @@ if __name__=='__main__':
                                     )
         datadict['counts']      = counts
         datadict['errors']      = errors
-        #datadict['confidences'] = confidences
-        #datadict['conf_errors'] = conf_errors    
+        datadict['confidences'] = confidences
+        datadict['conf_errors'] = conf_errors    
     # Simulation files
     for simdict in simin:
         print('Now running on simulation file {}...'.format(simdict['file']))
         xsection                = simdict['xsection']
         lumi                    = simdict['luminosity']
-        #counts, errors, confidences, conf_errors = get_histogram(
-        counts, errors              = get_histogram(
+        counts, errors, confidences, conf_errors = get_histogram(
+        #counts, errors              = get_histogram(
                                       simdict['file'], 
                                       args.treename,
                                       variable        = variable,
@@ -376,20 +375,20 @@ if __name__=='__main__':
                                   )
         simdict['counts']       = counts
         simdict['errors']       = errors
-        #simdict['confidences']  = confidences
-        #simdict['conf_errors']  = conf_errors    
+        simdict['confidences']  = confidences
+        simdict['conf_errors']  = conf_errors    
 
     # clip histograms to minimum zero
     for datadict in datain:
         datadict['counts']      = np.clip(datadict['counts'],           0, None)
         datadict['errors']      = np.clip(datadict['errors'],           0, None)
-        #datadict['confidences'] = np.clip(datadict['confidences'],      0, None)
-        #datadict['conf_errors'] = np.clip(datadict['conf_errors'],      0, None)
+        datadict['confidences'] = np.clip(datadict['confidences'],      0, None)
+        datadict['conf_errors'] = np.clip(datadict['conf_errors'],      0, None)
     for simdict in simin:
         simdict['counts']       = np.clip(simdict['counts'],            0, None)
         simdict['errors']       = np.clip(simdict['errors'],            0, None)
-        #simdict['confidences']  = np.clip(simdict['confidences'],       0, None)
-        #simdict['conf_errors']  = np.clip(simdict['conf_errors'],       0, None)
+        simdict['confidences']  = np.clip(simdict['confidences'],       0, None)
+        simdict['conf_errors']  = np.clip(simdict['conf_errors'],       0, None)
 
     # ------------------------------------------------------------------------
     # Apply Normalization:
@@ -414,10 +413,10 @@ if __name__=='__main__':
     
         # Scale simulation to sum of data
         for simdict in simin:
-        simdict['counts']     = simdict['counts']*scale
-        simdict['errors']     = simdict['errors']*scale
-        #simdict['confidences']= simdict['confidences']*scale
-        #simdict['conf_errors']= simdict['conf_errors']*scale
+            simdict['counts']     = simdict['counts']*scale
+            simdict['errors']     = simdict['errors']*scale
+            simdict['confidences']= simdict['confidences']*scale
+            simdict['conf_errors']= simdict['conf_errors']*scale
 
     # ------------------------------------------------------------------------
     # for normmode 'range', normalize sum of simulation to sum of data,
@@ -428,8 +427,8 @@ if __name__=='__main__':
         # Get Data count
         datasum     = 0
         for datadict in datain:
-            #counts, _, confs, c_ = get_histogram(
-            counts, _   = get_histogram(
+            counts, _, confs, c_ = get_histogram(
+            #counts, _   = get_histogram(
                                datadict['file'], 
                            args.treename,
                            variable    =normvariable,
@@ -449,8 +448,8 @@ if __name__=='__main__':
         for simdict in simin:
             xsection     = simdict['xsection']
             lumi         = simdict['luminosity']
-            #counts, _, confsy, c_ = get_histogram(
-            counts, _   = get_histogram(
+            counts, _, confsy, c_ = get_histogram(
+            #counts, _   = get_histogram(
                             simdict['file'], 
                             args.treename,
                             variable    =normvariable,
@@ -476,8 +475,8 @@ if __name__=='__main__':
         for simdict in simin:
             simdict['counts']             = simdict['counts']*scale
             simdict['errors']             = simdict['errors']*scale
-            #simdict['confidences']        = simdict['confidences']*scale
-            #simdict['conf_errors']        = simdict['conf_errors']*scale
+            simdict['confidences']        = simdict['confidences']*scale
+            simdict['conf_errors']        = simdict['conf_errors']*scale
 
     # ------------------------------------------------------------------------
     # for normmode 'eventyield', scale using event weights
@@ -505,8 +504,8 @@ if __name__=='__main__':
         for simdict in simin:
             xsection      = simdict['xsection']
             lumi          = simdict['luminosity']
-            #sumweights, _, confs, c_ = get_histogram(
-            sumweights, _ = get_histogram(
+            sumweights, _, confs, c_ = get_histogram(
+            #sumweights, _ = get_histogram(
                                 simdict['file'], 
                                 args.eventtreename,
                                 isdata      =False, 
@@ -526,8 +525,8 @@ if __name__=='__main__':
         for simdict in simin:
             simdict['counts']             = simdict['counts']*scale
             simdict['errors']             = simdict['errors']*scale
-            #simdict['confidences']        = simdict['confidences']*scale
-            #simdict['conf_errors']        = simdict['conf_errors']*scale
+            simdict['confidences']        = simdict['confidences']*scale
+            simdict['conf_errors']        = simdict['conf_errors']*scale
 
     # ------------------------------------------------------------------------
     # write histograms and meta-info to file:
@@ -610,19 +609,18 @@ if __name__=='__main__':
     treename_st.Write()
     f.Close()
 
-    """
     # write histogram for confidence count
     outputname = args.outputfile.split(".")
     outputname = outputname[0] + "_confidence.root"
     f2 = ROOT.TFile.Open(outputname, "recreate")
     # write histograms
     for ddict in simin + datain:
-        #confidences = ddict['confidences']
-        #errors      = ddict['conf_errors']
+        confidences = ddict['confidences']
+        errors      = ddict['conf_errors']
     
         # conversion to ROOT.TH1
         if(len(confidences.shape)==1):
-        hist2 = ROOT.TH1F(
+            hist2 = ROOT.TH1F(
                     ddict['label'] + " confidence", 
                     ddict['label'] + " confidence", 
                     len(variable['bins'])-1,
@@ -688,5 +686,5 @@ if __name__=='__main__':
     treename_st       = ROOT.TNamed('treename', str(args.treename))
     treename_st.Write()
     f2.Close()
-    """
+    
     sys.stderr.write('###done###\n')
