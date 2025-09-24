@@ -35,7 +35,7 @@ config = ({
                                   'sidebins': np.linspace(0.44, 0.56, num=31, endpoint=True)}
                 },
                 'bins': {
-	              'defaultbins':{ 'xbins':[0., 15., 50., 100. 1500.],
+	              'defaultbins':{ 'xbins':[0., 15., 50., 100., 1500.],
                                 'ybins':[0.,5.,10.,20., 500.] },
                   'finexbins':{ 'xbins':[0., 15., 50., 100., 200., 300., 400., 500., 600., 800.,1500.],
                                 'ybins':[0.,5.,10.,20., 50., 500.] },
