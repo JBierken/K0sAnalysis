@@ -53,10 +53,12 @@ if __name__=='__main__':
                         ])
     elif args.version=='run3':
         includelist     = ([
-                            '2022',
-                            #'2022EE',
+                            '2022preEE',
+                            #'2022postEE',
+                            #'2022',
+                            #'2023preBPix',
+                            #'2023postBPix',
                             #'2023',
-                            #'2023BPix',
                             #'2024',
                             #'run3'
                         ])
@@ -103,16 +105,18 @@ if __name__=='__main__':
                         ])
     elif args.version=='run3':
         includelist     = ([
-                            '2022',
-                            #'2022EE',
+                            '2022preEE',
+                            #'2022postEE',
+                            #'2022',
+                            #'2023preBPix',
+                            #'2023postBPix',
                             #'2023',
-                            #'2023BPix',
                             #'2024',
                             #'run3'
                         ])
   kwargs                = {}
   if args.version=='run2preul':
-    kwargs['filemode']  = 'new' # hard-coded setting to run on either new or old convention
+    kwargs['filemode']  = 'new'             # hard-coded setting to run on either new or old convention
 
   # fill eralist with files to run on and related properties
   eralist               = getfiles( args.filedir, includelist, args.version, 
@@ -279,6 +283,7 @@ if __name__=='__main__':
               cmd2 += ' --logy'
               cmds.append(cmd2)
             
+            """
             # ------------------------------------------------------------------------------------------
             # make basic command for plotting data vs MC (confidence)
             # ------------------------------------------------------------------------------------------
@@ -386,11 +391,12 @@ if __name__=='__main__':
               cmd2 = cmd + ' -o {}'.format(outputfile.replace('.png','_log.png'))
               cmd2 += ' --logy'
               cmds.append(cmd2)
+            """
 
             # ------------------------------------------------------------------------------------------
             # run or submit commands
             # ------------------------------------------------------------------------------------------
-            #print(cmds)
+            print(cmds)
             scriptname = 'cjob_mcvsdata_submit.sh'
             if args.runmode=='local':
                 for cmd in cmds: os.system(cmd)

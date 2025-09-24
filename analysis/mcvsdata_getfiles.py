@@ -37,13 +37,15 @@ def getfiles_run3( filedir, includelist ):
     eralist                     = []
     mcdirdict                   = {}
 
+    # TODO: To be updated!!
+    # get MC samples for 2022
     mcdirdict['2022preEE']      = 'DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8_crab_RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1_sim_dyjetstoll'
     mcdirdict['2022postEE']     = 'DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8_crab_RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v1_sim_dyjetstoll'
-    
     mcdirdict['2022']           = 'DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8_crab_RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1_sim_dyjetstoll'
     
     datadirdict                 = {}
     
+    # get data samples (devided in sub eras) for 2022
     datadirdict['2022preEE']    = 'DoubleMuon_Run2016PreVFP'
     datadirdict['2022preEEB']   = 'DoubleMuon_crab_Run2016B-ver2_HIPM_UL2016_MiniAODv2-v1_data_doublemuon'
     datadirdict['2022preEEC1']  = 'DoubleMuon_crab_Run2016C-HIPM_UL2016_MiniAODv2-v1_data_doublemuon'
@@ -74,8 +76,8 @@ def getfiles_run3( filedir, includelist ):
         
         # make an entry for this era
         eralabel                = era
-        eralabel                = eralabel.replace('preVFP', ' (old EE)')
-        eralabel                = eralabel.replace('postVFP', ' (new EE)')
+        eralabel                = eralabel.replace('preEE', ' (old EE)')
+        eralabel                = eralabel.replace('postEE', ' (new EE)')
         
         mcin                    = ([{  
                                     'file':         os.path.join(filedir, mcdir, filename),
@@ -122,7 +124,7 @@ def getfiles_run3( filedir, includelist ):
             datain.append({ 
                         'file':         os.path.join(filedir, datadirdict[year], filename),
                         'label':        '{} data'.format(year),
-                        'luminosity':   lt.getlumi('run2ul', year)*1000,
+                        'luminosity':   lt.getlumi('run3', year)*1000,
                         'era':          year, 
                         'year':         year, 
                         'campaign':     'run2ul'

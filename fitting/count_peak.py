@@ -208,8 +208,8 @@ def count_peak(hist, label, extrainfo, gargs, mode='subtract'):
                 npeak_error                                     = globfit.IntegralError(fitrange[0],fitrange[1], params, cov.GetMatrixArray()) / sidexbinwidth
 
             # Calculate peak width and error for confidence study
-            confidence                                          = float(abs(globfit2.GetParameter(2)))
-            conf_error                                          = float(abs(globfit2.GetParError(2)))
+            #confidence                                          = float(abs(globfit2.GetParameter(2)))
+            #conf_error                                          = float(abs(globfit2.GetParError(2)))
 
         else:                                                                                       # Cut and Count method
             histclone2                                          = hist.Clone()
@@ -224,13 +224,14 @@ def count_peak(hist, label, extrainfo, gargs, mode='subtract'):
             npeak_error                                         = np.sqrt(npeak_error)
 
             # Calculate peak width and error for confidence study
-            confidence                                          = float(abs(histclone2.GetRMS()))
-            conf_error                                          = float(abs(histclone2.GetRMSError()))
+            #confidence                                          = float(abs(histclone2.GetRMS()))
+            #conf_error                                          = float(abs(histclone2.GetRMSError()))
         
         print(f'Integral = ',   npeak,      ' +- ', npeak_error)
-        print(f'Confidence = ', confidence, ' +- ', conf_error )
+        #print(f'Confidence = ', confidence, ' +- ', conf_error )
 
-        return (npeak, npeak_error, confidence, conf_error)
+        #return (npeak, npeak_error, confidence, conf_error)
+        return (npeak, npeak_error)
 
     # METHOD 2: do global fit and determine integral of peak with error
     elif mode=='gfit':
@@ -240,7 +241,8 @@ def count_peak(hist, label, extrainfo, gargs, mode='subtract'):
         npeak                                                   = intpeak / sidexbinwidth            # calculate number of instances instead of integral
         npeak_error                                             = globfit.IntegralError(fitrange[0],fitrange[1]) / sidexbinwidth
         
-        return (npeak, npeak_error, confidence, conf_error)
+        #return (npeak, npeak_error, confidence, conf_error)
+        return (npeak, npeak_error)
 
     else:
         raise Exception('ERROR: peak counting mode not regognized!')
