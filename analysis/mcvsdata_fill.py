@@ -296,8 +296,8 @@ if __name__=='__main__':
                         histname                = '{}_bin{}'.format(label, i)
                         if dim==2: histname     += '_ybin{}'.format(j)
                 
-                        #(npeak, nerror, conf, conf_error)   = count_peak_unbinned(
-                        (npeak, nerror)   = count_peak_unbinned(
+                        (npeak, nerror, conf, conf_error)   = count_peak_unbinned(
+                        #(npeak, nerror)   = count_peak_unbinned(
                                             thissidebandvalues,
                                             thisweights,
                                             sidevariable,
