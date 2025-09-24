@@ -297,11 +297,6 @@ if __name__=='__main__':
                         histname                = '{}_bin{}'.format(label, i)
                         if dim==2: histname     += '_ybin{}'.format(j)
                 
-                        #debug info:
-                        print("-------------------------------------------------------------------------")
-                        print(' Reached line: 297   --> Right BEFORE `count_peak_unbinned` function ')
-                        print("-------------------------------------------------------------------------\n")
-
                         #(npeak, nerror, conf, conf_error)   = count_peak_unbinned(
                         (npeak, nerror)   = count_peak_unbinned(
                                             thissidebandvalues,
@@ -314,11 +309,6 @@ if __name__=='__main__':
                                             histname        = histname,
                                             plotdir         = args.sideplotdir
                                           )
-                        #debug info:
-                        print("-------------------------------------------------------------------------")
-                        print(' Reached line: 314   --> Right AFTER `count_peak_unbinned` function ')
-                        print("-------------------------------------------------------------------------\n")
-
                 
                         counts[i,j]             = npeak
                         errors[i,j]             = nerror
@@ -360,11 +350,6 @@ if __name__=='__main__':
                                                 label           = datadict['label'].strip(' .'),
                                                 nentries        = args.nprocess
                                     )
-        #debug info:
-        print("-------------------------------------------------------------------------")
-        print(' Reached line: 365   --> Right AFTER `get_histogram` (for data) function ')
-        print("-------------------------------------------------------------------------\n")
-
         datadict['counts']      = counts
         datadict['errors']      = errors
         #datadict['confidences'] = confidences
@@ -389,10 +374,6 @@ if __name__=='__main__':
                                       year            = simdict['year'], 
                                       campaign        = simdict['campaign']
                                   )
-        #debug info:
-        print("-------------------------------------------------------------------------")
-        print(' Reached line: 394   --> Right AFTER `get_histogram` (for sim) function ')
-        print("-------------------------------------------------------------------------\n")
         simdict['counts']       = counts
         simdict['errors']       = errors
         #simdict['confidences']  = confidences

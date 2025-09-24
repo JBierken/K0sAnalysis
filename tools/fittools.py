@@ -18,7 +18,8 @@ def poly(x, par, degree=0):
         res += par[k]*np.power(x[0], k)
     return res
 
-def poly_fit(hist, fitrange, initialguesses, optionstring="WLQ0"):
+#def poly_fit(hist, fitrange, initialguesses, optionstring="WLQ0"):
+def poly_fit(hist, fitrange, initialguesses, optionstring="RMSE0"):
     # args: - histogram to be fitted on
     #        - tuple or list representing range to take into account for fit
     #        - (ordered) list of initial parameter guesses
@@ -26,12 +27,13 @@ def poly_fit(hist, fitrange, initialguesses, optionstring="WLQ0"):
     # note: the fitobj object (see below) must be kept in memory explicitly
     #       for using fitfunc (else error "the callable was deleted"),
     #       so it is returned as well, but not meant to be used explicitly.
+    
     degree = len(initialguesses)-1
     fitobj = partial(poly, degree=degree)
     fitfunc = ROOT.TF1("fitfunc", fitobj, fitrange[0], fitrange[1], len(initialguesses))
     for i,val in enumerate(initialguesses):
         fitfunc.SetParameter(i,val)
-    fitresult = hist.Fit("fitfunc", optionstring)
+    fitresult = hist.Fit(fitfunc, optionstring)
     paramdict = collections.OrderedDict()
     for i in range(len(initialguesses)):
         paramdict['a'+str(i)] = float(fitfunc.GetParameter(i))
@@ -46,7 +48,8 @@ def gauss(x, par):
     arg = (x[0]-par[1])/par[2]
     return par[0]*np.exp(-0.5*arg*arg)
 
-def gauss_fit(hist, fitrange, initialguesses, optionstring="LQ0"):
+#def gauss_fit(hist, fitrange, initialguesses, optionstring="LQ0"):
+def gauss_fit(hist, fitrange, initialguesses, optionstring="RMSE0"):
     # args: - histogram to be fitted on
     #        - tuple or list representing range to take into account for fit
     #        - (ordered) list of initial parameter guesses

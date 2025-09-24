@@ -82,10 +82,13 @@ def count_peak(hist, label, extrainfo, gargs, mode='subtract'):
 
     # make background-only fit
     guess = [0.,0.]
-    backfit, paramdict, backfitobj = ft.poly_fit(histclone, fitrange, guess, "WLQ0")
+    #backfit, paramdict, backfitobj = ft.poly_fit(histclone, fitrange, guess, "WLQ0")
+    backfit, paramdict, backfitobj = ft.poly_fit(hist, fitrange, guess, "RMSE0")
+    print('\t --> Reached line: 93')
     if gargs['helpdir'] is not None:
         lumitext    = '' if gargs['lumi'] is None else '{0:.3g} '.format(float(gargs['lumi'])/1000.) + 'fb^{-1} (13 TeV)'
         outfile     = os.path.join(gargs['helpdir'], hist.GetName().replace(' ','_')+'_bck.png')
+        print('\t --> Reached line: 97')
         pft.plot_fit(hist, outfile,
                 fitfunc     =None, 
                 backfit     =backfit, 
@@ -177,7 +180,6 @@ def count_peak(hist, label, extrainfo, gargs, mode='subtract'):
     
     # METHOD 1: subtract background from peak and count remaining instances
     if(mode=='subtract' or mode=='hybrid'):
-                
         # Calculate the event count (integral) and statistical error
         if hist.GetEffectiveEntries()                           > 20:                               # Calculate integral
             if hist.GetEffectiveEntries()                       <= singleGauss: 
@@ -278,6 +280,6 @@ def count_peak_unbinned(values, weights, variable, mode='subtract',
     fitinfo['lumi']         = lumi
     fitinfo['helpdir']      = plotdir
     fitinfo['helpdir2']     = singleGaussdir
-
+    
     # call underlying function
     return count_peak(hist, label, extrainfo, fitinfo, mode=mode)
