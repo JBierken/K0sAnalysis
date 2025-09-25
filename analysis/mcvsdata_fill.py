@@ -448,7 +448,7 @@ if __name__=='__main__':
         for simdict in simin:
             xsection     = simdict['xsection']
             lumi         = simdict['luminosity']
-            counts, _, confsy, c_ = get_histogram(
+            counts, _, confs, c_ = get_histogram(
             #counts, _   = get_histogram(
                             simdict['file'], 
                             args.treename,
@@ -489,8 +489,8 @@ if __name__=='__main__':
         # Get Data count
         datasum     = 0
         for datadict in datain:
-            #sumweights, _, confs, c_ = get_histogram(
-            sumweights, _   = get_histogram(
+            sumweights, _, confs, c_ = get_histogram(
+            #sumweights, _   = get_histogram(
                                 datadict['file'], 
                                 args.eventtreename, 
                                 isdata    =True, 
