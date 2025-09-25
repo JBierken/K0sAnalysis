@@ -504,21 +504,29 @@ if __name__=='__main__':
     if args.extracmstext is not None: extracmstext = args.extracmstext
     colorlist = []
     for hist in indict['mchistlist']:
+        # Run-2
         if '2016' in hist.GetTitle():
-          if '2016B' in hist.GetTitle(): colorlist.append(ROOT.kAzure-2)
-          elif '2016C' in hist.GetTitle(): colorlist.append(ROOT.kAzure-2)
-          elif '2016D' in hist.GetTitle(): colorlist.append(ROOT.kAzure-2)
-          elif '2016E' in hist.GetTitle(): colorlist.append(ROOT.kAzure-2)
-          elif '2016F' in hist.GetTitle(): colorlist.append(ROOT.kAzure-2)
-          elif '2016PreVFP' in hist.GetTitle(): colorlist.append(ROOT.kAzure-2)
-          elif '2016 (old APV)' in hist.GetTitle(): colorlist.append(ROOT.kAzure-2)
-          elif '2016G' in hist.GetTitle(): colorlist.append(ROOT.kAzure-9)
-          elif '2016H' in hist.GetTitle(): colorlist.append(ROOT.kAzure-9)
-          elif '2016PostVFP' in hist.GetTitle(): colorlist.append(ROOT.kAzure-9)
-          elif '2016 (new APV)' in hist.GetTitle(): colorlist.append(ROOT.kAzure-9)
-          else: colorlist.append(ROOT.kAzure-4)
-        elif '2017' in hist.GetTitle(): colorlist.append(ROOT.kAzure+6)
-        elif '2018' in hist.GetTitle(): colorlist.append(ROOT.kViolet)
+            if '2016B' in hist.GetTitle():              colorlist.append(ROOT.kAzure-2)
+            elif '2016C' in hist.GetTitle():            colorlist.append(ROOT.kAzure-2)
+            elif '2016D' in hist.GetTitle():            colorlist.append(ROOT.kAzure-2)
+            elif '2016E' in hist.GetTitle():            colorlist.append(ROOT.kAzure-2)
+            elif '2016F' in hist.GetTitle():            colorlist.append(ROOT.kAzure-2)
+            elif '2016PreVFP' in hist.GetTitle():       colorlist.append(ROOT.kAzure-2)
+            elif '2016 (old APV)' in hist.GetTitle():   colorlist.append(ROOT.kAzure-2)
+            elif '2016G' in hist.GetTitle():            colorlist.append(ROOT.kAzure-9)
+            elif '2016H' in hist.GetTitle():            colorlist.append(ROOT.kAzure-9)
+            elif '2016PostVFP' in hist.GetTitle():      colorlist.append(ROOT.kAzure-9)
+            elif '2016 (new APV)' in hist.GetTitle():   colorlist.append(ROOT.kAzure-9)
+            else:                                       colorlist.append(ROOT.kAzure-4)
+        elif '2017' in hist.GetTitle():                 colorlist.append(ROOT.kAzure+6)
+        elif '2018' in hist.GetTitle():                 colorlist.append(ROOT.kViolet)
+        # Run-3
+        elif '2022' in hist.GetTitle():
+            if '2022peEE' in hist.GetTitle():           colorlist.append(ROOT.kAzure-2)
+            elif '2022postEE' in hist.GetTitle():       colorlist.append(ROOT.kAzure-9)
+            else:                                       colorlist.append(ROOT.kAzure-4)
+        elif '2023' in hist.GetTitle():                 colorlist.append(ROOT.kAzure+6)
+        elif '2024' in hist.GetTitle():                 colorlist.append(ROOT.kViolet)
         else:
             print('WARNING: histogram title could not be associated with a color')
             colorlist.append(ROOT.kBlack)

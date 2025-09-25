@@ -82,13 +82,10 @@ def count_peak(hist, label, extrainfo, gargs, mode='subtract'):
 
     # make background-only fit
     guess = [0.,0.]
-    #backfit, paramdict, backfitobj = ft.poly_fit(histclone, fitrange, guess, "WLQ0")
-    backfit, paramdict, backfitobj = ft.poly_fit(hist, fitrange, guess, "RMSE0")
-    print('\t --> Reached line: 93')
+    backfit, paramdict, backfitobj = ft.poly_fit(hist, fitrange, guess, "MSE0")
     if gargs['helpdir'] is not None:
         lumitext    = '' if gargs['lumi'] is None else '{0:.3g} '.format(float(gargs['lumi'])/1000.) + 'fb^{-1} (13 TeV)'
         outfile     = os.path.join(gargs['helpdir'], hist.GetName().replace(' ','_')+'_bck.png')
-        print('\t --> Reached line: 97')
         pft.plot_fit(hist, outfile,
                 fitfunc     =None, 
                 backfit     =backfit, 
@@ -104,7 +101,7 @@ def count_peak(hist, label, extrainfo, gargs, mode='subtract'):
     if(mode=='gfit' or mode=='hybrid'):
         # If more than 50 events --> use Double Gauss
         # Else                   --> use Single Gauss
-        singleGauss          =200
+        singleGauss          = 50
         if(hist.GetEffectiveEntries() <= singleGauss):
             guess = [
                     fitcenter,                              # peak position
@@ -125,7 +122,6 @@ def count_peak(hist, label, extrainfo, gargs, mode='subtract'):
                     hist.GetRMS()                           # peak 2 width
             ]
             guess += [paramdict['a0'],paramdict['a1']]     # background estimate
-            #guess += [0., 0.]                               # background estimate
            
             globfit, paramdict, globfitobj, globres = ft.poly_plus_doublegauss_fit(hist, fitrange, guess)
         
@@ -150,12 +146,11 @@ def count_peak(hist, label, extrainfo, gargs, mode='subtract'):
     # ---------------------------------------------------------------------------------
     # Make single Gauss fit for L_xy confidence study:
     guess = [
-            fitcenter,                              # peak position
-            hist.GetMaximum()/2,                    # peak 1 height
-            hist.GetRMS()                           # peak 1 width
+        fitcenter,                              # peak position
+        hist.GetMaximum()/2,                    # peak 1 height
+        hist.GetRMS()                           # peak 1 width
     ]
     guess += [paramdict['a0'],paramdict['a1']]      # background estimate
-    #guess += [0., 0.]                               # background estimate
            
     globfit2, paramdict2, globfitobj2, globres2 = ft.poly_plus_gauss_fit(hist, fitrange, guess)
     
@@ -210,8 +205,8 @@ def count_peak(hist, label, extrainfo, gargs, mode='subtract'):
                 npeak_error                                     = globfit.IntegralError(fitrange[0],fitrange[1], params, cov.GetMatrixArray()) / sidexbinwidth
 
             # Calculate peak width and error for confidence study
-            #confidence                                          = float(abs(globfit2.GetParameter(2)))
-            #conf_error                                          = float(abs(globfit2.GetParError(2)))
+            confidence                                          = float(abs(globfit2.GetParameter(2)))
+            conf_error                                          = float(abs(globfit2.GetParError(2)))
 
         else:                                                                                       # Cut and Count method
             histclone2                                          = hist.Clone()
@@ -226,14 +221,14 @@ def count_peak(hist, label, extrainfo, gargs, mode='subtract'):
             npeak_error                                         = np.sqrt(npeak_error)
 
             # Calculate peak width and error for confidence study
-            #confidence                                          = float(abs(histclone2.GetRMS()))
-            #conf_error                                          = float(abs(histclone2.GetRMSError()))
+            confidence                                          = float(abs(histclone2.GetRMS()))
+            conf_error                                          = float(abs(histclone2.GetRMSError()))
         
         print(f'Integral = ',   npeak,      ' +- ', npeak_error)
-        #print(f'Confidence = ', confidence, ' +- ', conf_error )
+        print(f'Confidence = ', confidence, ' +- ', conf_error )
 
-        #return (npeak, npeak_error, confidence, conf_error)
-        return (npeak, npeak_error)
+        return (npeak, npeak_error, confidence, conf_error)
+        #return (npeak, npeak_error)
 
     # METHOD 2: do global fit and determine integral of peak with error
     elif mode=='gfit':
@@ -243,8 +238,8 @@ def count_peak(hist, label, extrainfo, gargs, mode='subtract'):
         npeak                                                   = intpeak / sidexbinwidth            # calculate number of instances instead of integral
         npeak_error                                             = globfit.IntegralError(fitrange[0],fitrange[1]) / sidexbinwidth
         
-        #return (npeak, npeak_error, confidence, conf_error)
-        return (npeak, npeak_error)
+        return (npeak, npeak_error, confidence, conf_error)
+        #return (npeak, npeak_error)
 
     else:
         raise Exception('ERROR: peak counting mode not regognized!')

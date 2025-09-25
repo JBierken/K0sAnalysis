@@ -339,9 +339,9 @@ if __name__=='__main__':
     yvarname            = indict['yvarname']
     normvariable        = None
     if indict['normalization'] == 'range':
-      normrange         = indict['normrange']
-      normvariable      = indict['normvariable']
-      #if varname!=normvariable: normrange = None # disable drawing norm range if variables dont match
+        normrange         = indict['normrange']
+        normvariable      = indict['normvariable']
+        #if varname!=normvariable: normrange = None # disable drawing norm range if variables dont match
     lumistr             = ''
     if indict['lumi'] > 0:
         lumistr         = '{0:.3g}'.format(indict['lumi']/1000.)+' fb^{-1} (13 TeV)'
@@ -358,46 +358,46 @@ if __name__=='__main__':
     p1rightmargin       = None
     extrainfos          = []
     if args.doextrainfos:
-      p1rightmargin     = 0.35
-      infoleft          = 0.77
-      infotop           = 0.7
-      if args.extrainfos is None:
-        extrainfos      = []
-        if( indict['treename'] is not None ):
-          treename = indict['treename']
-          if treename=='laurelin':
-            extrainfos.append('K^{0}_{S} candidates')
-          elif treename=='telperion':
-            extrainfos.append('#Lambda^{0} candidates')
-          else:
-            msg = 'WARNING: unrecognized treename {}'.format(treename)
-            print(msg)
-        if( indict['bkgmode'] is not None ):
-          bkgmode = indict['bkgmode']
-          if bkgmode.lower()=='none':
-            extrainfos.append('Background not subtracted')
-          elif bkgmode.lower()=='sideband':
-            extrainfos.append('Background subtracted')
-          else:
-            msg = 'WARNING: unrecognized bkgmode {}'.format(bkgmode)
-            print(msg)
-        if( indict['normalization'] is not None ):
-          norm = indict['normalization']
-          if norm.lower()=='none':
-            extrainfos.append('Not normalized')
-          elif norm=='lumi':
-            extrainfos.append('Normalized to luminosity')
-          elif norm=='yield':
-            extrainfos.append('Normalized to data')
-          elif norm=='range':
-            extrainfos.append('Normalized in range')
-          elif norm=='eventyield':
-            extrainfos.append('Normalized to data events')
-          else:
-            msg = 'WARNING: unrecognized normalization {}'.format(norm)
-            print(msg)
-      else:
-        extrainfos      = args.extrainfos.split(',')
+        p1rightmargin     = 0.35
+        infoleft          = 0.77
+        infotop           = 0.7
+        if args.extrainfos is None:
+            extrainfos      = []
+            if( indict['treename'] is not None ):
+                treename = indict['treename']
+                if treename=='laurelin':
+                    extrainfos.append('K^{0}_{S} candidates')
+                elif treename=='telperion':
+                    extrainfos.append('#Lambda^{0} candidates')
+                else:
+                    msg = 'WARNING: unrecognized treename {}'.format(treename)
+                    print(msg)
+            if( indict['bkgmode'] is not None ):
+                bkgmode = indict['bkgmode']
+                if bkgmode.lower()=='none':
+                    extrainfos.append('Background not subtracted')
+                elif bkgmode.lower()=='sideband':
+                    extrainfos.append('Background subtracted')
+                else:
+                    msg = 'WARNING: unrecognized bkgmode {}'.format(bkgmode)
+                    print(msg)
+            if( indict['normalization'] is not None ):
+                norm = indict['normalization']
+                if norm.lower()=='none':
+                    extrainfos.append('Not normalized')
+                elif norm=='lumi':
+                    extrainfos.append('Normalized to luminosity')
+                elif norm=='yield':
+                    extrainfos.append('Normalized to data')
+                elif norm=='range':
+                    extrainfos.append('Normalized in range')
+                elif norm=='eventyield':
+                    extrainfos.append('Normalized to data events')
+                else:
+                    msg = 'WARNING: unrecognized normalization {}'.format(norm)
+                    print(msg)
+        else:
+            extrainfos      = args.extrainfos.split(',')
 
     plotmcvsdata2d(
             indict['mchistlist'], 
