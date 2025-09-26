@@ -9,7 +9,7 @@ import numpy as np
 import argparse
 
 # Get BaseDir
-baseDir     = '/user/jbierken/CMSSW_12_4_12/src/K0sAnalysis/reweighting'
+baseDir     = '/user/jbierken/CMSSW_14_0_15/src/K0sAnalysis/reweighting'
 
 def get_args():
     # get arguments
@@ -22,6 +22,7 @@ def get_args():
 # -------------------------------------------------------------------------
 def make_pileup_mc(era,  base_dir=baseDir):
     # Get correct setup for each era
+    # Run-2 UL
     if era == 'UL2016':
         from SimGeneral\
                 .MixingModule\
@@ -34,6 +35,7 @@ def make_pileup_mc(era,  base_dir=baseDir):
         from SimGeneral\
                 .MixingModule\
                 .mix_2018_25ns_UltraLegacy_PoissonOOTPU_cfi import mix
+    # Run-2
     elif era == '2016':
         from SimGeneral\
                 .MixingModule\
@@ -46,6 +48,35 @@ def make_pileup_mc(era,  base_dir=baseDir):
         from SimGeneral\
                 .MixingModule\
                 .mix_2018_25ns_JuneProjectionFull18_PoissonOOTPU_cfi import mix
+    # Run-3:    --> https://github.com/cms-sw/cmssw/tree/master/SimGeneral/MixingModule/python
+    elif era == '2022preEE':
+        from SimGeneral\
+                .MixingModule\
+                .mix_2022_25ns_RunIII2022Summer24_PoissonOOTPU_cfi import mix
+    elif era == '2022postEE':
+        from SimGeneral\
+                .MixingModule\
+                .mix_2022_25ns_RunIII2022Summer24_PoissonOOTPU_cfi import mix
+    elif era == '2022':
+        from SimGeneral\
+                .MixingModule\
+                .mix_2022_25ns_RunIII2022Summer24_PoissonOOTPU_cfi import mix
+    elif era == '2023preBPix':
+        from SimGeneral\
+                .MixingModule\
+                .mix_2023_25ns_RunIII2023Summer24_PoissonOOTPU_cfi import mix
+    elif era == '2023postBPix':
+        from SimGeneral\
+                .MixingModule\
+                .mix_2023_25ns_EraD_PoissonOOTPU_cfi import mix
+    elif era == '2023':
+        from SimGeneral\
+                .MixingModule\
+                .mix_2023_25ns_RunIII2023Summer24_PoissonOOTPU_cfi import mix
+    elif era == '2024':
+        from SimGeneral\
+                .MixingModule\
+                .mix_2024_25ns_RunIII2024Summer24_PoissonOOTPU_cfi import mix
     else:
         print('Unrecognized era', args.era)
         sys.exit(0)
@@ -67,20 +98,38 @@ def get_pileup(era, base_dir=baseDir): # code below taken from spark tnp
     '''
     Get the pileup distribution scalefactors to apply to simulation
     for a given era.
+    --> More info: https://twiki.cern.ch/twiki/bin/viewauth/CMS/PileupJSONFileforData
     '''
 
     # get the pileup
     dataPileup = {
+            # Run-2
             'UL2016_APV':   base_dir + '/pileup/UL2016/dataPileup_nominal.root',
             'UL2016':       base_dir + '/pileup/UL2016/dataPileup_nominal.root',
             'UL2017':       base_dir + '/pileup/UL2017/dataPileup_nominal.root',
-            'UL2018':       base_dir + '/pileup/UL2018/dataPileup_nominal.root'
+            'UL2018':       base_dir + '/pileup/UL2018/dataPileup_nominal.root',
+            # Run-3
+            '2022preEE':    base_dir + '/pileup/data/run3/pileupHistogram-Cert_Collisions2022_355100_357900_eraBCD_GoldenJson-13p6TeV-66000ub-99bins.root',
+            '2022postEE':   base_dir + '/pileup/data/run3/pileupHistogram-Cert_Collisions2022_359022_362760_eraEFG_GoldenJson-13p6TeV-66000ub-99bins.root',
+            '2022':         base_dir + '/pileup/data/run3/pileupHistogram-Cert_Collisions2022_355100_362760_GoldenJson-13p6TeV-66000ub-99bins.root',
+            '2023preBPix':  base_dir + '/pileup/data/run3/pileupHistogram-Cert_Collisions2023_366403_369802_eraBC_GoldenJson-13p6TeV-66000ub-99bins.root',
+            '2023postBPix': base_dir + '/pileup/data/run3/pileupHistogram-Cert_Collisions2023_369803_370790_eraD_GoldenJson-13p6TeV-66000ub-99bins.root',
+            '2023':         base_dir + '/pileup/data/run3/pileupHistogram-Cert_Collisions2023_366442_370790_GoldenJson-13p6TeV-66000ub-99bins.root',
             }
     mcPileup = {
+            # Run-2
             'UL2016_APV':   base_dir + '/pileup/UL2016/mcPileup.root',
             'UL2016':       base_dir + '/pileup/UL2016/mcPileup.root',
             'UL2017':       base_dir + '/pileup/UL2017/mcPileup.root',
-            'UL2018':       base_dir + '/pileup/UL2018/mcPileup.root'
+            'UL2018':       base_dir + '/pileup/UL2018/mcPileup.root',
+            # Run-3
+            '2022preEE':    base_dir + '/pileup/2022preEE/mcPileup.root',
+            '2022postEE':   base_dir + '/pileup/2022postEE/mcPileup.root',
+            '2022':         base_dir + '/pileup/2022/mcPileup.root',
+            '2023preBPix':  base_dir + '/pileup/2023preBPix/mcPileup.root',
+            '2023postBPix': base_dir + '/pileup/2023postBPix/mcPileup.root',
+            '2023':         base_dir + '/pileup/2023/mcPileup.root',
+            '2024':         base_dir + '/pileup/2024/mcPileup.root',
             }
     
     with uproot.open(dataPileup[era]) as f:

@@ -609,7 +609,7 @@ if __name__=='__main__':
     treename_st.Write()
     f.Close()
 
-    if sidevariable is not None:
+    if sidevariable is not None and len(counts.shape)==2:
         # write histogram for confidence count
         outputname = args.outputfile.split(".")
         outputname = outputname[0] + "_confidence.root"
