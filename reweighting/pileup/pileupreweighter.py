@@ -96,16 +96,14 @@ class PileupReweighter(object):
         #       gives directly the required ratio.
 
         self.scalehist                  = None
-        if self.campaign=='run2ul' 
-            or self.campaign=='run3':   self.scalehist = self.puhist.Clone()
+        if self.campaign=='run2ul' or self.campaign=='run3':   self.scalehist = self.puhist.Clone()
 
     def initsample(self, sample):
         ### initialize the reweighter for a given sample
 
         # skip in case of UL sample, no initialization needed
         if self.campaign=='run2ul':     return
-        if self.campaign=='run2ul' 
-            or self.campaign=='run3':   return 
+        if self.campaign=='run2ul' or self.campaign=='run3':   return 
 
         # get true interaction profile from sample
         f                       = ROOT.TFile.Open(sample)

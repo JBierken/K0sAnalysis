@@ -39,25 +39,25 @@ def getfiles_run3( filedir, includelist ):
 
     # TODO: To be updated!!
     # get MC samples for 2022
-    mcdirdict['2022preEE']      = 'DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8_crab_RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1_sim_dyjetstoll'
-    mcdirdict['2022postEE']     = 'DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8_crab_RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v1_sim_dyjetstoll'
-    mcdirdict['2022']           = 'DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8_crab_RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1_sim_dyjetstoll'
+    mcdirdict['2022preEE']      = 'DYJetsToLL_M-50_TuneCP5_13p6TeV-madgraphMLM-pythia8_Run3Summer22MiniAODv3-forPOG_124X_mcRun3_2022_realistic_v12-v4'
+    mcdirdict['2022postEE']     = ''
+    mcdirdict['2022']           = ''
     
     datadirdict                 = {}
     
     # get data samples (devided in sub eras) for 2022
-    datadirdict['2022preEE']    = 'DoubleMuon_Run2016PreVFP'
-    datadirdict['2022preEEB']   = 'DoubleMuon_crab_Run2016B-ver2_HIPM_UL2016_MiniAODv2-v1_data_doublemuon'
-    datadirdict['2022preEEC1']  = 'DoubleMuon_crab_Run2016C-HIPM_UL2016_MiniAODv2-v1_data_doublemuon'
-    datadirdict['2022preEEC2']  = 'DoubleMuon_crab_Run2016C-HIPM_UL2016_MiniAODv2-v1_data_doublemuon'
-    datadirdict['2022preEED']   = 'DoubleMuon_crab_Run2016D-HIPM_UL2016_MiniAODv2-v1_data_doublemuon'
+    datadirdict['2022preEE']    = 'Run2022preEE'
+    datadirdict['2022preEEB']   = 'DoubleMuon_Run2022B-22Sep2023-v1'
+    datadirdict['2022preEEC1']  = 'DoubleMuon_Run2022C-22Sep2023-v1' 
+    datadirdict['2022preEEC2']  = 'Muon_Run2022C-22Sep2023-v1'
+    datadirdict['2022preEED']   = 'Muon_Run2022D-22Sep2023-v1'
     
-    datadirdict['2022postEE']   = 'DoubleMuon_Run2016PostVFP'
-    datadirdict['2022postEEF']  = 'DoubleMuon_crab_Run2016F-UL2016_MiniAODv2-v1_data_doublemuon'
-    datadirdict['2022postEEG']  = 'DoubleMuon_crab_Run2016G-UL2016_MiniAODv2-v1_data_doublemuon'
-    datadirdict['2022postEEE']  = 'DoubleMuon_crab_Run2016H-UL2016_MiniAODv2-v2_data_doublemuon'
+    datadirdict['2022postEE']   = 'Run2022postEE'
+    datadirdict['2022postEEF']  = ''
+    datadirdict['2022postEEG']  = ''
+    datadirdict['2022postEEE']  = ''
     
-    datadirdict['2022']         = 'DoubleMuon_Run2016'
+    datadirdict['2022']         = 'Run2022'
 
     filename                    = 'selected.root'
 
@@ -69,15 +69,18 @@ def getfiles_run3( filedir, includelist ):
         if era=='2022':         continue
         
         # derive year from era name
-        year                    = era.rstrip('ABCDEFGH')
+        #year                    = era
+        year                    = era.rstrip('prepostABCDEFGH')
+
         # set MC file and data file
-        mcdir                   = mcdirdict[year]
+        #mcdir                   = mcdirdict[year]
+        mcdir                   = mcdirdict[era]
         datadir                 = datadirdict[era]
         
         # make an entry for this era
         eralabel                = era
-        eralabel                = eralabel.replace('preEE', ' (old EE)')
-        eralabel                = eralabel.replace('postEE', ' (new EE)')
+        #eralabel                = eralabel.replace('preEE', ' (old EE)')
+        #eralabel                = eralabel.replace('postEE', ' (new EE)')
         
         mcin                    = ([{  
                                     'file':         os.path.join(filedir, mcdir, filename),
@@ -110,8 +113,8 @@ def getfiles_run3( filedir, includelist ):
         
         for year in ['2022preEE', '2022postEE']:
             eralabel = year
-            eralabel = eralabel.replace('PreEE', ' (old EE)')
-            eralabel = eralabel.replace('PostEE', ' (new EE)')
+            #eralabel = eralabel.replace('PreEE', ' (old EE)')
+            #eralabel = eralabel.replace('PostEE', ' (new EE)')
             
             mcin.append({   
                         'file':         os.path.join(filedir, mcdirdict[year], filename),
@@ -137,6 +140,8 @@ def getfiles_run3( filedir, includelist ):
                         'label':        label
         })
 
+    # return the eralist
+    return eralist
 
 def getfiles_run2ul( filedir, includelist ):
     

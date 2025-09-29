@@ -256,6 +256,7 @@ if __name__=='__main__':
                         cmd += ' --yaxtitle \'{}\''.format(yaxtitle)
                         if args.version=='run2ul':              cmd += ' --extralumitext Legacy'
                         if args.version=='run2preul':           cmd += ' --extralumitext Pre-legacy'
+                        if args.version=='run3':                cmd += ' --extralumitext Run-3'
                         if args.dodetector:
                             if '2016' in era['label']:            cmd += ' --do2016pixel'
                             if '2017' in era['label']:            cmd += ' --do20172018pixel'
@@ -264,9 +265,10 @@ if __name__=='__main__':
                         if exe=='mcvsdataplotter2d.py':
                             cmd += ' --outrootfile {}'.format(outroot)  
                             eratxt = era['label']
-                            if eratxt=='run2': eratxt = 'Run-II'
-                            eratxt = eratxt.replace('PreVFP', ' (old APV)')
-                            eratxt = eratxt.replace('PostVFP', ' (new APV)')
+                            if eratxt=='run2': 
+                                eratxt = 'Run-II'
+                                eratxt = eratxt.replace('PreVFP', ' (old APV)')
+                                eratxt = eratxt.replace('PostVFP', ' (new APV)')
                             extrainfos = ['{} data / sim.'.format(eratxt)] + extrainfos
                             doextrafinos = True
                         if doextrainfos:
@@ -307,6 +309,7 @@ if __name__=='__main__':
                             cmd += ' --yaxtitle \'{}\''.format(yaxtitle)
                             if args.version=='run2ul':              cmd += ' --extralumitext Legacy'
                             if args.version=='run2preul':           cmd += ' --extralumitext Pre-legacy'
+                            if args.version=='run3':                cmd += ' --extralumitext Run-3'
                             if args.dodetector:
                                 if '2016' in era['label']:            cmd += ' --do2016pixel'
                                 if '2017' in era['label']:            cmd += ' --do20172018pixel'
@@ -315,9 +318,10 @@ if __name__=='__main__':
                             outroot = outroot[0] + "_confidence.root"
                             cmd += ' --outrootfile {}'.format(outroot)  
                             eratxt = era['label']
-                            if eratxt=='run2': eratxt = 'Run-II'
-                            eratxt = eratxt.replace('PreVFP', ' (old APV)')
-                            eratxt = eratxt.replace('PostVFP', ' (new APV)')
+                            if eratxt=='run2': 
+                                eratxt = 'Run-II'
+                                eratxt = eratxt.replace('PreVFP', ' (old APV)')
+                                eratxt = eratxt.replace('PostVFP', ' (new APV)')
                             #extrainfos = ['{} data / sim.'.format(eratxt)] + extrainfos
                             doextrafinos = True
                             if doextrainfos:
@@ -362,9 +366,10 @@ if __name__=='__main__':
                             outroot = outroot[0] + "_data_vs_data.root"
                             cmd += ' --outrootfile {}'.format(outroot)  
                             eratxt = era['label']
-                            if eratxt=='run2': eratxt = 'Run-II'
-                            eratxt = eratxt.replace('PreVFP', ' (old APV)')
-                            eratxt = eratxt.replace('PostVFP', ' (new APV)')
+                            if eratxt=='run2': 
+                                eratxt = 'Run-II'
+                                eratxt = eratxt.replace('PreVFP', ' (old APV)')
+                                eratxt = eratxt.replace('PostVFP', ' (new APV)')
                             extrainfos2 = [r'{} '.format(eratxt) + r'$N_{data}^{2.5\sigma_{data}} / N_{data}^{2.5\sigma_{MC}}$.'] + extrainfos2
                             #extrainfos2 = ['{} .'.format(eratxt)] + ['data@95%MC / data.'] + extrainfos2
                             doextrafinos = True
