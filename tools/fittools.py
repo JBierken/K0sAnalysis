@@ -48,8 +48,8 @@ def gauss(x, par):
     arg = (x[0]-par[1])/par[2]
     return par[0]*np.exp(-0.5*arg*arg)
 
-def gauss_fit(hist, fitrange, initialguesses, optionstring="LQ0"):
-#def gauss_fit(hist, fitrange, initialguesses, optionstring="MSE0"):
+#def gauss_fit(hist, fitrange, initialguesses, optionstring="LQ0"):
+def gauss_fit(hist, fitrange, initialguesses, optionstring="RMSE0"):
     # args: - histogram to be fitted on
     #        - tuple or list representing range to take into account for fit
     #        - (ordered) list of initial parameter guesses

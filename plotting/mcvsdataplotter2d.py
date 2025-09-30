@@ -122,9 +122,13 @@ def plotmcvsdata2d( mchistlist, datahistlist, outfile,
             nmc     = mchistsum.GetBinContent(i+1,j+1)
             edata   = hist0.GetBinError(i+1,j+1)
             emc     = mchistsum.GetBinError(i+1,j+1)
-
-            val     = ndata/nmc
-            error   = val*np.sqrt((edata/ndata)**2+(emc/nmc)**2)
+            
+            if ndata==0 or nmc==0:  
+                val = 0
+                error = 0 # TODO fix this!!
+            else: 
+                val = ndata/nmc
+                error   = val*np.sqrt((edata/ndata)**2+(emc/nmc)**2)
             
             # printouts for testing
             print('bin {}/{}:'.format(i+1,j+1))
