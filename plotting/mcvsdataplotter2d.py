@@ -348,7 +348,7 @@ if __name__=='__main__':
         #if varname!=normvariable: normrange = None # disable drawing norm range if variables dont match
     lumistr             = ''
     if indict['lumi'] > 0:
-        lumistr         = '{0:.3g}'.format(indict['lumi']/1000.)+' fb^{-1} (13 TeV)'
+        lumistr         = '{0:.3g}'.format(indict['lumi']/1000.)+' fb^{-1} (13.6 TeV)'
     if args.extralumitext is not None:
         lumistr         += ' ' + args.extralumitext
     extracmstext        = ''

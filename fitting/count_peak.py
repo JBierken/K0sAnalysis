@@ -84,7 +84,7 @@ def count_peak(hist, label, extrainfo, gargs, mode='subtract'):
     guess = [0.,0.]
     backfit, paramdict, backfitobj = ft.poly_fit(hist, fitrange, guess, "MSE0")
     if gargs['helpdir'] is not None:
-        lumitext    = '' if gargs['lumi'] is None else '{0:.3g} '.format(float(gargs['lumi'])/1000.) + 'fb^{-1} (13 TeV)'
+        lumitext    = '' if gargs['lumi'] is None else '{0:.3g} '.format(float(gargs['lumi'])/1000.) + 'fb^{-1} (13.6 TeV)'
         outfile     = os.path.join(gargs['helpdir'], hist.GetName().replace(' ','_')+'_bck.png')
         pft.plot_fit(hist, outfile,
                 fitfunc     =None, 

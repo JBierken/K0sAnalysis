@@ -256,7 +256,7 @@ if __name__=='__main__':
                         cmd += ' --yaxtitle \'{}\''.format(yaxtitle)
                         if args.version=='run2ul':              cmd += ' --extralumitext Legacy'
                         if args.version=='run2preul':           cmd += ' --extralumitext Pre-legacy'
-                        if args.version=='run3':                cmd += ' --extralumitext Run-3'
+                        #if args.version=='run3':                cmd += ' --extralumitext '
                         if args.dodetector:
                             if '2016' in era['label']:            cmd += ' --do2016pixel'
                             if '2017' in era['label']:            cmd += ' --do20172018pixel'
@@ -388,7 +388,7 @@ if __name__=='__main__':
                         # ------------------------------------------------------------------------------------------
                         # run or submit commands
                         # ------------------------------------------------------------------------------------------
-                        print(cmds)
+                        #print(cmds)
                         scriptname = 'cjob_mcvsdata_submit.sh'
                         if args.runmode=='local':
                             for cmd in cmds: os.system(cmd)
