@@ -13,10 +13,10 @@ config = ({
                                   'sidebins': np.linspace(0.44, 0.56, num=31, endpoint=True)}
                 },
                 'bins': {
-	               'defaultbins':{ 'xbins':[0.,0.5,1.5,4.5,20., 100.],
-			          'ybins':[0.,5.,10.,20., 40., 50.] },
-                   'finexbins':{ 'xbins':[0.,0.5,1.,1.5,2.,5.,10.,15.,20., 50., 100.],
-                                'ybins':[0.,5.,10.,20., 40., 50.] },
+	               'defaultbins':{ 'xbins':[0., 0.5, 1.5, 4.5, 20., 100.],
+			          'ybins':[0.,5., 10., 20.] },
+                   'finexbins':{ 'xbins':[0.,0.5,1.,1.5,2.,5.,10., 20., 100.],
+                                'ybins':[0.,5.,10., 20., 50.] },
                 },
                 'normalization': {
 	          'normrange':{ 'type':'range', 'info': 'Normalized for #Delta_{2D} < 0.5 cm',
@@ -35,10 +35,10 @@ config = ({
                                   'sidebins': np.linspace(0.44, 0.56, num=31, endpoint=True)}
                 },
                 'bins': {
-	              'defaultbins':{ 'xbins':[0., 15., 50., 100., 1500.],
-                                'ybins':[0.,5.,10.,20., 500.] },
+	              'defaultbins':{ 'xbins':[0., 20., 50., 100., 1500.],
+                                'ybins':[0.,5.,10., 20.] },
                   'finexbins':{ 'xbins':[0., 15., 50., 100., 200., 300., 400., 500., 600., 800.,1500.],
-                                'ybins':[0.,5.,10.,20., 50., 500.] },
+                                'ybins':[0.,5.,10., 20., 50., 500.] },
                 },
                 'normalization': {
                   'normrange':{ 'type':'range', 'info': 'Normalized for #Delta_{2D} < 0.5 cm',

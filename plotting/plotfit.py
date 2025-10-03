@@ -134,11 +134,11 @@ def plot_fit(hist, figname, style='hist', fitfunc=None, backfit=None,
                 tinfo.DrawLatexNDC(0.65,0.65-(len(paramdict)+1)*0.035,info)
             
             # draw fitted gauss components
-            if len(paramdict) == 7:
+            if len(paramdict) == 8:
                 #gaus1  = ROOT.TF1("gaus1","gaus(0)", fitrange[0], fitrange[1])
                 gaus1  = ROOT.TF1("gaus1","gaus(0)")
                 gaus1.SetParameters(paramdict[r'A_{1}'], paramdict[r'#mu'], paramdict[r'#sigma_{1}'])
-                gaus1.SetNpx(500)
+                gaus1.SetNpx(1000)
                 gaus1.SetLineColor(ROOT.kYellow)
                 gaus1.SetLineWidth(3)
                 gaus1.Draw("SAME")
@@ -148,7 +148,7 @@ def plot_fit(hist, figname, style='hist', fitfunc=None, backfit=None,
                 #gaus2  = ROOT.TF1("gaus2","gaus(0)", fitrange[0], fitrange[1])
                 gaus2  = ROOT.TF1("gaus2","gaus(0)")
                 gaus2.SetParameters(paramdict[r'A_{2}'], paramdict[r'#mu'], paramdict[r'#sigma_{2}'])
-                gaus2.SetNpx(500)
+                gaus2.SetNpx(1000)
                 gaus2.SetLineColor(ROOT.kOrange+2)
                 gaus2.SetLineWidth(3)
                 gaus2.Draw("SAME")
@@ -156,7 +156,7 @@ def plot_fit(hist, figname, style='hist', fitfunc=None, backfit=None,
                 leg.Draw()
             else:
                 gaus  = ROOT.TF1("gaus","gaus(0)")
-                gaus.SetNpx(500)
+                gaus.SetNpx(1000)
                 gaus.SetParameters(paramdict[r'A'], paramdict[r'#mu'], paramdict[r'#sigma'])
                 gaus.SetLineColor(ROOT.kYellow)
                 gaus.SetLineWidth(3)

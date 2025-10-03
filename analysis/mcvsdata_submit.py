@@ -54,8 +54,8 @@ if __name__=='__main__':
         elif args.version=='run3':
             includelist     = ([
                             '2022preEE',
-                            #'2022postEE',
-                            #'2022',
+                            '2022postEE',
+                            '2022',
                             #'2023preBPix',
                             #'2023postBPix',
                             #'2023',

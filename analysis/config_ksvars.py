@@ -16,7 +16,7 @@ config = ({
                               'sidebins': np.linspace(0.44, 0.56, num=31, endpoint=True)},
             },
             'bins': {
-              'finebins':np.linspace(0,100,num=61,endpoint=True),
+              'finebins':np.linspace(0,20,num=61,endpoint=True),
               'defaultbins':[0.,0.5,1.5,4.,10.,20.],
             },
             'normalization': {

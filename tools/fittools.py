@@ -19,7 +19,7 @@ def poly(x, par, degree=0):
     return res
 
 #def poly_fit(hist, fitrange, initialguesses, optionstring="WLQ0"):
-def poly_fit(hist, fitrange, initialguesses, optionstring="MSE0"):
+def poly_fit(hist, fitrange, initialguesses, optionstring="RMSE0"):
     # args: - histogram to be fitted on
     #        - tuple or list representing range to take into account for fit
     #        - (ordered) list of initial parameter guesses
@@ -100,8 +100,9 @@ def poly_plus_gauss_fit(hist, fitrange, initialguesses, optionstring="RMSE0"):
     for i,val in enumerate(initialguesses):
         fitfunc.SetParameter(i,val)
         fitfunc.SetParError(i,0)                                # Set initial error to zero (before fit)
+    fitfunc.SetParLimits(0, 0.45,   0.53)                       # Set range for where gaussian mean can be
     fitfunc.SetParLimits(1, 0.,     initialguesses[1]*100)      # Set minimal Amplitude to zero
-    fitfunc.SetParLimits(2, 2e-3,   initialguesses[2]*100)      # Set (non-zero) mimimal sigma value
+    fitfunc.SetParLimits(2, 2e-3,   0.03)                       # Set (non-zero) mimimal sigma value
     
     fitresult               = hist.Fit("fitfunc", optionstring)
     paramdict               = collections.OrderedDict()
@@ -148,10 +149,11 @@ def poly_plus_doublegauss_fit(hist, fitrange, initialguesses, optionstring="RMSE
     for i,val in enumerate(initialguesses):
         fitfunc.SetParameter(i,val)
         fitfunc.SetParError(i,0)                                # Set initial error to zero (before fit)
+    fitfunc.SetParLimits(0, 0.45,   0.53)                       # Set range for where gaussian mean can be
     fitfunc.SetParLimits(1, 0.,     initialguesses[1]*100)      # Set minimal Amplitude to zero
-    fitfunc.SetParLimits(2, 2e-3,   initialguesses[2]*100)      # Set (non-zero) mimimal sigma value
+    fitfunc.SetParLimits(2, 2e-3,   0.03)                       # Set (non-zero) mimimal sigma value
     fitfunc.SetParLimits(3, 0.,     initialguesses[3]*100)      # Set minimal Amplitude to zero
-    fitfunc.SetParLimits(4, 2e-3,   initialguesses[4]*100)      # Set (non-zero) mimimal sigma value
+    fitfunc.SetParLimits(4, 2e-3,   0.03)                       # Set (non-zero) mimimal sigma value
     
     fitresult                   = hist.Fit("fitfunc", optionstring)
     paramdict                   = collections.OrderedDict()

@@ -91,7 +91,12 @@ if __name__=='__main__':
                 'DoubleMuon_Run2022C-22Sep2023-v1',
                 'Muon_Run2022C-22Sep2023-v1',
                 'Muon_Run2022D-22Sep2023-v1'
-                ]
+            ],
+            'Run2022postEE': [
+                '_Run2022E-22Sep2023-v1',
+                '_Run2022F-22Sep2023-v2',
+                '_Run2022G-22Sep2023-v1'
+            ]
             #Other years...
         })
 
