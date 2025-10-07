@@ -121,6 +121,7 @@ def getminmax(datahist, mchist, yaxlog, margin=True):
       histmin = histmin/2.
       histmax = histmax*np.power(histmax/histmin,0.6)
     return (histmin, histmax)
+    #return (0, histmax)
 
 def plotmcvsdata(mchistlist, datahistlist, outfile,
                 xaxtitle='', yaxtitle='', title='',
@@ -235,6 +236,7 @@ def plotmcvsdata(mchistlist, datahistlist, outfile,
     if logy: pad1.SetLogy()
     mcstack.SetMaximum(ymax)
     mcstack.SetMinimum(ymin)
+    #mcstack.SetMinimum(1)
     yax = mcstack.GetYaxis()
     yax.SetMaxDigits(3)
     yax.SetNdivisions(8,4,0,ROOT.kTRUE)

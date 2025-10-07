@@ -47,8 +47,8 @@ if __name__=='__main__':
                             #'2016PreVFP',
                             #'2016PostVFP',
                             #'2016',
-                            '2017',
-                            #'2018',
+                            #'2017',
+                            '2018',
                             #'run2'
                         ])
         elif args.version=='run3':
