@@ -261,6 +261,7 @@ if __name__=='__main__':
                             if '2016' in era['label']:            cmd += ' --do2016pixel'
                             if '2017' in era['label']:            cmd += ' --do20172018pixel'
                             if '2018' in era['label']:            cmd += ' --do20172018pixel'
+                            if '2022' in era['label']:            cmd += ' --do20172018pixel'
                         extrainfos2 = extrainfos
                         if exe=='mcvsdataplotter2d.py':
                             cmd += ' --outrootfile {}'.format(outroot)  

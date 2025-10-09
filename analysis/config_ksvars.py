@@ -54,7 +54,8 @@ config = ({
                'treename': 'laurelin',
                'extrainfos': ['K^{0}_{S} candidates'],
                'bkgmodes': {
-                 'bkgsideband': {'type':'sideband', 'info': 'Background subtracted',
+                    'bkgdefault': {'type':None, 'info':'Background not subtracted'},
+                    'bkgsideband': {'type':'sideband', 'info': 'Background subtracted',
                                  'sidevariable': '_mass',
                               'sidebins': np.linspace(0.44, 0.56, num=31, endpoint=True)},
                },
