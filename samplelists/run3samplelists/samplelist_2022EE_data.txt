@@ -1,4 +1,4 @@
-# 2022 data
+# 2022(EE) data
 /pnfs/iihe/cms/store/user/jbierken/K0sAnalysis/NTuples/MINIAOD/data/v0/Muon//Run2022E-22Sep2023-v1/
 /pnfs/iihe/cms/store/user/jbierken/K0sAnalysis/NTuples/MINIAOD/data/v0/Muon//Run2022F-22Sep2023-v2/
 /pnfs/iihe/cms/store/user/jbierken/K0sAnalysis/NTuples/MINIAOD/data/v0/Muon//Run2022G-22Sep2023-v1/

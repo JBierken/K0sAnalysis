@@ -56,9 +56,9 @@ if __name__=='__main__':
                             '2022preEE',
                             '2022postEE',
                             '2022',
-                            #'2023preBPix',
-                            #'2023postBPix',
-                            #'2023',
+                            '2023preBPix',
+                            '2023postBPix',
+                            '2023',
                             #'2024',
                             #'run3'
                         ])

@@ -34,30 +34,56 @@ def getfiles( filedir, includelist, version, check_exist=False, **kwargs ):
 def getfiles_run3( filedir, includelist ):
     
     # initializations
-    eralist                     = []
-    mcdirdict                   = {}
+    eralist                         = []
+    mcdirdict                       = {}
 
     # TODO: To be updated!!
     # get MC samples for 2022
-    mcdirdict['2022preEE']      = 'DYJetsToLL_M-50_TuneCP5_13p6TeV-madgraphMLM-pythia8_Run3Summer22MiniAODv3-forPOG_124X_mcRun3_2022_realistic_v12-v4'
-    mcdirdict['2022postEE']     = 'DYJetsToLL_M-50_TuneCP5_13p6TeV-madgraphMLM-pythia8_Run3Summer22EEMiniAODv3-forPOG_124X_mcRun3_2022_realistic_postEE_v1-v3'
-    mcdirdict['2022']           = ''
+    mcdirdict['2022preEE']          = 'DYJetsToLL_M-50_TuneCP5_13p6TeV-madgraphMLM-pythia8_Run3Summer22MiniAODv3-forPOG_124X_mcRun3_2022_realistic_v12-v4'
+    mcdirdict['2022postEE']         = 'DYJetsToLL_M-50_TuneCP5_13p6TeV-madgraphMLM-pythia8_Run3Summer22EEMiniAODv3-forPOG_124X_mcRun3_2022_realistic_postEE_v1-v3'
+    mcdirdict['2022']               = ''
     
-    datadirdict                 = {}
+    # get MC samples for 2023
+    mcdirdict['2023preBPix']        = 'DYJetsToLL_M-50_TuneCP5_13p6TeV-madgraphMLM-pythia8_Run3Summer23MiniAODv4-Pilot_130X_mcRun3_2023_realistic_v14-v3'
+    mcdirdict['2023postBPix']       = 'DYJetsToLL_M-50_TuneCP5_13p6TeV-madgraphMLM-pythia8_Run3Summer23BPixMiniAODv4-Pilot_130X_mcRun3_2023_realistic_postBPix_v2-v3'
+    mcdirdict['2023']               = ''
+    
+    datadirdict                     = {}
     
     # get data samples (devided in sub eras) for 2022
-    datadirdict['2022preEE']    = 'Run2022preEE'
-    datadirdict['2022preEEB']   = 'DoubleMuon_Run2022B-22Sep2023-v1'
-    datadirdict['2022preEEC1']  = 'DoubleMuon_Run2022C-22Sep2023-v1' 
-    datadirdict['2022preEEC2']  = 'Muon_Run2022C-22Sep2023-v1'
-    datadirdict['2022preEED']   = 'Muon_Run2022D-22Sep2023-v1'
+    datadirdict['2022preEE']        = 'Run2022preEE'
+    datadirdict['2022preEEB']       = 'DoubleMuon_Run2022B-22Sep2023-v1'
+    datadirdict['2022preEEC1']      = 'DoubleMuon_Run2022C-22Sep2023-v1' 
+    datadirdict['2022preEEC2']      = 'Muon_Run2022C-22Sep2023-v1'
+    datadirdict['2022preEED']       = 'Muon_Run2022D-22Sep2023-v1'
     
-    datadirdict['2022postEE']   = 'Run2022postEE'
-    datadirdict['2022postEEF']  = '_Run2022F_22Sep2023-v2'
-    datadirdict['2022postEEG']  = '_Run2022G-22Sep2023-v1'
-    datadirdict['2022postEEE']  = '_Run2022E-22Sep2023-v1'
+    datadirdict['2022postEE']       = 'Run2022postEE'
+    datadirdict['2022postEEF']      = '_Run2022F_22Sep2023-v2'
+    datadirdict['2022postEEG']      = '_Run2022G-22Sep2023-v1'
+    datadirdict['2022postEEE']      = '_Run2022E-22Sep2023-v1'
     
-    datadirdict['2022']         = 'Run2022'
+    datadirdict['2022']             = 'Run2022'
+    
+    # get data samples (devided in sub eras) for 2023
+    datadirdict['2023preBPix']      = 'Run2023preBPix'
+    datadirdict['2023preBPixB_M0']  = 'Muon0_Run2023B-22Sep2023-v1'
+    datadirdict['2023preBPixB_M1']  = 'Muon1_Run2023B-22Sep2023-v1'
+    datadirdict['2023preBPixC1_M0'] = 'Muon0_Run2023B-22Sep2023_v1-v1'
+    datadirdict['2023preBPixC1_M1'] = 'Muon1_Run2023B-22Sep2023_v1-v1'
+    datadirdict['2023preBPixC2_M0'] = 'Muon0_Run2023B-22Sep2023_v2-v1'
+    datadirdict['2023preBPixC1_M1'] = 'Muon1_Run2023B-22Sep2023_v2-v1'
+    datadirdict['2023preBPixC1_M0'] = 'Muon0_Run2023B-22Sep2023_v3-v1'
+    datadirdict['2023preBPixC1_M1'] = 'Muon1_Run2023B-22Sep2023_v3-v1'
+    datadirdict['2023preBPixC1_M0'] = 'Muon0_Run2023B-22Sep2023_v4-v1'
+    datadirdict['2023preBPixC1_M1'] = 'Muon1_Run2023B-22Sep2023_v4-v1'
+    
+    datadirdict['2023postBPix']     = 'Run2023postBPix'
+    datadirdict['2023postBPixD_M1'] = 'Muon1_Run2023D-22Sep2023_v1-v1'
+    datadirdict['2023postBPixD2_M0']= 'Muon0_Run2023D-22Sep2023_v2-v1'
+    datadirdict['2023postBPixD2_M1']= 'Muon1_Run2023D-22Sep2023_v2-v1'
+    
+    datadirdict['2023']             = 'Run2023'
+
 
     filename                    = 'selected.root'
 
@@ -67,6 +93,7 @@ def getfiles_run3( filedir, includelist ):
         # skip special cases (consider them later)
         if era=='run3':         continue
         if era=='2022':         continue
+        if era=='2023':         continue
         
         # derive year from era name
         #year                    = era
@@ -106,7 +133,7 @@ def getfiles_run3( filedir, includelist ):
                         'label':    label
         })
 
-    # special case
+    # special case-1
     if '2022' in includelist:
         mcin, datain            = [], []
         
@@ -136,6 +163,38 @@ def getfiles_run3( filedir, includelist ):
                         'mcin':         mcin, 
                         'datain':       datain, 
                         'label':        label
+        })
+
+    # special case-2
+    if '2023' in includelist:
+        mcin, datain            = [], []
+        
+        for year in ['2023preBPix', '2023postBPix']:
+            eralabel = year
+            
+            mcin.append({   
+                        'file':         os.path.join(filedir, mcdirdict[year], filename),
+                        'label':        eralabel+' sim.', 'xsection':5558.0,
+                        'luminosity':   lt.getlumi('run3', year)*1000,
+                        'era':          year, 
+                        'year':         year, 
+                        'campaign':     'run3'
+            })
+            datain.append({ 
+                        'file':         os.path.join(filedir, datadirdict[year], filename),
+                        'label':        '{} data'.format(year),
+                        'luminosity':   lt.getlumi('run3', year)*1000,
+                        'era':          year, 
+                        'year':         year, 
+                        'campaign':     'run3'
+            })
+
+        label                   = '2023'
+        eralist.append({    
+                        'mcin':         mcin, 
+                        'datain':       datain, 
+                        'label':        label
+   
         })
 
     # return the eralist

@@ -96,6 +96,23 @@ if __name__=='__main__':
                 '_Run2022E-22Sep2023-v1',
                 '_Run2022F-22Sep2023-v2',
                 '_Run2022G-22Sep2023-v1'
+            ],
+            'Run2023preBPix': [
+                'Muon0_Run2023B-22Sep2023-v1',
+                'Muon0_Run2023C-22Sep2023_v1-v1',
+                'Muon0_Run2023C-22Sep2023_v2-v1',
+                'Muon0_Run2023C-22Sep2023_v3-v1',
+                'Muon0_Run2023C-22Sep2023_v4-v1',
+                'Muon1_Run2023B-22Sep2023-v1',
+                'Muon1_Run2023C-22Sep2023_v1-v1',
+                'Muon1_Run2023C-22Sep2023_v2-v1',
+                'Muon1_Run2023C-22Sep2023_v3-v1',
+                'Muon1_Run2023C-22Sep2023_v4-v2'
+            ],
+            'Run2023postBPix': [
+                'Muon0_Run2023D-22Sep2023_v2-v1',
+                'Muon1_Run2023D-22Sep2023_v1-v1',
+                'Muon1_Run2023D-22Sep2023_v2-v1'
             ]
             #Other years...
         })

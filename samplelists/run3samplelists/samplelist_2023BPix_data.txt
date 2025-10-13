@@ -1,0 +1,4 @@
+# 2023(BPix) data
+/pnfs/iihe/cms/store/user/jbierken/K0sAnalysis/NTuples/MINIAOD/data/v0/Muon0/Run2023D-22Sep2023_v2-v1
+/pnfs/iihe/cms/store/user/jbierken/K0sAnalysis/NTuples/MINIAOD/data/v0/Muon1/Run2023D-22Sep2023_v1-v1
+/pnfs/iihe/cms/store/user/jbierken/K0sAnalysis/NTuples/MINIAOD/data/v0/Muon1/Run2023D-22Sep2023_v2-v1

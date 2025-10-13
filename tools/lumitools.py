@@ -93,6 +93,7 @@ def getlumi( campaign, era ):
         
         # as recomended by twiki:
         # https://twiki.cern.ch/twiki/bin/viewauth/CMS/PdmVRun3Analysis
+        # Run2022
         if era=='2022preEE':        return 8.08
         elif era=='2022preEEB':     return 0.097
         elif era=='2022preEEC':     return 5.01
@@ -102,6 +103,13 @@ def getlumi( campaign, era ):
         elif era=='2022postEEF':    return 17.78
         elif era=='2022postEEG':    return 3.08
         elif era=='2022':           return 34.75 
+        # Run2023
+        elif era=='2023preBPix':    return 18.704
+        elif era=='2023preBPixB':   return 0.641
+        elif era=='2023preBPixC':   return 18.063
+        elif era=='2023postBPix':   return 9.693
+        elif era=='2023postBPixD':  return 9.693
+        elif era=='2023':           return 28.397
 
     msg = 'ERROR: cannot find luminosity for era {} / {}'.format(campaign, era)
     raise Exception(msg)

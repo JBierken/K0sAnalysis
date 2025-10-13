@@ -1,0 +1,2 @@
+# 2024 simulation
+/pnfs/iihe/cms/store/user/jbierken/K0sAnalysis/NTuples/MINIAOD/sim/v0/DYJetsToLL_M-50_TuneCP5_13p6TeV-madgraphMLM-pythia8/Run3Winter24MiniAOD-NoPU_Pilot_133X_mcRun3_2024_realistic_v6-v2
