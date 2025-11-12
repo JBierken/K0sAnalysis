@@ -39,14 +39,21 @@ def getfiles_run3( filedir, includelist ):
 
     # TODO: To be updated!!
     # get MC samples for 2022
-    mcdirdict['2022preEE']          = 'DYJetsToLL_M-50_TuneCP5_13p6TeV-madgraphMLM-pythia8_Run3Summer22MiniAODv3-forPOG_124X_mcRun3_2022_realistic_v12-v4'
-    mcdirdict['2022postEE']         = 'DYJetsToLL_M-50_TuneCP5_13p6TeV-madgraphMLM-pythia8_Run3Summer22EEMiniAODv3-forPOG_124X_mcRun3_2022_realistic_postEE_v1-v3'
+    mcdirdict['2022preEE']          = 'DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v4'
+    mcdirdict['2022postEE']         = 'DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_Run3Summer22EEMiniAODv3-124X_mcRun3_2022_realistic_postEE_v1-v4'
+    
     mcdirdict['2022']               = ''
+    mcdirdict['2022combined']       = 'DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v4'
     
     # get MC samples for 2023
-    mcdirdict['2023preBPix']        = 'DYJetsToLL_M-50_TuneCP5_13p6TeV-madgraphMLM-pythia8_Run3Summer23MiniAODv4-Pilot_130X_mcRun3_2023_realistic_v14-v3'
-    mcdirdict['2023postBPix']       = 'DYJetsToLL_M-50_TuneCP5_13p6TeV-madgraphMLM-pythia8_Run3Summer23BPixMiniAODv4-Pilot_130X_mcRun3_2023_realistic_postBPix_v2-v3'
+    mcdirdict['2023preBPix']        = 'DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_Run3Summer23MiniAODv4-130X_mcRun3_2023_realistic_v14-v2'
+    mcdirdict['2023postBPix']       = 'DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_Run3Summer23BPixMiniAODv4-130X_mcRun3_2023_realistic_postBPix_v2-v4'
+    
     mcdirdict['2023']               = ''
+    mcdirdict['2023combined']       = 'DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_Run3Summer23MiniAODv4-130X_mcRun3_2023_realistic_v14-v2'
+    
+    # get MC samples for 2024
+    mcdirdict['2024']               = 'DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_Run3Winter24MiniAOD-133X_mcRun3_2024_realistic_v10-v2'
     
     datadirdict                     = {}
     
@@ -63,6 +70,7 @@ def getfiles_run3( filedir, includelist ):
     datadirdict['2022postEEE']      = '_Run2022E-22Sep2023-v1'
     
     datadirdict['2022']             = 'Run2022'
+    datadirdict['2022combined']     = 'Run2022combined'
     
     # get data samples (devided in sub eras) for 2023
     datadirdict['2023preBPix']      = 'Run2023preBPix'
@@ -83,7 +91,26 @@ def getfiles_run3( filedir, includelist ):
     datadirdict['2023postBPixD2_M1']= 'Muon1_Run2023D-22Sep2023_v2-v1'
     
     datadirdict['2023']             = 'Run2023'
+    datadirdict['2023combined']     = 'Run2023combined'
 
+    # get data samples (devided in sub eras) for 2023
+    datadirdict['2024']             = 'Run2024'
+    datadirdict['2024B_M0']         = 'Muon0_Run2024B-PromptReco-v1'
+    datadirdict['2024B_M1']         = 'Muon1_Run2024B-PromptReco-v1'
+    datadirdict['2024C_M0']         = 'Muon0_Run2024C-PromptReco-v1'
+    datadirdict['2024C_M1']         = 'Muon1_Run2024C-PromptReco-v1'
+    datadirdict['2024D_M0']         = 'Muon0_Run2024D-PromptReco-v1'
+    datadirdict['2024D_M1']         = 'Muon1_Run2024D-PromptReco-v1'
+    datadirdict['2024E_M0']         = 'Muon0_Run2024E-PromptReco-v2'
+    datadirdict['2024E_M1']         = 'Muon1_Run2024E-PromptReco-v2'
+    datadirdict['2024F_M0']         = 'Muon0_Run2024F-PromptReco-v1'
+    datadirdict['2024F_M1']         = 'Muon1_Run2024F-PromptReco-v1'
+    datadirdict['2024G_M0']         = 'Muon0_Run2024G-PromptReco-v1'
+    datadirdict['2024G_M1']         = 'Muon1_Run2024G-PromptReco-v1'
+    datadirdict['2024H_M0']         = 'Muon0_Run2024H-PromptReco-v1'
+    datadirdict['2024H_M1']         = 'Muon1_Run2024H-PromptReco-v1'
+    datadirdict['2024I_M0']         = 'Muon0_Run2024I-PromptReco-v2'
+    datadirdict['2024I_M1']         = 'Muon1_Run2024I-PromptReco-v2'
 
     filename                    = 'selected.root'
 
@@ -93,7 +120,9 @@ def getfiles_run3( filedir, includelist ):
         # skip special cases (consider them later)
         if era=='run3':         continue
         if era=='2022':         continue
+        if era=='2022combined': continue
         if era=='2023':         continue
+        if era=='2023combined': continue
         
         # derive year from era name
         #year                    = era
@@ -107,10 +136,10 @@ def getfiles_run3( filedir, includelist ):
         # make an entry for this era
         eralabel                = era
         
-        # Cross-section gathered from: https://xsecdb-xsdb-official.app.cern.ch/xsdb/?columns=67108863&currentPage=0&pageSize=10&searchQuery=DAS%3DDYJetsToLL_M-50_TuneCP5_13p6TeV-madgraphMLM-pythia8
+        # Cross-section gathered from: https://xsecdb-xsdb-official.app.cern.ch/xsdb/?columns=67108863&currentPage=0&pageSize=10&searchQuery=DAS%3DDYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8 
         mcin                    = ([{  
                                     'file':         os.path.join(filedir, mcdir, filename),
-                                    'label':        eralabel+' sim.', 'xsection':5558.0,
+                                    'label':        eralabel+' sim.', 'xsection':6688.0,
                                     'luminosity':   lt.getlumi('run3', era)*1000,
                                     'era':          era, 
                                     'year':         year, 
@@ -142,8 +171,7 @@ def getfiles_run3( filedir, includelist ):
             
             mcin.append({   
                         'file':         os.path.join(filedir, mcdirdict[year], filename),
-                        #'label':        eralabel+' sim.', 'xsection':6077.22*1.015,
-                        'label':        eralabel+' sim.', 'xsection':5558.0,
+                        'label':        eralabel+' sim.', 'xsection':6688.0,
                         'luminosity':   lt.getlumi('run3', year)*1000,
                         'era':          year, 
                         'year':         year, 
@@ -166,6 +194,36 @@ def getfiles_run3( filedir, includelist ):
         })
 
     # special case-2
+    if '2022combined' in includelist:
+        mcin, datain            = [], []
+        
+        eralabel = year
+            
+        mcin.append({   
+            'file':         os.path.join(filedir, mcdirdict[year], filename),
+            'label':        eralabel+' sim.', 'xsection':6688.0,
+            'luminosity':   lt.getlumi('run3', year)*1000,
+            'era':          year, 
+            'year':         year, 
+            'campaign':     'run3'
+        })
+        datain.append({ 
+            'file':         os.path.join(filedir, datadirdict[year], filename),
+            'label':        '{} data'.format(year),
+            'luminosity':   lt.getlumi('run3', year)*1000,
+            'era':          year, 
+            'year':         year, 
+            'campaign':     'run3'
+        })
+
+        label                   = '2022'
+        eralist.append({    
+                        'mcin':         mcin, 
+                        'datain':       datain, 
+                        'label':        label
+        })
+    
+    # special case-3
     if '2023' in includelist:
         mcin, datain            = [], []
         
@@ -174,7 +232,7 @@ def getfiles_run3( filedir, includelist ):
             
             mcin.append({   
                         'file':         os.path.join(filedir, mcdirdict[year], filename),
-                        'label':        eralabel+' sim.', 'xsection':5558.0,
+                        'label':        eralabel+' sim.', 'xsection':6688.0,
                         'luminosity':   lt.getlumi('run3', year)*1000,
                         'era':          year, 
                         'year':         year, 
@@ -196,6 +254,67 @@ def getfiles_run3( filedir, includelist ):
                         'label':        label
    
         })
+
+    # special case-4
+    if '2023combined' in includelist:
+        mcin, datain            = [], []
+        
+        eralabel = year
+            
+        mcin.append({   
+            'file':         os.path.join(filedir, mcdirdict[year], filename),
+            'label':        eralabel+' sim.', 'xsection':6688.0,
+            'luminosity':   lt.getlumi('run3', year)*1000,
+            'era':          year, 
+            'year':         year, 
+            'campaign':     'run3'
+        })
+        datain.append({ 
+            'file':         os.path.join(filedir, datadirdict[year], filename),
+            'label':        '{} data'.format(year),
+            'luminosity':   lt.getlumi('run3', year)*1000,
+            'era':          year, 
+            'year':         year, 
+            'campaign':     'run3'
+        })
+
+        label                   = '2023'
+        eralist.append({    
+                        'mcin':         mcin, 
+                        'datain':       datain, 
+                        'label':        label
+        })
+
+    # special case-5
+    if 'Run3' in includelist:
+        mcin, datain            = [], []
+        
+        for year in ['2022preEE', '2022postEE', '2023preBPix', '2023postBPix', '2024']:
+            eralabel = year
+            
+            mcin.append({   
+                        'file':         os.path.join(filedir, mcdirdict[year], filename),
+                        'label':        eralabel+' sim.', 'xsection':6688.0,
+                        'luminosity':   lt.getlumi('run3', year)*1000,
+                        'era':          year, 
+                        'year':         year, 
+                        'campaign':     'run3'
+            })
+            datain.append({ 
+                        'file':         os.path.join(filedir, datadirdict[year], filename),
+                        'label':        '{} data'.format(year),
+                        'luminosity':   lt.getlumi('run3', year)*1000,
+                        'era':          year, 
+                        'year':         year, 
+                        'campaign':     'run3'
+            })
+
+            label                   = "run3 (up to '24)"
+            eralist.append({    
+                        'mcin':         mcin, 
+                        'datain':       datain, 
+                        'label':        label
+            })
 
     # return the eralist
     return eralist

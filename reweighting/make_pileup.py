@@ -77,6 +77,10 @@ def make_pileup_mc(era,  base_dir=baseDir):
         from SimGeneral\
                 .MixingModule\
                 .mix_2024_25ns_RunIII2024Summer24_PoissonOOTPU_cfi import mix
+    elif era == '2025':
+        from SimGeneral\
+                .MixingModule\
+                .mix_2025_25ns_Run3pp13p6TeVSpring25_PoissonOOTPU_cfi.py import mix
     else:
         print('Unrecognized era', args.era)
         sys.exit(0)
@@ -115,6 +119,7 @@ def get_pileup(era, base_dir=baseDir): # code below taken from spark tnp
             '2023preBPix':  base_dir + '/pileup/data/run3/pileupHistogram-Cert_Collisions2023_366403_369802_eraBC_GoldenJson-13p6TeV-66000ub-99bins.root',
             '2023postBPix': base_dir + '/pileup/data/run3/pileupHistogram-Cert_Collisions2023_369803_370790_eraD_GoldenJson-13p6TeV-66000ub-99bins.root',
             '2023':         base_dir + '/pileup/data/run3/pileupHistogram-Cert_Collisions2023_366442_370790_GoldenJson-13p6TeV-66000ub-99bins.root',
+            '2024':         base_dir + '/pileup/data/run3/',
             }
     mcPileup = {
             # Run-2

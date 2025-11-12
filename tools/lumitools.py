@@ -110,6 +110,16 @@ def getlumi( campaign, era ):
         elif era=='2023postBPix':   return 9.693
         elif era=='2023postBPixD':  return 9.693
         elif era=='2023':           return 28.397
+        # Run2024
+        elif era=='2024':           return 109.08  
+        elif era=='2024B':          return 0.13 
+        elif era=='2024C':          return 7.24 
+        elif era=='2024D':          return 7.96 
+        elif era=='2024E':          return 11.32 
+        elif era=='2024F':          return 27.76
+        elif era=='2024G':          return 37.77 
+        elif era=='2024H':          return 5.44 
+        elif era=='2024I':          return 11.47 
 
     msg = 'ERROR: cannot find luminosity for era {} / {}'.format(campaign, era)
     raise Exception(msg)

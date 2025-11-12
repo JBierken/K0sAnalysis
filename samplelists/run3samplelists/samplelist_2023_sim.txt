@@ -1,2 +1,2 @@
 # 2023 simulation
-/pnfs/iihe/cms/store/user/jbierken/K0sAnalysis/NTuples/MINIAOD/sim/v0/DYJetsToLL_M-50_TuneCP5_13p6TeV-madgraphMLM-pythia8/Run3Summer23MiniAODv4-Pilot_130X_mcRun3_2023_realistic_v14-v3
+/pnfs/iihe/cms/store/user/jbierken/K0sAnalysis/NTuples/MINIAOD/sim/v0/DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8/Run3Summer23MiniAODv4-130X_mcRun3_2023_realistic_v14-v2/
