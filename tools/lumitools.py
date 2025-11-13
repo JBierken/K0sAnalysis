@@ -103,6 +103,7 @@ def getlumi( campaign, era ):
         elif era=='2022postEEF':    return 17.78
         elif era=='2022postEEG':    return 3.08
         elif era=='2022':           return 34.75 
+        elif era=='2022combined':   return 34.75 
         # Run2023
         elif era=='2023preBPix':    return 18.704
         elif era=='2023preBPixB':   return 0.641
@@ -110,6 +111,7 @@ def getlumi( campaign, era ):
         elif era=='2023postBPix':   return 9.693
         elif era=='2023postBPixD':  return 9.693
         elif era=='2023':           return 28.397
+        elif era=='2023combined':   return 28.397
         # Run2024
         elif era=='2024':           return 109.08  
         elif era=='2024B':          return 0.13 

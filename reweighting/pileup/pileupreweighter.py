@@ -45,10 +45,11 @@ def get_pileup_profile(campaign, year):
         
         #if year.startswith('2022'):     year = '2022'
         #if year.startswith('2023'):     year = '2023'
-        if year not in ['2022', '2022preEE', '2022postEE', '2023', '2023preBPix', '2023postBPix', '2024']:
+        if year not in ['2022', '2022preEE', '2022postEE', '2022combined', '2023', '2023combined', '2023preBPix', '2023postBPix', '2024']:
             msg                 = 'ERROR: year {} not recogized.'.format(year)
             raise Exception(msg)
 
+        year                    = year.rstrip('prepostcombinedABCDEFGHI')
         pufile                  = os.path.join(path, '{}'.format(year), 'Pileup_ratio.root')
         histname                = 'pileup'
 

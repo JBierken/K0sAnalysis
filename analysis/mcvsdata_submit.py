@@ -53,20 +53,20 @@ if __name__=='__main__':
                         ])
         elif args.version=='run3':
             includelist     = ([
-                            # Run2022 
-                            '2022preEE',
-                            '2022postEE',
-                            '2022',
+                            ## Run2022 
+                            #'2022preEE',
+                            #'2022postEE',
+                            #'2022',
                             '2022combined',
-                            # Run2023
-                            '2023preBPix',
-                            '2023postBPix',
+                            ## Run2023
+                            #'2023preBPix',
+                            #'2023postBPix',
                             '2023combined',
-                            '2023',
-                            # Run2024 
+                            #'2023',
+                            ## Run2024 
                             #'2024',
-                            # Run-3 
-                            #'run3'
+                            ## Run-3 
+                            'run3'
                         ])
     elif 'perera' in includelist:
         if args.version=='run2preul':

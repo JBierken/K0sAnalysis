@@ -120,13 +120,13 @@ def getfiles_run3( filedir, includelist ):
         # skip special cases (consider them later)
         if era=='run3':         continue
         if era=='2022':         continue
-        if era=='2022combined': continue
+        #if era=='2022combined': continue
         if era=='2023':         continue
-        if era=='2023combined': continue
+        #if era=='2023combined': continue
         
         # derive year from era name
-        #year                    = era
-        year                    = era.rstrip('prepostABCDEFGH')
+        year                    = era
+        #year                    = era.rstrip('prepostcombinedABCDEFGHI')
 
         # set MC file and data file
         #mcdir                   = mcdirdict[year]
@@ -193,17 +193,19 @@ def getfiles_run3( filedir, includelist ):
                         'label':        label
         })
 
+    """
     # special case-2
     if '2022combined' in includelist:
         mcin, datain            = [], []
         
-        eralabel = year
+        #eralabel = year
+        year                = era.rstrip('combined')
             
         mcin.append({   
             'file':         os.path.join(filedir, mcdirdict[year], filename),
             'label':        eralabel+' sim.', 'xsection':6688.0,
             'luminosity':   lt.getlumi('run3', year)*1000,
-            'era':          year, 
+            'era':          era, 
             'year':         year, 
             'campaign':     'run3'
         })
@@ -216,13 +218,14 @@ def getfiles_run3( filedir, includelist ):
             'campaign':     'run3'
         })
 
-        label                   = '2022'
+        label                   = '2022combined'
         eralist.append({    
                         'mcin':         mcin, 
                         'datain':       datain, 
                         'label':        label
         })
-    
+    """
+
     # special case-3
     if '2023' in includelist:
         mcin, datain            = [], []
@@ -255,6 +258,7 @@ def getfiles_run3( filedir, includelist ):
    
         })
 
+    """
     # special case-4
     if '2023combined' in includelist:
         mcin, datain            = [], []
@@ -278,15 +282,16 @@ def getfiles_run3( filedir, includelist ):
             'campaign':     'run3'
         })
 
-        label                   = '2023'
+        label                   = '2023combined'
         eralist.append({    
                         'mcin':         mcin, 
                         'datain':       datain, 
                         'label':        label
         })
-
+    """
+    
     # special case-5
-    if 'Run3' in includelist:
+    if 'run3' in includelist:
         mcin, datain            = [], []
         
         for year in ['2022preEE', '2022postEE', '2023preBPix', '2023postBPix', '2024']:
@@ -309,7 +314,7 @@ def getfiles_run3( filedir, includelist ):
                         'campaign':     'run3'
             })
 
-            label                   = "run3 (up to '24)"
+            label                   = 'run3'
             eralist.append({    
                         'mcin':         mcin, 
                         'datain':       datain, 

@@ -119,7 +119,7 @@ def get_pileup(era, base_dir=baseDir): # code below taken from spark tnp
             '2023preBPix':  base_dir + '/pileup/data/run3/pileupHistogram-Cert_Collisions2023_366403_369802_eraBC_GoldenJson-13p6TeV-66000ub-99bins.root',
             '2023postBPix': base_dir + '/pileup/data/run3/pileupHistogram-Cert_Collisions2023_369803_370790_eraD_GoldenJson-13p6TeV-66000ub-99bins.root',
             '2023':         base_dir + '/pileup/data/run3/pileupHistogram-Cert_Collisions2023_366442_370790_GoldenJson-13p6TeV-66000ub-99bins.root',
-            '2024':         base_dir + '/pileup/data/run3/',
+            '2024':         base_dir + '/pileup/data/run3/pileupHistogram-Cert_Collisions2024_378981_386951_GoldenJson-13p6TeV-66000ub-99bins.root',
             }
     mcPileup = {
             # Run-2
