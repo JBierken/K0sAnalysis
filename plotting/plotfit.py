@@ -134,7 +134,7 @@ def plot_fit(hist, figname, style='hist', fitfunc=None, backfit=None,
                 tinfo.DrawLatexNDC(0.65,0.65-(len(paramdict)+1)*0.035,info)
             
             # draw fitted gauss components
-            if len(paramdict) == 8:
+            if len(paramdict) >= 7:
                 #gaus1  = ROOT.TF1("gaus1","gaus(0)", fitrange[0], fitrange[1])
                 gaus1  = ROOT.TF1("gaus1","gaus(0)")
                 gaus1.SetParameters(paramdict[r'A_{1}'], paramdict[r'#mu'], paramdict[r'#sigma_{1}'])

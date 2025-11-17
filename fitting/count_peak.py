@@ -81,9 +81,12 @@ def count_peak(hist, label, extrainfo, gargs, mode='subtract'):
         histclone.SetBinError(i,0)
 
     # make background-only fit
-    #guess = [0.,0.]
-    guess = [0.,0.,0.]
+    # If more than 100 events     --> use linear background 
+    # Else                        --> use quadratic background
+    if(hist.GetEffectiveEntries() <= 100):  guess = [0., 0.]
+    else:                                   guess = [0.,0.,0.]
     backfit, paramdict, backfitobj = ft.poly_fit(hist, fitrange, guess, "MSE0")
+    
     if gargs['helpdir'] is not None:
         lumitext    = '' if gargs['lumi'] is None else '{0:.3g} '.format(float(gargs['lumi'])/1000.) + 'fb^{-1} (13.6 TeV)'
         outfile     = os.path.join(gargs['helpdir'], hist.GetName().replace(' ','_')+'_bck.png')
@@ -100,39 +103,42 @@ def count_peak(hist, label, extrainfo, gargs, mode='subtract'):
 
     # make signal peak fit if requested
     if(mode=='gfit' or mode=='hybrid'):
-        # If more than 50 events --> use Double Gauss
-        # Else                   --> use Single Gauss
-        singleGauss          = 10000
+        # If more than 10000 events     --> use Double Gauss
+        # Else                          --> use Single Gauss
+        singleGauss          =  5000
         if(hist.GetEffectiveEntries() <= singleGauss):
             guess = [
-                    fitcenter,                              # peak position
-                    hist.GetMaximum()/2,                    # peak 1 height
-                    hist.GetRMS()                           # peak 1 width
+                    fitcenter,                                                                                      # peak position
+                    hist.GetMaximum()/2,                                                                            # peak 1 height
+                    hist.GetRMS()                                                                                   # peak 1 width
             ]
-            guess += [paramdict['a0'],paramdict['a1'], paramdict['a2']]     # background estimate
-            #guess += [paramdict['a0'],paramdict['a1']]     # background estimate
-            #guess += [0., 0.]                              # background estimate
+            if(hist.GetEffectiveEntries() <= 100):  guess += [paramdict['a0'],paramdict['a1']]                      # background estimate
+            else:                                   guess += [paramdict['a0'],paramdict['a1'], paramdict['a2']]     # background estimate
+            #guess += [paramdict['a0'],paramdict['a1']]                     # background estimate
             
             globfit, paramdict, globfitobji, globres = ft.poly_plus_gauss_fit(hist, fitrange, guess)
 
         else:
             guess = [
-                    fitcenter,                              # peak position
-                    hist.GetMaximum()/2,                    # peak 1 height
-                    hist.GetRMS()/4,                        # peak 1 width
-                    hist.GetMaximum()/2,                    # peak 2 height
-                    hist.GetRMS()                           # peak 2 width
+                    fitcenter,                                              # peak position
+                    hist.GetMaximum()/2,                                    # peak 1 height
+                    hist.GetRMS()/4,                                        # peak 1 width
+                    hist.GetMaximum()/2,                                    # peak 2 height
+                    hist.GetRMS()                                           # peak 2 width
             ]
-            guess += [paramdict['a0'],paramdict['a1'], paramdict['a2']]     # background estimate
-            #guess += [paramdict['a0'],paramdict['a1']]     # background estimate
+            if(hist.GetEffectiveEntries() <= 100):  guess += [paramdict['a0'],paramdict['a1']]                      # background estimate
+            else:                                   guess += [paramdict['a0'],paramdict['a1'], paramdict['a2']]     # background estimate
            
             globfit, paramdict, globfitobj, globres = ft.poly_plus_doublegauss_fit(hist, fitrange, guess)
             print(paramdict) 
+        
         # separate background component of fit
-        #backfit2 = ROOT.TF1("fitfunc","pol1(0)", fitrange[0], fitrange[1])
-        #backfit2.SetParameters(paramdict['a0'], paramdict['a1'])
-        backfit2 = ROOT.TF1("fitfunc","pol2(0)", fitrange[0], fitrange[1])
-        backfit2.SetParameters(paramdict['a0'], paramdict['a1'], paramdict['a2'])
+        if(hist.GetEffectiveEntries() <= 100):  
+            backfit2 = ROOT.TF1("fitfunc","pol1(0)", fitrange[0], fitrange[1])
+            backfit2.SetParameters(paramdict['a0'], paramdict['a1'])
+        else:
+            backfit2 = ROOT.TF1("fitfunc","pol2(0)", fitrange[0], fitrange[1])
+            backfit2.SetParameters(paramdict['a0'], paramdict['a1'], paramdict['a2'])
         
         if gargs['helpdir'] is not None:
             outfile = os.path.join(gargs['helpdir'], hist.GetName().replace(' ','_')+'_sig.png')
@@ -155,16 +161,18 @@ def count_peak(hist, label, extrainfo, gargs, mode='subtract'):
         hist.GetMaximum()/2,                    # peak 1 height
         hist.GetRMS()                           # peak 1 width
     ]
-    guess += [paramdict['a0'],paramdict['a1'], paramdict['a2']]      # background estimate
-    #guess += [paramdict['a0'],paramdict['a1']]      # background estimate
+    if(hist.GetEffectiveEntries() <= 100):  guess += [paramdict['a0'],paramdict['a1']]                      # background estimate
+    else:                                   guess += [paramdict['a0'],paramdict['a1'], paramdict['a2']]     # background estimate
            
     globfit2, paramdict2, globfitobj2, globres2 = ft.poly_plus_gauss_fit(hist, fitrange, guess)
     
     # separate background component of fit
-    #backfit3 = ROOT.TF1("fitfunc","pol1(0)", fitrange[0], fitrange[1])
-    #backfit3.SetParameters(paramdict2['a0'], paramdict2['a1'])
-    backfit3 = ROOT.TF1("fitfunc","pol2(0)", fitrange[0], fitrange[1])
-    backfit3.SetParameters(paramdict2['a0'], paramdict2['a1'],paramdict2['a2'])
+    if(hist.GetEffectiveEntries() <= 100):  
+        backfit3 = ROOT.TF1("fitfunc","pol1(0)", fitrange[0], fitrange[1])
+        backfit3.SetParameters(paramdict['a0'], paramdict['a1'])
+    else:
+        backfit3 = ROOT.TF1("fitfunc","pol2(0)", fitrange[0], fitrange[1])
+        backfit3.SetParameters(paramdict['a0'], paramdict['a1'], paramdict['a2'])
     
     if gargs['helpdir2'] is not None:
             outfile2 = os.path.join(gargs['helpdir2'], hist.GetName().replace(' ','_')+'_sig.png')
@@ -184,7 +192,7 @@ def count_peak(hist, label, extrainfo, gargs, mode='subtract'):
     # METHOD 1: subtract background from peak and count remaining instances
     if(mode=='subtract' or mode=='hybrid'):
         # Calculate the event count (integral) and statistical error
-        if hist.GetEffectiveEntries()                           > 20:                               # Calculate integral
+        if hist.GetEffectiveEntries()                           > 50:                               # Calculate integral
             if hist.GetEffectiveEntries()                       <= singleGauss: 
                 sigfit                                          = ROOT.TF1("signal","gaus(0)")
                 sigfit.SetParameters(paramdict[r'A'], paramdict[r'#mu'], paramdict[r'#sigma'])
