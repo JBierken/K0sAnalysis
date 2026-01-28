@@ -18,7 +18,7 @@ from six.moves import input
 # import framework modules
 sys.path.append('../tools')
 import condortools as ct
-CMSSW = '/user/jbierken/CMSSW_14_0_15'
+CMSSW = '/user/jbierken/CMSSW_15_0_17'
 import listtools as lt
 import sampletools as st
 

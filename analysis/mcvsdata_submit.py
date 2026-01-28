@@ -11,7 +11,7 @@ import numpy as np
 sys.path.append('../')
 import tools.condortools as ct
 from mcvsdata_getfiles import getfiles
-CMSSW = '/user/jbierken/CMSSW_14_0_15'
+CMSSW = '/user/jbierken/CMSSW_15_0_17'
 
 
 if __name__=='__main__':
