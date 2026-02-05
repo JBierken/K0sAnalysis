@@ -90,6 +90,24 @@ if __name__=='__main__':
                             '2016PostVFPG',
                             '2016PostVFPH'
                         ])
+        elif args.version=='run3':
+            includelist     = ([
+                            ## Run2022preEE 
+                            '2022preEEB',
+                            '2022preEEC1',
+                            '2022preEEC2',
+                            '2022preEED',
+                            ## Run2022postEE 
+                            #'2022preEEE',
+                            #'2022preEEF',
+                            #'2022preEEG',
+                            ## Run2023preBPix
+                            #'2023preBPixB_M0',
+                            #'2023preBPixB_M1',
+                            ## Run2023postBPix
+                            ## Run2024 
+                            ## Run-3 
+                        ])
     elif 'detector' in includelist:
         if args.version=='run2preul':
             includelist       = ([
@@ -395,7 +413,7 @@ if __name__=='__main__':
                         # ------------------------------------------------------------------------------------------
                         # run or submit commands
                         # ------------------------------------------------------------------------------------------
-                        #print(cmds)
+                        print(cmds)
                         scriptname = 'cjob_mcvsdata_submit.sh'
                         if args.runmode=='local':
                             for cmd in cmds: os.system(cmd)

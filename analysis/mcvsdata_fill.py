@@ -208,7 +208,11 @@ if __name__=='__main__':
             # do reweighting
             if not isdata:
                 print('Doing pileup reweighting...')
-                pileupreweighter    = PileupReweighter(campaign, year)
+                
+                #in case of per-era processing
+                year_pu             = year.rstrip('BCD12') # Watch out, does noy work for anything but 2022preEE
+
+                pileupreweighter    = PileupReweighter(campaign, year_pu)
                 pileupreweighter.initsample(inputfile)
                 ntrueint            = tree['_nTrueInt'].array(library='np', entry_stop=nentries)
                 pileupreweight      = pileupreweighter.getreweight(ntrueint)
