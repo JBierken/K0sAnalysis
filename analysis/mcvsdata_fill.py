@@ -209,7 +209,9 @@ if __name__=='__main__':
             if not isdata:
                 print('Doing pileup reweighting...')
                 
-                #in case of per-era processing
+                #in case of per-era processing (need more elegant solution, but should work)
+                if year in ['2022postEEE', '2022postEEF', '2022postEEG']:
+                    year_pu         = '2022postEE'
                 year_pu             = year.rstrip('BCD12') # Watch out, does noy work for anything but 2022preEE
 
                 pileupreweighter    = PileupReweighter(campaign, year_pu)

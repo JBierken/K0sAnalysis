@@ -94,17 +94,19 @@ if __name__=='__main__':
             includelist     = ([
                             ## Run2022preEE 
                             '2022preEEB',
-                            '2022preEEC1',
-                            '2022preEEC2',
+                            '2022preEEC',
+                            #'2022preEEC1',
+                            #'2022preEEC2',
                             '2022preEED',
                             ## Run2022postEE 
-                            #'2022preEEE',
-                            #'2022preEEF',
-                            #'2022preEEG',
+                            '2022postEEE',
+                            '2022postEEF',
+                            '2022postEEG',
                             ## Run2023preBPix
-                            #'2023preBPixB_M0',
-                            #'2023preBPixB_M1',
+                            '2023preBPixB',
+                            '2023preBPixC',
                             ## Run2023postBPix
+                            '2023postBPixD',
                             ## Run2024 
                             ## Run-3 
                         ])
@@ -413,7 +415,7 @@ if __name__=='__main__':
                         # ------------------------------------------------------------------------------------------
                         # run or submit commands
                         # ------------------------------------------------------------------------------------------
-                        print(cmds)
+                        #print(cmds)
                         scriptname = 'cjob_mcvsdata_submit.sh'
                         if args.runmode=='local':
                             for cmd in cmds: os.system(cmd)

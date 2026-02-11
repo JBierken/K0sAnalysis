@@ -96,6 +96,7 @@ def getlumi( campaign, era ):
         # Run2022
         if era=='2022preEE':        return 8.08
         elif era=='2022preEEB':     return 0.097
+        elif era=='2022preEEC':     return 5.01
         elif era=='2022preEEC1':    return 5.01
         elif era=='2022preEEC2':    return 5.01
         elif era=='2022preEED':     return 2.97
