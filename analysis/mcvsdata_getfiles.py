@@ -44,10 +44,6 @@ def getfiles_run3( filedir, includelist ):
     mcdirdict['2022preEEC']         = 'DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v4'
     mcdirdict['2022preEED']         = 'DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v4'
     
-    mcdirdict['2022preEEC1']        = 'DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v4'
-    mcdirdict['2022preEEC2']        = 'DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v4'
-    
-    
     mcdirdict['2022postEE']         = 'DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_Run3Summer22EEMiniAODv3-124X_mcRun3_2022_realistic_postEE_v1-v4'
     
     mcdirdict['2022postEEE']        = 'DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_Run3Summer22EEMiniAODv3-124X_mcRun3_2022_realistic_postEE_v1-v4'
@@ -64,24 +60,9 @@ def getfiles_run3( filedir, includelist ):
     mcdirdict['2023preBPixB']       = 'DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_Run3Summer23MiniAODv4-130X_mcRun3_2023_realistic_v14-v2'
     mcdirdict['2023preBPixC']       = 'DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_Run3Summer23MiniAODv4-130X_mcRun3_2023_realistic_v14-v2'
     
-    mcdirdict['2023preBPixB_M0']    = 'DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_Run3Summer23MiniAODv4-130X_mcRun3_2023_realistic_v14-v2'
-    mcdirdict['2023preBPixB_M1']    = 'DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_Run3Summer23MiniAODv4-130X_mcRun3_2023_realistic_v14-v2'
-    mcdirdict['2023preBPixC1_M0']   = 'DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_Run3Summer23MiniAODv4-130X_mcRun3_2023_realistic_v14-v2'
-    mcdirdict['2023preBPixC1_M1']   = 'DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_Run3Summer23MiniAODv4-130X_mcRun3_2023_realistic_v14-v2'
-    mcdirdict['2023preBPixC2_M0']   = 'DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_Run3Summer23MiniAODv4-130X_mcRun3_2023_realistic_v14-v2'
-    mcdirdict['2023preBPixC2_M1']   = 'DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_Run3Summer23MiniAODv4-130X_mcRun3_2023_realistic_v14-v2'
-    mcdirdict['2023preBPixC3_M0']   = 'DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_Run3Summer23MiniAODv4-130X_mcRun3_2023_realistic_v14-v2'
-    mcdirdict['2023preBPixC3_M1']   = 'DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_Run3Summer23MiniAODv4-130X_mcRun3_2023_realistic_v14-v2'
-    mcdirdict['2023preBPixC4_M0']   = 'DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_Run3Summer23MiniAODv4-130X_mcRun3_2023_realistic_v14-v2'
-    mcdirdict['2023preBPixC4_M1']   = 'DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_Run3Summer23MiniAODv4-130X_mcRun3_2023_realistic_v14-v2'
-    
     mcdirdict['2023postBPix']       = 'DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_Run3Summer23BPixMiniAODv4-130X_mcRun3_2023_realistic_postBPix_v2-v4'
     
     mcdirdict['2023postBPixD']      = 'DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_Run3Summer23BPixMiniAODv4-130X_mcRun3_2023_realistic_postBPix_v2-v4'
-    
-    mcdirdict['2023postBPixD_M1']   = 'DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_Run3Summer23BPixMiniAODv4-130X_mcRun3_2023_realistic_postBPix_v2-v4'
-    mcdirdict['2023postBPixD2_M0']  = 'DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_Run3Summer23BPixMiniAODv4-130X_mcRun3_2023_realistic_postBPix_v2-v4'
-    mcdirdict['2023postBPixD2_M1']  = 'DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_Run3Summer23BPixMiniAODv4-130X_mcRun3_2023_realistic_postBPix_v2-v4'
     
     mcdirdict['2023']               = ''
     mcdirdict['2023combined']       = 'DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_Run3Summer23MiniAODv4-130X_mcRun3_2023_realistic_v14-v2'
@@ -98,9 +79,6 @@ def getfiles_run3( filedir, includelist ):
     datadirdict['2022preEEC']       = 'Run2022C-22Sep2023-v1' 
     datadirdict['2022preEED']       = 'Muon_Run2022D-22Sep2023-v1'
     
-    datadirdict['2022preEEC1']      = 'DoubleMuon_Run2022C-22Sep2023-v1' 
-    datadirdict['2022preEEC2']      = 'Muon_Run2022C-22Sep2023-v1'
-    
     datadirdict['2022postEE']       = 'Run2022postEE'
     
     datadirdict['2022postEEE']      = '_Run2022E-22Sep2023-v1'
@@ -116,24 +94,9 @@ def getfiles_run3( filedir, includelist ):
     datadirdict['2023preBPixB']     = 'Run2023B-22Sep2023-v1'
     datadirdict['2023preBPixC']     = 'Run2023C-22Sep2023-v1'
    
-    datadirdict['2023preBPixB_M0']  = 'Muon0_Run2023B-22Sep2023-v1'
-    datadirdict['2023preBPixB_M1']  = 'Muon1_Run2023B-22Sep2023-v1'
-    datadirdict['2023preBPixC1_M0'] = 'Muon0_Run2023C-22Sep2023_v1-v1'
-    datadirdict['2023preBPixC1_M1'] = 'Muon1_Run2023C-22Sep2023_v1-v1'
-    datadirdict['2023preBPixC2_M0'] = 'Muon0_Run2023C-22Sep2023_v2-v1'
-    datadirdict['2023preBPixC2_M1'] = 'Muon1_Run2023C-22Sep2023_v2-v1'
-    datadirdict['2023preBPixC3_M0'] = 'Muon0_Run2023C-22Sep2023_v3-v1'
-    datadirdict['2023preBPixC3_M1'] = 'Muon1_Run2023C-22Sep2023_v3-v1'
-    datadirdict['2023preBPixC4_M0'] = 'Muon0_Run2023C-22Sep2023_v4-v1'
-    datadirdict['2023preBPixC4_M1'] = 'Muon1_Run2023C-22Sep2023_v4-v1'
-
     datadirdict['2023postBPix']     = 'Run2023postBPix'
     
     datadirdict['2023postBPixD']    = 'Run2023D-22Sep2023-v1' 
-    
-    datadirdict['2023postBPixD_M1'] = 'Muon1_Run2023D-22Sep2023_v1-v1'
-    datadirdict['2023postBPixD2_M0']= 'Muon0_Run2023D-22Sep2023_v2-v1'
-    datadirdict['2023postBPixD2_M1']= 'Muon1_Run2023D-22Sep2023_v2-v1'
     
     datadirdict['2023']             = 'Run2023'
     datadirdict['2023combined']     = 'Run2023combined'
