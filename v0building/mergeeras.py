@@ -139,23 +139,29 @@ if __name__=='__main__':
                 'Muon1_Run2023D-22Sep2023_v2-v1'
             ],
             'Run2024': [
-                'Muon0_Run2024B-PromptReco-v1',
-                'Muon1_Run2024B-PromptReco-v1',
-                'Muon0_Run2024C-PromptReco-v1',
-                'Muon1_Run2024C-PromptReco-v1',
-                'Muon0_Run2024D-PromptReco-v1',
-                'Muon1_Run2024D-PromptReco-v1',
-                'Muon0_Run2024E-PromptReco-v2',
-                'Muon1_Run2024E-PromptReco-v2',
-                'Muon0_Run2024F-PromptReco-v1',
-                'Muon1_Run2024F-PromptReco-v1',
-                'Muon0_Run2024G-PromptReco-v1',
-                'Muon1_Run2024G-PromptReco-v1',
-                'Muon0_Run2024H-PromptReco-v1',
-                'Muon1_Run2024H-PromptReco-v1',
-                'Muon0_Run2024I-PromptReco-v2',
-                'Muon1_Run2024I-PromptReco-v2',
-            ]
+                'Muon0_Run2024C-MINIv6NANOv15-v1',
+                'Muon0_Run2024E-MINIv6NANOv15-v1',
+                'Muon0_Run2024G-MINIv6NANOv15-v1',
+                'Muon0_Run2024H-MINIv6NANOv15-v1',
+                'Muon0_Run2024I-MINIv6NANOv15-v1',
+                'Muon1_Run2024C-MINIv6NANOv15-v1',
+                'Muon1_Run2024E-MINIv6NANOv15-v1',
+                'Muon1_Run2024H-MINIv6NANOv15-v1',
+            ],
+            'Run2024C-MINIv6NANOv15': [
+                'Muon0_Run2024C-MINIv6NANOv15-v1',
+                'Muon1_Run2024C-MINIv6NANOv15-v1',
+            ],
+            'Run2024E-MINIv6NANOv15': [
+                'Muon0_Run2024E-MINIv6NANOv15-v1',
+                'Muon1_Run2024E-MINIv6NANOv15-v1',
+            ],
+            'Run2024H-MINIv6NANOv15': [
+                'Muon0_Run2024H-MINIv6NANOv15-v1',
+                'Muon1_Run2024H-MINIv6NANOv15-v1',
+            ],
+            'Run2025': [
+            ],
         })
 
     for yeardir, eradirs in yeardict.items():

@@ -7,7 +7,7 @@ import sys
 from six.moves import input
 sys.path.append('../tools')
 import jobcheck as jc
-CMSSW  = '/user/jbierken/CMSSW_14_0_15'
+CMSSW  = '/user/jbierken/CMSSW_15_0_17'
  
 if __name__=='__main__':
 

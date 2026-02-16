@@ -97,8 +97,6 @@ def getlumi( campaign, era ):
         if era=='2022preEE':        return 8.08
         elif era=='2022preEEB':     return 0.097
         elif era=='2022preEEC':     return 5.01
-        elif era=='2022preEEC1':    return 5.01
-        elif era=='2022preEEC2':    return 5.01
         elif era=='2022preEED':     return 2.97
         elif era=='2022postEE':     return 26.67 
         elif era=='2022postEEE':    return 5.81
@@ -124,6 +122,14 @@ def getlumi( campaign, era ):
         elif era=='2024G':          return 37.77 
         elif era=='2024H':          return 5.44 
         elif era=='2024I':          return 11.47 
+        # Run2025
+        elif era=='2025':           return 110.73  
+        elif era=='2025B':          return 0.26 
+        elif era=='2025C':          return 21.87 
+        elif era=='2025D':          return 25.87 
+        elif era=='2025E':          return 14.00 
+        elif era=='2025F':          return 26.50 
+        elif era=='2025G':          return 22.24 
 
     msg = 'ERROR: cannot find luminosity for era {} / {}'.format(campaign, era)
     raise Exception(msg)

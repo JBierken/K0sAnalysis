@@ -97,15 +97,18 @@ if __name__=='__main__':
                             #'2022preEEC',
                             #'2022preEED',
                             ## Run2022postEE 
-                            '2022postEEE',
-                            '2022postEEF',
-                            '2022postEEG',
+                            #'2022postEEE',
+                            #'2022postEEF',
+                            #'2022postEEG',
                             ## Run2023preBPix
                             #'2023preBPixB',
                             #'2023preBPixC',
                             ## Run2023postBPix
                             #'2023postBPixD',
                             ## Run2024 
+                            '2024C',
+                            '2024E',
+                            '2024H',
                             ## Run-3 
                         ])
     elif 'detector' in includelist:

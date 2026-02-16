@@ -212,8 +212,10 @@ if __name__=='__main__':
                 #in case of per-era processing (need more elegant solution, but should work)
                 if year in ['2022postEEE', '2022postEEF', '2022postEEG']:
                     year_pu         = '2022postEE'
-                else:
+                elif '2022' in year:
                     year_pu             = year.rstrip('BCD') # Watch out, does noy work for anything but 2022preEE
+                else:
+                    year_pu             = year.rstrip('BCDEFGHI') # Watch out, does noy work for anything but 2022preEE
 
                 pileupreweighter    = PileupReweighter(campaign, year_pu)
                 pileupreweighter.initsample(inputfile)

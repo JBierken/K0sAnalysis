@@ -2,7 +2,7 @@
 /pnfs/iihe/cms/store/user/jbierken/K0sAnalysis/NTuples/MINIAOD/data/v1/Muon0/Run2024C-MINIv6NANOv15-v1
 /pnfs/iihe/cms/store/user/jbierken/K0sAnalysis/NTuples/MINIAOD/data/v1/Muon0/Run2024D-MINIv6NANOv15-v1
 /pnfs/iihe/cms/store/user/jbierken/K0sAnalysis/NTuples/MINIAOD/data/v1/Muon0/Run2024E-MINIv6NANOv15-v1
-/pnfs/iihe/cms/store/user/jbierken/K0sAnalysis/NTuples/MINIAOD/data/v1/Muon0/Run2024F-MINIv6NANOv15-v1
+# /pnfs/iihe/cms/store/user/jbierken/K0sAnalysis/NTuples/MINIAOD/data/v1/Muon0/Run2024F-MINIv6NANOv15-v1
 /pnfs/iihe/cms/store/user/jbierken/K0sAnalysis/NTuples/MINIAOD/data/v1/Muon0/Run2024G-MINIv6NANOv15-v1
 /pnfs/iihe/cms/store/user/jbierken/K0sAnalysis/NTuples/MINIAOD/data/v1/Muon0/Run2024H-MINIv6NANOv15-v1
 /pnfs/iihe/cms/store/user/jbierken/K0sAnalysis/NTuples/MINIAOD/data/v1/Muon0/Run2024I-MINIv6NANOv15-v1
@@ -10,8 +10,8 @@
 /pnfs/iihe/cms/store/user/jbierken/K0sAnalysis/NTuples/MINIAOD/data/v1/Muon1/Run2024C-MINIv6NANOv15-v1
 /pnfs/iihe/cms/store/user/jbierken/K0sAnalysis/NTuples/MINIAOD/data/v1/Muon1/Run2024D-MINIv6NANOv15-v1
 /pnfs/iihe/cms/store/user/jbierken/K0sAnalysis/NTuples/MINIAOD/data/v1/Muon1/Run2024E-MINIv6NANOv15-v1
-/pnfs/iihe/cms/store/user/jbierken/K0sAnalysis/NTuples/MINIAOD/data/v1/Muon1/Run2024F-MINIv6NANOv15-v1
-/pnfs/iihe/cms/store/user/jbierken/K0sAnalysis/NTuples/MINIAOD/data/v1/Muon1/Run2024G-MINIv6NANOv15-v1
+# /pnfs/iihe/cms/store/user/jbierken/K0sAnalysis/NTuples/MINIAOD/data/v1/Muon1/Run2024F-MINIv6NANOv15-v1
+/pnfs/iihe/cms/store/user/jbierken/K0sAnalysis/NTuples/MINIAOD/data/v1/Muon1/Run2024G-MINIv6NANOv15-v2
 /pnfs/iihe/cms/store/user/jbierken/K0sAnalysis/NTuples/MINIAOD/data/v1/Muon1/Run2024H-MINIv6NANOv15-v1
 /pnfs/iihe/cms/store/user/jbierken/K0sAnalysis/NTuples/MINIAOD/data/v1/Muon1/Run2024I-MINIv6NANOv15-v1
 /pnfs/iihe/cms/store/user/jbierken/K0sAnalysis/NTuples/MINIAOD/data/v1/Muon1/Run2024I-MINIv6NANOv15_v2-v1

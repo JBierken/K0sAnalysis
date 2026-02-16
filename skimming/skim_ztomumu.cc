@@ -52,6 +52,7 @@ double bTagThreshold(   const std::string&  campaign,
 	    else if(year=="2023")          return 0.0479;
 	    else if(year=="2023BPiX")      return 0.048;
 	    else if(year=="2024")          return 0.0246;
+	    else if(year=="2025")          return 0.0246; // SF not yet available for 2025???
     }
     else
     {
@@ -127,6 +128,11 @@ std::pair<std::string, std::string> getYearFromFileName(const std::string& fileN
 	|| fileName.find(       "Run3Winter24")                     != std::string::npos )      //TODO: is this correct! (and/or needed?)
     {	
         return std::make_pair("run3",       "2024"); 
+    }
+    else if( fileName.find( "Run2025")                          != std::string::npos 
+	|| fileName.find(       "Run3Winter25")                     != std::string::npos )      //TODO: is this correct! (and/or needed?)
+    {	
+        return std::make_pair("run3",       "2025"); 
     }
     else{
 	    std::string msg     = "ERROR: year could not be extracted from filename";

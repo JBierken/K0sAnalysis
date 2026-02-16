@@ -68,7 +68,12 @@ def getfiles_run3( filedir, includelist ):
     mcdirdict['2023combined']       = 'DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_Run3Summer23MiniAODv4-130X_mcRun3_2023_realistic_v14-v2'
     
     # get MC samples for 2024
-    mcdirdict['2024']               = 'DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_Run3Winter24MiniAOD-133X_mcRun3_2024_realistic_v10-v2'
+    mcdirdict['2024']               = 'DYto2L-2Jets_Bin-MLL-50-PTLL-100_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_RunIII2024Summer24MiniAODv6-150X_mcRun3_2024_realistic_v2-v3'
+    
+    mcdirdict['2024C']              = 'DYto2L-2Jets_Bin-MLL-50-PTLL-100_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_RunIII2024Summer24MiniAODv6-150X_mcRun3_2024_realistic_v2-v3'
+    mcdirdict['2024E']              = 'DYto2L-2Jets_Bin-MLL-50-PTLL-100_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_RunIII2024Summer24MiniAODv6-150X_mcRun3_2024_realistic_v2-v3'
+    mcdirdict['2024H']              = 'DYto2L-2Jets_Bin-MLL-50-PTLL-100_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_RunIII2024Summer24MiniAODv6-150X_mcRun3_2024_realistic_v2-v3'
+    
     
     datadirdict                     = {}
     
@@ -103,22 +108,10 @@ def getfiles_run3( filedir, includelist ):
 
     # get data samples (devided in sub eras) for 2023
     datadirdict['2024']             = 'Run2024'
-    datadirdict['2024B_M0']         = 'Muon0_Run2024B-PromptReco-v1'
-    datadirdict['2024B_M1']         = 'Muon1_Run2024B-PromptReco-v1'
-    datadirdict['2024C_M0']         = 'Muon0_Run2024C-PromptReco-v1'
-    datadirdict['2024C_M1']         = 'Muon1_Run2024C-PromptReco-v1'
-    datadirdict['2024D_M0']         = 'Muon0_Run2024D-PromptReco-v1'
-    datadirdict['2024D_M1']         = 'Muon1_Run2024D-PromptReco-v1'
-    datadirdict['2024E_M0']         = 'Muon0_Run2024E-PromptReco-v2'
-    datadirdict['2024E_M1']         = 'Muon1_Run2024E-PromptReco-v2'
-    datadirdict['2024F_M0']         = 'Muon0_Run2024F-PromptReco-v1'
-    datadirdict['2024F_M1']         = 'Muon1_Run2024F-PromptReco-v1'
-    datadirdict['2024G_M0']         = 'Muon0_Run2024G-PromptReco-v1'
-    datadirdict['2024G_M1']         = 'Muon1_Run2024G-PromptReco-v1'
-    datadirdict['2024H_M0']         = 'Muon0_Run2024H-PromptReco-v1'
-    datadirdict['2024H_M1']         = 'Muon1_Run2024H-PromptReco-v1'
-    datadirdict['2024I_M0']         = 'Muon0_Run2024I-PromptReco-v2'
-    datadirdict['2024I_M1']         = 'Muon1_Run2024I-PromptReco-v2'
+
+    datadirdict['2024C']            = 'Run2024C-MINIv6NANOv15'
+    datadirdict['2024E']            = 'Run2024E-MINIv6NANOv15'
+    datadirdict['2024H']            = 'Run2024H-MINIv6NANOv15'
 
     filename                    = 'selected.root'
 
