@@ -71,8 +71,11 @@ def getfiles_run3( filedir, includelist ):
     mcdirdict['2024']               = 'DYto2L-2Jets_Bin-MLL-50-PTLL-100_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_RunIII2024Summer24MiniAODv6-150X_mcRun3_2024_realistic_v2-v3'
     
     mcdirdict['2024C']              = 'DYto2L-2Jets_Bin-MLL-50-PTLL-100_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_RunIII2024Summer24MiniAODv6-150X_mcRun3_2024_realistic_v2-v3'
+    mcdirdict['2024D']              = 'DYto2L-2Jets_Bin-MLL-50-PTLL-100_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_RunIII2024Summer24MiniAODv6-150X_mcRun3_2024_realistic_v2-v3'
     mcdirdict['2024E']              = 'DYto2L-2Jets_Bin-MLL-50-PTLL-100_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_RunIII2024Summer24MiniAODv6-150X_mcRun3_2024_realistic_v2-v3'
+    mcdirdict['2024G']              = 'DYto2L-2Jets_Bin-MLL-50-PTLL-100_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_RunIII2024Summer24MiniAODv6-150X_mcRun3_2024_realistic_v2-v3'
     mcdirdict['2024H']              = 'DYto2L-2Jets_Bin-MLL-50-PTLL-100_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_RunIII2024Summer24MiniAODv6-150X_mcRun3_2024_realistic_v2-v3'
+    mcdirdict['2024I']              = 'DYto2L-2Jets_Bin-MLL-50-PTLL-100_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_RunIII2024Summer24MiniAODv6-150X_mcRun3_2024_realistic_v2-v3'
     
     
     datadirdict                     = {}
@@ -110,8 +113,11 @@ def getfiles_run3( filedir, includelist ):
     datadirdict['2024']             = 'Run2024'
 
     datadirdict['2024C']            = 'Run2024C-MINIv6NANOv15'
+    datadirdict['2024D']            = 'Run2024D-MINIv6NANOv15'
     datadirdict['2024E']            = 'Run2024E-MINIv6NANOv15'
+    datadirdict['2024G']            = 'Run2024G-MINIv6NANOv15'
     datadirdict['2024H']            = 'Run2024H-MINIv6NANOv15'
+    datadirdict['2024I']            = 'Run2024I-MINIv6NANOv15'
 
     filename                    = 'selected.root'
 

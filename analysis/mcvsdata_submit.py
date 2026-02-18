@@ -56,17 +56,17 @@ if __name__=='__main__':
                             ## Run2022 
                             #'2022preEE',
                             #'2022postEE',
-                            '2022',
-                            #'2022combined',
+                            #'2022',
+                            '2022combined',
                             ## Run2023
                             #'2023preBPix',
                             #'2023postBPix',
-                            #'2023combined',
-                            '2023',
+                            '2023combined',
+                            #'2023',
                             ## Run2024 
-                            '2024',
+                            #'2024',
                             ## Run-3 
-                            'run3'
+                            #'run3'
                         ])
     elif 'perera' in includelist:
         if args.version=='run2preul':
@@ -107,8 +107,11 @@ if __name__=='__main__':
                             #'2023postBPixD',
                             ## Run2024 
                             '2024C',
+                            '2024D',
                             '2024E',
+                            '2024G',
                             '2024H',
+                            '2024I',
                             ## Run-3 
                         ])
     elif 'detector' in includelist:
