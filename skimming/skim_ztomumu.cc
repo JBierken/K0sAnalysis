@@ -51,8 +51,10 @@ double bTagThreshold(   const std::string&  campaign,
 	    else if(year=="2022EE")        return 0.0614;
 	    else if(year=="2023")          return 0.0479;
 	    else if(year=="2023BPiX")      return 0.048;
-	    else if(year=="2024")          return 0.0246;
-	    else if(year=="2025")          return 0.0246; // SF not yet available for 2025???
+	    else if(year=="2024")          return 0.048; //SF campaign not finalised, so using 2023 SFs
+	    else if(year=="2025")          return 0.048;
+        //else if(year=="2024")          return 0.0246;
+	    //else if(year=="2025")          return 0.0246; // SF not yet available for 2025???
     }
     else
     {

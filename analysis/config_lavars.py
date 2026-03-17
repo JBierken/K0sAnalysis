@@ -18,6 +18,7 @@ config = ({
             'normalization': {
               'normlumi':{'type':'lumi', 'info':'Normalized to luminosity'},
               'normeventyield':{'type':'eventyield', 'info':'Normalized to data events'},
+              'normyield':{'type':'yield', 'info':'Normalized to data events (post-selection)'},
               'normrange':{'type':'range', 'info': 'Normalized for #Delta_{2D} < 1.5 cm', 
                           'normvariable': '_RPV', 'normrange':[0.,1.5]},
             },
