@@ -17,7 +17,7 @@ config = ({
             },
             'bins': {
               'finebins':np.linspace(0,20,num=61,endpoint=True),
-              'defaultbins':[0.,0.5,1.5,4.,10.,20.],
+              'defaultbins':[0., 0.5, 1.5, 4., 20.],
             },
             'normalization': {
               'normlumi':{'type':'lumi', 'info':'Normalized to luminosity'},

@@ -83,7 +83,7 @@ def count_peak(hist, label, extrainfo, gargs, mode='subtract'):
     # make background-only fit
     # If more than 100 events     --> use linear background 
     # Else                        --> use quadratic background
-    if(hist.GetEffectiveEntries() <= 100):  guess = [0., 0.]
+    if(hist.GetEffectiveEntries() <= 1000): guess = [0., 0.]
     else:                                   guess = [0.,0.,0.]
     backfit, paramdict, backfitobj = ft.poly_fit(hist, fitrange, guess, "MSE0")
     
@@ -112,7 +112,7 @@ def count_peak(hist, label, extrainfo, gargs, mode='subtract'):
                     hist.GetMaximum()/2,                                                                            # peak 1 height
                     hist.GetRMS()                                                                                   # peak 1 width
             ]
-            if(hist.GetEffectiveEntries() <= 100):  guess += [paramdict['a0'],paramdict['a1']]                      # background estimate
+            if(hist.GetEffectiveEntries() <= 1000): guess += [paramdict['a0'],paramdict['a1']]                      # background estimate
             else:                                   guess += [paramdict['a0'],paramdict['a1'], paramdict['a2']]     # background estimate
             #guess += [paramdict['a0'],paramdict['a1']]                     # background estimate
             
@@ -126,14 +126,14 @@ def count_peak(hist, label, extrainfo, gargs, mode='subtract'):
                     hist.GetMaximum()/2,                                    # peak 2 height
                     hist.GetRMS()                                           # peak 2 width
             ]
-            if(hist.GetEffectiveEntries() <= 100):  guess += [paramdict['a0'],paramdict['a1']]                      # background estimate
+            if(hist.GetEffectiveEntries() <= 1000): guess += [paramdict['a0'],paramdict['a1']]                      # background estimate
             else:                                   guess += [paramdict['a0'],paramdict['a1'], paramdict['a2']]     # background estimate
            
             globfit, paramdict, globfitobj, globres = ft.poly_plus_doublegauss_fit(hist, fitrange, guess)
             print(paramdict) 
         
         # separate background component of fit
-        if(hist.GetEffectiveEntries() <= 100):  
+        if(hist.GetEffectiveEntries() <= 1000):  
             backfit2 = ROOT.TF1("fitfunc","pol1(0)", fitrange[0], fitrange[1])
             backfit2.SetParameters(paramdict['a0'], paramdict['a1'])
         else:
@@ -161,13 +161,13 @@ def count_peak(hist, label, extrainfo, gargs, mode='subtract'):
         hist.GetMaximum()/2,                    # peak 1 height
         hist.GetRMS()                           # peak 1 width
     ]
-    if(hist.GetEffectiveEntries() <= 100):  guess += [paramdict['a0'],paramdict['a1']]                      # background estimate
+    if(hist.GetEffectiveEntries() <= 1000): guess += [paramdict['a0'],paramdict['a1']]                      # background estimate
     else:                                   guess += [paramdict['a0'],paramdict['a1'], paramdict['a2']]     # background estimate
            
     globfit2, paramdict2, globfitobj2, globres2 = ft.poly_plus_gauss_fit(hist, fitrange, guess)
     
     # separate background component of fit
-    if(hist.GetEffectiveEntries() <= 100):  
+    if(hist.GetEffectiveEntries() <= 1000):  
         backfit3 = ROOT.TF1("fitfunc","pol1(0)", fitrange[0], fitrange[1])
         backfit3.SetParameters(paramdict['a0'], paramdict['a1'])
     else:
