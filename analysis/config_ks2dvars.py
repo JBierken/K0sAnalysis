@@ -14,9 +14,9 @@ config = ({
                                   'sidebins': np.linspace(0.44, 0.56, num=31, endpoint=True)}
                 },
                 'bins': {
-	               'defaultbins':{ 'xbins':[0., 0.5, 1.5, 4.0, 20., 100.],
-			          'ybins':[0.,5., 10., 20., 500] },
-                   'finexbins':{ 'xbins':[0.,0.5,1.,1.5,2.,5.,10., 20., 100.],
+	               'defaultbins':{ 'xbins':[0., 0.5, 1.5, 4.0, 20.],
+			          'ybins':[0.,5., 10., 20.] },
+                   'finexbins':{ 'xbins':[0.,0.5,1.,1.5,2.,5.,10., 20.],
                                 'ybins':[0.,5.,10., 20., 50.] },
                 },
                 'normalization': {
@@ -36,7 +36,7 @@ config = ({
                                   'sidebins': np.linspace(0.44, 0.56, num=31, endpoint=True)}
                 },
                 'bins': {
-	              'defaultbins':{ 'xbins':[0., 20., 50., 100., 1500.],
+	              'defaultbins':{ 'xbins':[1., 20., 50., 100.,500.],
                                 'ybins':[0.,5.,10., 20.] },
                   'finexbins':{ 'xbins':[0., 15., 50., 100., 200., 300., 400., 500., 600., 800.,1500.],
                                 'ybins':[0.,5.,10., 20., 50., 500.] },

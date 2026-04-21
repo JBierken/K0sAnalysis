@@ -187,8 +187,52 @@ if __name__=='__main__':
                 'Muon1_Run2024I-MINIv6NANOv15_v2-v1',
             ],
             'Run2025': [
+                'Muon0_Run2025B-PromptReco-v1',
+                'Muon0_Run2025C-PromptReco-v2',
+                'Muon0_Run2025D-PromptReco-v1',
+                'Muon0_Run2025E-PromptReco-v1',
+                'Muon0_Run2025F-PromptReco-v1',
+                'Muon0_Run2025G-PromptReco-v1',
+                'Muon1_Run2025B-PromptReco-v1',
+                'Muon1_Run2025C-PromptReco-v2',
+                'Muon1_Run2025D-PromptReco-v1',
+                'Muon1_Run2025E-PromptReco-v1',
+                'Muon1_Run2025F-PromptReco-v1',
+                'Muon1_Run2025G-PromptReco-v1',
+            
+            ],
+            'Run2025B-PromptReco': [
+                'Muon0_Run2025B-PromptReco-v1',
+                'Muon1_Run2025B-PromptReco-v1',
+            
+            ],
+            'Run2025C-PromptReco': [
+                'Muon0_Run2025C-PromptReco-v2',
+                'Muon1_Run2025C-PromptReco-v2',
+            
+            ],
+            'Run2025D-PromptReco': [
+                'Muon0_Run2025D-PromptReco-v1',
+                'Muon1_Run2025D-PromptReco-v1',
+            
+            ],
+            'Run2025E-PromptReco': [
+                'Muon0_Run2025E-PromptReco-v1',
+                'Muon1_Run2025E-PromptReco-v1',
+            
+            ],
+            'Run2025F-PromptReco': [
+                'Muon0_Run2025F-PromptReco-v1',
+                'Muon1_Run2025F-PromptReco-v1',
+            
+            ],
+            'Run2025G-PromptReco': [
+                'Muon0_Run2025G-PromptReco-v1',
+                'Muon1_Run2025G-PromptReco-v1',
+            
             ],
         })
+
 
     for yeardir, eradirs in yeardict.items():
         yeardir = os.path.join(args.filedir, yeardir)

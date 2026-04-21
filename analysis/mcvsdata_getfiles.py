@@ -78,6 +78,15 @@ def getfiles_run3( filedir, includelist ):
     mcdirdict['2024H']              = 'DYto2L-2Jets_Bin-MLL-50-PTLL-100_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_RunIII2024Summer24MiniAODv6-150X_mcRun3_2024_realistic_v2-v3'
     mcdirdict['2024I']              = 'DYto2L-2Jets_Bin-MLL-50-PTLL-100_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_RunIII2024Summer24MiniAODv6-150X_mcRun3_2024_realistic_v2-v3'
     
+    # get MC samples for 2024
+    mcdirdict['2025']               = 'DYto2L-2Jets_Bin-MLL-50-PTLL-100_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_RunIII2024Summer24MiniAODv6-150X_mcRun3_2024_realistic_v2-v3'
+    
+    mcdirdict['2025B']              = 'DYto2L-2Jets_Bin-MLL-50-PTLL-100_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_RunIII2024Summer24MiniAODv6-150X_mcRun3_2024_realistic_v2-v3'
+    mcdirdict['2025C']              = 'DYto2L-2Jets_Bin-MLL-50-PTLL-100_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_RunIII2024Summer24MiniAODv6-150X_mcRun3_2024_realistic_v2-v3'
+    mcdirdict['2025D']              = 'DYto2L-2Jets_Bin-MLL-50-PTLL-100_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_RunIII2024Summer24MiniAODv6-150X_mcRun3_2024_realistic_v2-v3'
+    mcdirdict['2025E']              = 'DYto2L-2Jets_Bin-MLL-50-PTLL-100_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_RunIII2024Summer24MiniAODv6-150X_mcRun3_2024_realistic_v2-v3'
+    mcdirdict['2025F']              = 'DYto2L-2Jets_Bin-MLL-50-PTLL-100_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_RunIII2024Summer24MiniAODv6-150X_mcRun3_2024_realistic_v2-v3'
+    mcdirdict['2025G']              = 'DYto2L-2Jets_Bin-MLL-50-PTLL-100_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_RunIII2024Summer24MiniAODv6-150X_mcRun3_2024_realistic_v2-v3'
     
     datadirdict                     = {}
     
@@ -110,7 +119,7 @@ def getfiles_run3( filedir, includelist ):
     datadirdict['2023']             = 'Run2023'
     datadirdict['2023combined']     = 'Run2023combined'
 
-    # get data samples (devided in sub eras) for 2023
+    # get data samples (devided in sub eras) for 2024
     datadirdict['2024']             = 'Run2024'
 
     datadirdict['2024C']            = 'Run2024C-MINIv6NANOv15'
@@ -121,6 +130,16 @@ def getfiles_run3( filedir, includelist ):
     datadirdict['2024H']            = 'Run2024H-MINIv6NANOv15'
     datadirdict['2024I']            = 'Run2024I-MINIv6NANOv15'
 
+    # get data samples (devided in sub eras) for 2025
+    datadirdict['2025']             = 'Run2025'
+
+    datadirdict['2025B']            = 'Run2025B-PromptReco'
+    datadirdict['2025C']            = 'Run2025C-PromptReco'
+    datadirdict['2025D']            = 'Run2025D-PromptReco'
+    datadirdict['2025E']            = 'Run2025E-PromptReco'
+    datadirdict['2025F']            = 'Run2025F-PromptReco'
+    datadirdict['2025G']            = 'Run2025G-PromptReco'
+
     filename                    = 'selected.root'
 
     # loop over eras
@@ -129,9 +148,7 @@ def getfiles_run3( filedir, includelist ):
         # skip special cases (consider them later)
         if era=='run3':         continue
         if era=='2022':         continue
-        #if era=='2022combined': continue
         if era=='2023':         continue
-        #if era=='2023combined': continue
         
         # derive year from era name
         year                    = era
@@ -202,39 +219,6 @@ def getfiles_run3( filedir, includelist ):
                         'label':        label
         })
 
-    """
-    # special case-2
-    if '2022combined' in includelist:
-        mcin, datain            = [], []
-        
-        #eralabel = year
-        year                = era.rstrip('combined')
-            
-        mcin.append({   
-            'file':         os.path.join(filedir, mcdirdict[year], filename),
-            'label':        eralabel+' sim.', 'xsection':6688.0,
-            'luminosity':   lt.getlumi('run3', year)*1000,
-            'era':          era, 
-            'year':         year, 
-            'campaign':     'run3'
-        })
-        datain.append({ 
-            'file':         os.path.join(filedir, datadirdict[year], filename),
-            'label':        '{} data'.format(year),
-            'luminosity':   lt.getlumi('run3', year)*1000,
-            'era':          year, 
-            'year':         year, 
-            'campaign':     'run3'
-        })
-
-        label                   = '2022combined'
-        eralist.append({    
-                        'mcin':         mcin, 
-                        'datain':       datain, 
-                        'label':        label
-        })
-    """
-
     # special case-3
     if '2023' in includelist:
         mcin, datain            = [], []
@@ -266,44 +250,13 @@ def getfiles_run3( filedir, includelist ):
                         'label':        label
    
         })
-
-    """
-    # special case-4
-    if '2023combined' in includelist:
-        mcin, datain            = [], []
-        
-        eralabel = year
-            
-        mcin.append({   
-            'file':         os.path.join(filedir, mcdirdict[year], filename),
-            'label':        eralabel+' sim.', 'xsection':6688.0,
-            'luminosity':   lt.getlumi('run3', year)*1000,
-            'era':          year, 
-            'year':         year, 
-            'campaign':     'run3'
-        })
-        datain.append({ 
-            'file':         os.path.join(filedir, datadirdict[year], filename),
-            'label':        '{} data'.format(year),
-            'luminosity':   lt.getlumi('run3', year)*1000,
-            'era':          year, 
-            'year':         year, 
-            'campaign':     'run3'
-        })
-
-        label                   = '2023combined'
-        eralist.append({    
-                        'mcin':         mcin, 
-                        'datain':       datain, 
-                        'label':        label
-        })
-    """
     
     # special case-5
     if 'run3' in includelist:
         mcin, datain            = [], []
         
-        for year in ['2022preEE', '2022postEE', '2023preBPix', '2023postBPix', '2024']:
+        #for year in ['2022preEE', '2022postEE', '2023preBPix', '2023postBPix', '2024']:
+        for year in ['2022preEE', '2022postEE', '2023preBPix', '2023postBPix', '2024', '2025']:
             eralabel = year
             
             mcin.append({   

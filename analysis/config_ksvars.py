@@ -21,8 +21,8 @@ config = ({
             },
             'normalization': {
               'normlumi':{'type':'lumi', 'info':'Normalized to luminosity'},
-              'normeventyield':{'type':'eventyield', 'info':'Normalized to data events'},
-              'normyield':{'type':'yield', 'info':'Normalized to data events (post-selection)'},
+              #'normeventyield':{'type':'eventyield', 'info':'Normalized to data events'},
+              #'normyield':{'type':'yield', 'info':'Normalized to data events (post-selection)'},
               'normrange':{'type':'range', 'info': 'Normalized for #Delta_{2D} < 0.5 cm', 
                           'normvariable': '_RPV', 'normrange':[0.,0.5]},
             },
@@ -39,13 +39,13 @@ config = ({
                               'sidebins': np.linspace(0.44, 0.56, num=31, endpoint=True)},
             },
             'bins': {
-              'finebins':np.linspace(0,100,num=161,endpoint=True),
+              'finebins':np.linspace(0,20,num=161,endpoint=True),
               'defaultbins':[0.,0.5,1.5,4.,10.,20., 30., 40., 50., 60., 70., 80., 90., 100.],
             },
             'normalization': {
               'normlumi':{'type':'lumi', 'info':'Normalized to luminosity'},
-              'normeventyield':{'type':'eventyield', 'info':'Normalized to data events'},
-              'normyield':{'type':'yield', 'info':'Normalized to data events (post-selection)'},
+              #'normeventyield':{'type':'eventyield', 'info':'Normalized to data events'},
+              #'normyield':{'type':'yield', 'info':'Normalized to data events (post-selection)'},
               'normrange':{'type':'range', 'info': 'Normalized for #Delta_{2D} < 0.5 cm', 
                           'normvariable': '_RPV', 'normrange':[0.,0.5]},
             },

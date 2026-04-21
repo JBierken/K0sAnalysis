@@ -105,7 +105,7 @@ def count_peak(hist, label, extrainfo, gargs, mode='subtract'):
     if(mode=='gfit' or mode=='hybrid'):
         # If more than 10000 events     --> use Double Gauss
         # Else                          --> use Single Gauss
-        singleGauss          =  5000
+        singleGauss          =  20000
         if(hist.GetEffectiveEntries() <= singleGauss):
             guess = [
                     fitcenter,                                                                                      # peak position

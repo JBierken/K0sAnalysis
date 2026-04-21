@@ -54,19 +54,19 @@ if __name__=='__main__':
         elif args.version=='run3':
             includelist     = ([
                             ## Run2022 
-                            '2022',
-                            '2022preEE',
-                            '2022postEE',
-                            '2022combined',
+                            #'2022',
+                            #'2022preEE',
+                            #'2022postEE',
+                            #'2022combined',
                             ## Run2023
-                            '2023',
-                            '2023preBPix',
-                            '2023postBPix',
-                            '2023combined',
+                            #'2023',
+                            #'2023preBPix',
+                            #'2023postBPix',
+                            #'2023combined',
                             ## Run2024 
-                            '2024',
+                            #'2024',
                             ## Run2025 
-                            #'2025',
+                            '2025',
                             ## Run-3 
                             'run3'
                         ])
@@ -95,27 +95,33 @@ if __name__=='__main__':
         elif args.version=='run3':
             includelist     = ([
                             ## Run2022preEE 
-                            '2022preEEB',
-                            '2022preEEC',
-                            '2022preEED',
+                            #'2022preEEB',
+                            #'2022preEEC',
+                            #'2022preEED',
                             ## Run2022postEE 
-                            '2022postEEE',
-                            '2022postEEF',
-                            '2022postEEG',
+                            #'2022postEEE',
+                            #'2022postEEF',
+                            #'2022postEEG',
                             ## Run2023preBPix
-                            '2023preBPixB',
-                            '2023preBPixC',
+                            #'2023preBPixB',
+                            #'2023preBPixC',
                             ## Run2023postBPix
-                            '2023postBPixD',
+                            #'2023postBPixD',
                             ## Run2024 
-                            '2024C',
-                            '2024D',
-                            '2024E',
-                            '2024F',
-                            '2024G',
-                            '2024H',
-                            '2024I',
+                            #'2024C',
+                            #'2024D',
+                            #'2024E',
+                            #'2024F',
+                            #'2024G',
+                            #'2024H',
+                            #'2024I',
                             ## Run2025 
+                            '2025B',
+                            '2025C',
+                            '2025D',
+                            '2025E',
+                            '2025F',
+                            '2025G',
                         ])
     elif 'detector' in includelist:
         if args.version=='run2preul':
