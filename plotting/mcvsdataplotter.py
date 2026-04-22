@@ -524,15 +524,15 @@ if __name__=='__main__':
         elif '2018' in hist.GetTitle():                 colorlist.append(ROOT.kViolet)
         # Run-3
         elif '2022' in hist.GetTitle():
-            if '2022peEE' in hist.GetTitle():           colorlist.append(ROOT.kAzure+6)
+            if '2022preEE' in hist.GetTitle():           colorlist.append(ROOT.kAzure+6)
             elif '2022postEE' in hist.GetTitle():       colorlist.append(ROOT.kAzure-4)
             else:                                       colorlist.append(ROOT.kBlue+1)
         elif '2023' in hist.GetTitle():
-            if '2023peBPix' in hist.GetTitle():         colorlist.append(ROOT.kAzure-2)
+            if '2023preBPix' in hist.GetTitle():         colorlist.append(ROOT.kAzure-2)
             elif '2023postBPix' in hist.GetTitle():     colorlist.append(ROOT.kAzure-9)
             else:                                       colorlist.append(ROOT.kBlue+3)
         elif '2024' in hist.GetTitle():                 colorlist.append(ROOT.kViolet)
-        elif '2025' in hist.GetTitle():                 colorlist.append(ROOT.kViolet-4)
+        elif '2025' in hist.GetTitle():                 colorlist.append(ROOT.kViolet+3)
         else:
             print('WARNING: histogram title could not be associated with a color')
             colorlist.append(ROOT.kBlack)

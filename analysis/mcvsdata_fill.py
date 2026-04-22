@@ -165,6 +165,8 @@ if __name__=='__main__':
                     xsection        = 1, 
                     lumi            = 1, 
                     weightvarname   = '_weight',
+                    splitparity     = None,
+                    splitbranch     = '_event',
                     hcountername    = 'hCounter',
                     sidevariable    = None,
                     label           = None,
@@ -198,11 +200,38 @@ if __name__=='__main__':
             msg   +=  ' of which {} will be read (using reweighting factor {}).'.format(  nentries, nentries_reweight)
             print(msg)
 
+            # Optional MC split: select only even/odd event numbers.
+            splitmask = None
+            if (not isdata) and (splitparity in ['even', 'odd']):
+                branch_to_use = splitbranch
+                if branch_to_use not in tree.keys() and splitbranch == '_event' and 'event' in tree.keys():
+                    branch_to_use = 'event'
+                if branch_to_use not in tree.keys():
+                    msg = 'ERROR: requested MC split on branch {}, but it is not in tree {}. Available branches include: {}'.format(
+                        splitbranch, treename, list(tree.keys())[:20])
+                    raise Exception(msg)
+                eventvalues = tree[branch_to_use].array(library='np', entry_stop=nentries)
+                paritymod = np.mod(eventvalues.astype(np.int64), 2)
+                if splitparity == 'even':
+                    splitmask = (paritymod == 0)
+                else:
+                    splitmask = (paritymod == 1)
+                nsel = int(np.count_nonzero(splitmask))
+                print('Applying MC split {} on branch {}: selected {}/{} entries.'.format(
+                    splitparity, branch_to_use, nsel, nentries))
+                if nsel == 0:
+                    msg = 'ERROR: MC split {} on branch {} selected 0 events.'.format(splitparity, branch_to_use)
+                    raise Exception(msg)
+
             # get weights
             if isdata: weights    = np.ones(nentries)
             else:
-                weights             = tree[weightvarname].array(library='np', entry_stop=nentries)
-                weights             = weights / sumweights * xsection * lumi
+                rawweights          = tree[weightvarname].array(library='np', entry_stop=nentries)
+                if splitmask is not None:
+                    rawweights      = rawweights[splitmask]
+                    # Keep MC normalization correct for the selected split subset.
+                    sumweights      = np.sum(rawweights)
+                weights             = rawweights / sumweights * xsection * lumi
             weights               = weights * nentries_reweight
 
             # do reweighting
@@ -232,6 +261,8 @@ if __name__=='__main__':
 
             # get the variable and some masks
             varvalues             = tree[variable['variable']].array(library='np', entry_stop=nentries)
+            if splitmask is not None:
+                varvalues         = varvalues[splitmask]
             nanmask               = np.isnan(varvalues)
             rangemask             = ((varvalues > variable['bins'][0]) & (varvalues < variable['bins'][-1]))
             totalmask             = ((~nanmask) & rangemask)
@@ -243,12 +274,16 @@ if __name__=='__main__':
             else:
                 dummyvar            = tree.keys()[0]
                 dummyvalues         = tree[dummyvar].array(library='np', entry_stop=nentries)
+                if splitmask is not None:
+                    dummyvalues     = dummyvalues[splitmask]
                 dummymin            = np.min(dummyvalues)
                 dummymax            = np.max(dummyvalues)
                 yvariable           = {'variable': dummyvar, 'bins': [dummymin/2., dummymax*2]}
 
             # get the secondary variable
             yvarvalues            = tree[yvariable['variable']].array(library='np', entry_stop=nentries)
+            if splitmask is not None:
+                yvarvalues         = yvarvalues[splitmask]
             ynanmask              = np.isnan(yvarvalues)
             yrangemask            = ((yvarvalues >= yvariable['bins'][0]) & (yvarvalues <= yvariable['bins'][-1]))
             totalmask             = (totalmask & (~ynanmask) & yrangemask)
@@ -275,6 +310,8 @@ if __name__=='__main__':
             if sidevariable is not None:
                 # get values of sideband variable
                 sidebandvalues          = tree[sidevariable['variable']].array(library='np', entry_stop=nentries)
+                if splitmask is not None:
+                    sidebandvalues      = sidebandvalues[splitmask]
             
                 # initialize final histograms
                 counts                  = np.zeros((len(variable['bins'])-1, len(yvariable['bins'])-1))
@@ -355,6 +392,8 @@ if __name__=='__main__':
                                                 isdata          = True, 
                                                 lumi            = lumi,
                                                 sidevariable    = sidevariable,
+                                      splitparity     = simdict.get('splitparity', None),
+                                      splitbranch     = simdict.get('splitbranch', '_event'),
                                                 label           = datadict['label'].strip(' .'),
                                                 nentries        = args.nprocess
                                     )
@@ -465,6 +504,8 @@ if __name__=='__main__':
                             isdata      =False, 
                             xsection    =xsection, 
                             lumi        =lumi,
+                            splitparity =simdict.get('splitparity', None),
+                            splitbranch =simdict.get('splitbranch', '_event'),
                             label       =simdict['label'].strip(' .')+'_normrange',
                             sidevariable=sidevariable,
                             nentries    =args.nprocess,
@@ -520,6 +561,8 @@ if __name__=='__main__':
                                 isdata      =False, 
                                 xsection    =xsection, 
                                 lumi        =lumi,
+                                splitparity =simdict.get('splitparity', None),
+                                splitbranch =simdict.get('splitbranch', '_event'),
                                 nentries    =args.nprocess,
                                 year        =simdict['year'], 
                                 campaign    =simdict['campaign']

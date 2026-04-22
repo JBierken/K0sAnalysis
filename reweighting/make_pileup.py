@@ -9,7 +9,7 @@ import numpy as np
 import argparse
 
 # Get BaseDir
-baseDir     = '/user/jbierken/CMSSW_14_0_15/src/K0sAnalysis/reweighting'
+baseDir     = '/user/jbierken/CMSSW_15_0_17/src/K0sAnalysis/reweighting'
 
 def get_args():
     # get arguments
@@ -80,7 +80,7 @@ def make_pileup_mc(era,  base_dir=baseDir):
     elif era == '2025':
         from SimGeneral\
                 .MixingModule\
-                .mix_2025_25ns_Run3pp13p6TeVSpring25_PoissonOOTPU_cfi.py import mix
+                .mix_2024_25ns_RunIII2024Summer24_PoissonOOTPU_cfi import mix
     else:
         print('Unrecognized era', args.era)
         sys.exit(0)
@@ -120,6 +120,7 @@ def get_pileup(era, base_dir=baseDir): # code below taken from spark tnp
             '2023postBPix': base_dir + '/pileup/data/run3/pileupHistogram-Cert_Collisions2023_369803_370790_eraD_GoldenJson-13p6TeV-66000ub-99bins.root',
             '2023':         base_dir + '/pileup/data/run3/pileupHistogram-Cert_Collisions2023_366442_370790_GoldenJson-13p6TeV-66000ub-99bins.root',
             '2024':         base_dir + '/pileup/data/run3/pileupHistogram-Cert_Collisions2024_378981_386951_GoldenJson-13p6TeV-66000ub-99bins.root',
+            '2025':         base_dir + '/pileup/data/run3/dataPileupHistogram-2025pp_Golden-66000ub.root',
             }
     mcPileup = {
             # Run-2
@@ -135,6 +136,7 @@ def get_pileup(era, base_dir=baseDir): # code below taken from spark tnp
             '2023postBPix': base_dir + '/pileup/2023postBPix/mcPileup.root',
             '2023':         base_dir + '/pileup/2023/mcPileup.root',
             '2024':         base_dir + '/pileup/2024/mcPileup.root',
+            '2025':         base_dir + '/pileup/2025/mcPileup.root',
             }
     
     with uproot.open(dataPileup[era]) as f:

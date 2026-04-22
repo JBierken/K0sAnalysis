@@ -142,6 +142,14 @@ def getfiles_run3( filedir, includelist ):
 
     filename                    = 'selected.root'
 
+    def get_mc_split_info(era):
+        # Use disjoint 2024-MC event subsets for 2024 (even) and 2025 (odd).
+        if era.startswith('2024'):
+            return {'splitparity': 'even', 'splitbranch': '_event'}
+        if era.startswith('2025'):
+            return {'splitparity': 'odd', 'splitbranch': '_event'}
+        return {}
+
     # loop over eras
     for era in includelist:
 
@@ -171,6 +179,7 @@ def getfiles_run3( filedir, includelist ):
                                     'year':         year, 
                                     'campaign':     'run3'
                                 }])
+        mcin[0].update(get_mc_split_info(era))
         
         datain                  = ([{
                                     'file':         os.path.join(filedir, datadir, filename),
@@ -203,6 +212,7 @@ def getfiles_run3( filedir, includelist ):
                         'year':         year, 
                         'campaign':     'run3'
             })
+            mcin[-1].update(get_mc_split_info(year))
             datain.append({ 
                         'file':         os.path.join(filedir, datadirdict[year], filename),
                         'label':        '{} data'.format(year),
@@ -234,6 +244,7 @@ def getfiles_run3( filedir, includelist ):
                         'year':         year, 
                         'campaign':     'run3'
             })
+            mcin[-1].update(get_mc_split_info(year))
             datain.append({ 
                         'file':         os.path.join(filedir, datadirdict[year], filename),
                         'label':        '{} data'.format(year),
@@ -255,7 +266,6 @@ def getfiles_run3( filedir, includelist ):
     if 'run3' in includelist:
         mcin, datain            = [], []
         
-        #for year in ['2022preEE', '2022postEE', '2023preBPix', '2023postBPix', '2024']:
         for year in ['2022preEE', '2022postEE', '2023preBPix', '2023postBPix', '2024', '2025']:
             eralabel = year
             
@@ -267,6 +277,7 @@ def getfiles_run3( filedir, includelist ):
                         'year':         year, 
                         'campaign':     'run3'
             })
+            mcin[-1].update(get_mc_split_info(year))
             datain.append({ 
                         'file':         os.path.join(filedir, datadirdict[year], filename),
                         'label':        '{} data'.format(year),
