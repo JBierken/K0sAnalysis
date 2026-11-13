@@ -10,13 +10,15 @@ Apart from event selection, branch reduction is performed.
 #include <algorithm>
 #include <exception>
 #include <iostream>
+#include <memory>
 
-// include ROOT classes 
+// include ROOT classes
 #include "TH1D.h"
 #include "TFile.h"
 #include "TTree.h"
 #include "TROOT.h"
 #include "TMath.h"
+#include "TVector2.h"
 #include "Math/Vector4D.h"
 
 // definition of constants
@@ -46,13 +48,14 @@ double bTagThreshold(   const std::string&  campaign,
     }
     else if (campaign=="run3")
     {
-        // Run-3: Loose working point for DeepJet 
+        // Run-3: Loose working point for DeepJet (applied to _jetDeepFlavor = b+bb+lepb, AK4 PUPPI jets)
+        // 2022-2023BPix: official values, checked against BTV jsonpog-integration "deepJet_wp_values" (Nov 2026)
 	    if(     year=="2022")          return 0.0583;
 	    else if(year=="2022EE")        return 0.0614;
 	    else if(year=="2023")          return 0.0479;
 	    else if(year=="2023BPix")      return 0.048;
-	    else if(year=="2024")          return 0.048; //SF campaign not finalised, so using 2023 SFs
-	    else if(year=="2025")          return 0.048;
+	    else if(year=="2024")          return 0.048; // PLACEHOLDER (2023BPix value): no official 2024 DeepJet WP (2024_Summer24 only has UParT)
+	    else if(year=="2025")          return 0.048; // PLACEHOLDER (2023BPix value): no official 2025 DeepJet WP yet
         //else if(year=="2024")          return 0.0246;
 	    //else if(year=="2025")          return 0.0246; // SF not yet available for 2025???
     }
@@ -61,6 +64,67 @@ double bTagThreshold(   const std::string&  campaign,
     std::string msg                     = "ERROR in bTagThreshold:";
     msg                                 += " campaign '" + campaign + "' or year '" + year + "' not recognized.";
     throw std::runtime_error(msg);
+}
+
+// ---------------------------------------------------------------------------------------------
+// b-taggers stored in the V0Analyzer ntuples (AK4 PUPPI jets, see V0Analysis/V0Analyzer JetAnalyzer)
+//   score branch = the b-vs-all discriminant on which the BTV working points are defined
+//   (-1 in the ntuples means: tagger not available in this production, or jet not evaluated)
+// ---------------------------------------------------------------------------------------------
+enum Tagger { kDeepJet = 0, kPNet, kRobustParT, kUParT, nTaggers };
+const std::string taggerNames[nTaggers]    = { "DeepJet",        "PNet",                   "RobustParT",            "UParT"            };
+const std::string taggerBranches[nTaggers] = { "_jetDeepFlavor", "_jetParticleNet_BvsAll", "_jetRobustParT_BvsAll", "_jetUParT_BvsAll" };
+
+Tagger taggerFromName(const std::string& name)
+{
+    for(int t = 0; t < nTaggers; ++t){
+        std::string lower = taggerNames[t];
+        std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
+        if(name == taggerNames[t] || name == lower) return static_cast<Tagger>(t);
+    }
+    throw std::runtime_error("ERROR: unknown b-tagger '" + name + "' (use DeepJet, PNet, RobustParT or UParT)");
+}
+
+// Loose working points per tagger and year. Returns -1 if there is no working point.
+// Source: BTV jsonpog-integration (cvmfs: /cvmfs/cms.cern.ch/rsync/cms-nanoAOD/jsonpog-integration/POG/BTV/<era>/btagging.json.gz,
+//         corrections "<tagger>_wp_values"), checked Nov 2026:
+//   - 2022, 2022EE, 2023, 2023BPix: DeepJet, ParticleNet, RobustParT
+//   - 2024 (Summer24): UParT only
+//   - 2025: nothing yet
+// Every value without an official BTV number is marked "PLACEHOLDER" (grep for it to update later):
+//   DeepJet 2024/2025, PNet 2024/2025, RobustParT 2024/2025 -> 2023BPix value
+//   UParT 2022-2023BPix -> 2024 value, UParT 2025 -> 2024 value
+// Note: RobustParT is not stored in 2024 MINIv6/2025 ntuples and UParT not in 2022/2023 ntuples;
+//       there the tagger is detected as not evaluated and _nimloth_nBJets_<tagger> = -1 regardless of the WP.
+double looseWP(Tagger tagger, const std::string& campaign, const std::string& year)
+{
+    if(tagger == kDeepJet) return bTagThreshold(campaign, year);
+    if(campaign != "run3") return -1.;
+    if(tagger == kPNet){
+        if(     year == "2022")         return 0.047;
+        else if(year == "2022EE")       return 0.0499;
+        else if(year == "2023")         return 0.0358;
+        else if(year == "2023BPix")     return 0.0359;
+        else if(year == "2024")         return 0.0359;   // PLACEHOLDER (2023BPix value): no official 2024 WP yet
+        else if(year == "2025")         return 0.0359;   // PLACEHOLDER (2023BPix value): no official 2025 WP yet
+    }
+    else if(tagger == kRobustParT){
+        if(     year == "2022")         return 0.0849;
+        else if(year == "2022EE")       return 0.0897;
+        else if(year == "2023")         return 0.0681;
+        else if(year == "2023BPix")     return 0.0683;
+        else if(year == "2024")         return 0.0683;   // PLACEHOLDER (2023BPix value): no official 2024 WP yet
+        else if(year == "2025")         return 0.0683;   // PLACEHOLDER (2023BPix value): no official 2025 WP yet
+    }
+    else if(tagger == kUParT){
+        if(     year == "2022")         return 0.0246;   // PLACEHOLDER (2024 value): no official 2022 WP
+        else if(year == "2022EE")       return 0.0246;   // PLACEHOLDER (2024 value): no official 2022EE WP
+        else if(year == "2023")         return 0.0246;   // PLACEHOLDER (2024 value): no official 2023 WP
+        else if(year == "2023BPix")     return 0.0246;   // PLACEHOLDER (2024 value): no official 2023BPix WP
+        else if(year == "2024")         return 0.0246;
+        else if(year == "2025")         return 0.0246;   // PLACEHOLDER (2024 value): no official 2025 WP yet
+    }
+    return -1.;
 }
 
 bool containsAny(const std::string& s, const std::vector<std::string>& patterns){
@@ -168,9 +232,10 @@ std::vector< std::shared_ptr< TH1 > > getHistogramsFromFile( TFile* f )
     return histogramVector;
 }
 
-void skimFile(const std::string&        inputFilePath, 
-		        const std::string&      outputFilePath, 
-		        long unsigned           nEntries )
+void skimFile(const std::string&        inputFilePath,
+		        const std::string&      outputFilePath,
+		        long unsigned           nEntries,
+                Tagger                  vetoTagger )
 {
 
     std::cout <<    "skimming "         <<  inputFilePath   <<  std::endl;
@@ -196,10 +261,12 @@ void skimFile(const std::string&        inputFilePath,
     inputTreePtr->SetBranchStatus(      "_jetPt",           1);
     inputTreePtr->SetBranchStatus(      "_jetEta",          1);
     inputTreePtr->SetBranchStatus(      "_jetPhi",          1);
-    //inputTreePtr->SetBranchStatus(    "_jetDeepCsv_b",    1);
-    inputTreePtr->SetBranchStatus(      "_jetDeepFlavor_b",    1);
-    //inputTreePtr->SetBranchStatus(    "_jetDeepCsv_bb",   1);
-    inputTreePtr->SetBranchStatus(      "_jetDeepFlavor_bb",   1);
+    // b-tag scores (kept in the output tree as well); a branch may be absent in older ntuples
+    bool hasBranch[nTaggers];
+    for(int t = 0; t < nTaggers; ++t){
+        hasBranch[t]                    = ( inputTreePtr->GetBranch(taggerBranches[t].c_str()) != nullptr );
+        if(hasBranch[t])                inputTreePtr->SetBranchStatus(taggerBranches[t].c_str(), 1);
+    }
     inputTreePtr->SetBranchStatus(      "_met*",            0);
 
     // make output ROOT file
@@ -220,6 +287,12 @@ void skimFile(const std::string&        inputFilePath,
     Double_t    _celeborn_lEta[2];      outputTreePtr->Branch("_celeborn_lEta",     &_celeborn_lEta,    "_celeborn_lEta[2]/D");
     Double_t    _celeborn_lPhi[2];      outputTreePtr->Branch("_celeborn_lPhi",     &_celeborn_lPhi,    "_celeborn_lPhi[2]/D");
     UInt_t      _celeborn_lCharge[2];   outputTreePtr->Branch("_celeborn_lCharge",  &_celeborn_lCharge, "_celeborn_lCharge[2]/I");
+    // extend output tree with the number of loose b-tagged jets per tagger (-1: tagger or working point not available)
+    Int_t _nimloth_nBJets[nTaggers];
+    for(int t = 0; t < nTaggers; ++t){
+        const std::string name          = "_nimloth_nBJets_" + taggerNames[t];
+        outputTreePtr->Branch(name.c_str(), &_nimloth_nBJets[t], (name + "/I").c_str());
+    }
 
     // link input tree branches used to evaluate the skim condition to variables
     // NOTE: nL_max and nJets_max must correspond to the values used in the ntuplizer,
@@ -244,13 +317,48 @@ void skimFile(const std::string&        inputFilePath,
     Double_t _jetPt[            nJets_max];         inputTreePtr->SetBranchAddress("_jetPt",            _jetPt);
     Double_t _jetEta[           nJets_max];         inputTreePtr->SetBranchAddress("_jetEta",           _jetEta);
     Double_t _jetPhi[           nJets_max];         inputTreePtr->SetBranchAddress("_jetPhi",           _jetPhi);
-    //Double_t _jetDeepCsv_b[   nJets_max];         inputTreePtr->SetBranchAddress("_jetDeepCsv_b",     _jetDeepCsv_b);
-    Double_t _jetDeepFlavor_b[     nJets_max];         inputTreePtr->SetBranchAddress("_jetDeepFlavor_b",     _jetDeepFlavor_b);
-    //Double_t _jetDeepCsv_bb[  nJets_max];         inputTreePtr->SetBranchAddress("_jetDeepCsv_bb",    _jetDeepCsv_bb);
-    Double_t _jetDeepFlavor_bb[    nJets_max];         inputTreePtr->SetBranchAddress("_jetDeepFlavor_bb",    _jetDeepFlavor_bb);
+    // b-tag scores: the b-vs-all discriminant of each tagger (DeepJet: b+bb+lepb)
+    Double_t _jetBTag[nTaggers][nJets_max];
+    for(int t = 0; t < nTaggers; ++t){
+        std::fill_n(_jetBTag[t], nJets_max, -1.);
+        if(hasBranch[t])                            inputTreePtr->SetBranchAddress(taggerBranches[t].c_str(), _jetBTag[t]);
+    }
+
+    if(nEntries<=0)                                 nEntries        = inputTreePtr->GetEntries();
+
+    // determine which taggers are usable in this file:
+    //   branch present + evaluated (score >= 0) for at least one jet in the b-tag acceptance + a working point for this year.
+    //   RobustParT is absent in 2024 MINIv6/2025 ntuples and UParT in 2022/2023 ntuples (stored as -1).
+    bool evaluated[nTaggers]                        = {false, false, false, false};
+    bool sawCentralJet                              = false;
+    const long unsigned nScan                       = std::min<long unsigned>(nEntries, 2000);
+    for(long unsigned entry = 0; entry < nScan; ++entry){
+        inputTreePtr->GetEntry(entry);
+        for(unsigned j = 0; j < _nJets; ++j){
+            if(_jetPt[j] < 25. || std::fabs(_jetEta[j]) >= 2.4) continue;
+            sawCentralJet                           = true;
+            for(int t = 0; t < nTaggers; ++t) if(hasBranch[t] && _jetBTag[t][j] >= 0.) evaluated[t] = true;
+        }
+    }
+    // tiny file without any jet in the b-tag acceptance: availability cannot be tested (and no jet can be b-tagged anyway)
+    if(!sawCentralJet) for(int t = 0; t < nTaggers; ++t) evaluated[t] = hasBranch[t];
+    bool   usable[nTaggers];
+    double wp[nTaggers];
+    std::cout << "b-taggers (veto with " << taggerNames[vetoTagger] << "):" << std::endl;
+    for(int t = 0; t < nTaggers; ++t){
+        wp[t]                                       = looseWP(static_cast<Tagger>(t), campaign, year);
+        usable[t]                                   = hasBranch[t] && evaluated[t] && wp[t] > 0.;
+        std::cout << "  " << taggerNames[t] << ": branch=" << (hasBranch[t] ? "yes" : "no")
+                  << " evaluated=" << (evaluated[t] ? "yes" : "no") << " looseWP=" << wp[t]
+                  << (usable[t] ? "" : "  -> not used, _nimloth_nBJets_" + taggerNames[t] + " = -1") << std::endl;
+    }
+    if(!usable[vetoTagger]){
+        throw std::runtime_error("ERROR: b-veto tagger " + taggerNames[vetoTagger] + " is not usable for " + year
+                                 + " (missing in the ntuple or no working point)");
+    }
+
     // start event loop
     unsigned                                        debugcounter    = 0;
-    if(nEntries<=0)                                 nEntries        = inputTreePtr->GetEntries();
 
     for( long unsigned entry = 0; entry < nEntries; ++entry )
     {
@@ -309,32 +417,36 @@ void skimFile(const std::string&        inputFilePath,
         // note: need to reconsider jet from lepton cleaning, maybe to strict here (e.g taus?)!
         // note: also need to consider jet quality cuts,
         //       especially eta requirement for b-tagging score to make sense
-        int nbjets                                  = 0;
+        int nbjets[nTaggers]                        = {0, 0, 0, 0};
         _nimloth_nJets                              = 0;
         for(unsigned j = 0; j < _nJets; ++j)
         {
             // jet pt
             if( _jetPt[j] < 25. )                   continue;
-	        
-            // remove jets overlapping with leptons
+
+            // remove jets overlapping with leptons (delta phi wrapped into [-pi, pi])
 	        bool                                    isleptonjet = false;
 	        for(unsigned i = 0; i < _nL; ++i)
             {
-		        double deltaR                       = std::sqrt( std::pow(_lEta[i]-_jetEta[j],2)
-			        		                        +std::pow(_lPhi[i]-_jetPhi[j],2));
-		        if(deltaR < 0.4)                    {isleptonjet = true; break;}
+                const double dEta                   = _lEta[i] - _jetEta[j];
+                const double dPhi                   = TVector2::Phi_mpi_pi(_lPhi[i] - _jetPhi[j]);
+		        if(std::sqrt(dEta*dEta + dPhi*dPhi) < 0.4) {isleptonjet = true; break;}
 	        }
 	        if(isleptonjet)                         continue;
 	        ++_nimloth_nJets;
-	        
-            // check if it is a b-jet
-	        //double btagvalue                      = _jetDeepCsv_b[j]+_jetDeepCsv_bb[j];
-	        double btagvalue                        = _jetDeepFlavor_b[j]+_jetDeepFlavor_bb[j];
+
+            // check if it is a b-jet (loose working point), separately for each usable tagger
 	        bool inBTagAcceptance                   = ( std::fabs(_jetEta[j]) < 2.4 );
-	        if( inBTagAcceptance 
-                && btagvalue > bTagThreshold(campaign, year) ) ++nbjets;
+            if( !inBTagAcceptance )                 continue;
+            for(int t = 0; t < nTaggers; ++t)
+            {
+                if( usable[t] && _jetBTag[t][j] > wp[t] ) ++nbjets[t];
+            }
 	    }
-	    if(nbjets > 0)                              continue;
+        for(int t = 0; t < nTaggers; ++t)           _nimloth_nBJets[t] = usable[t] ? nbjets[t] : -1;
+
+        // condition: b-jet veto with the chosen tagger
+	    if(nbjets[vetoTagger] > 0)                  continue;
 
         // fill new tree
 	    ++debugcounter;
@@ -357,10 +469,11 @@ void skimFile(const std::string&        inputFilePath,
 
 int main( int argc, char* argv[] ){
     std::cerr << "###starting###"                   << std::endl;
-    if( argc != 4 )
+    if( argc != 4 && argc != 5 )
     {
-        std::cerr               << "### ERROR ###: skimmer requires exactly three arguments to run :"   << std::endl;
-	    std::cerr               << "input_file_path, output_file_path, nentries"                        << std::endl;
+        std::cerr               << "### ERROR ###: skimmer requires three or four arguments to run :"   << std::endl;
+	    std::cerr               << "input_file_path, output_file_path, nentries [, veto_tagger]"        << std::endl;
+	    std::cerr               << "veto_tagger: DeepJet (default), PNet, RobustParT or UParT"          << std::endl;
         return -1;
     }
 
@@ -369,8 +482,9 @@ int main( int argc, char* argv[] ){
     std::string&                                    output_directory    = argvStr[2];
     long int                                        nEntries_raw        = std::stol(argvStr[3]);
     if(nEntries_raw < 0)                            nEntries_raw        = 0;
-    long unsigned                                   nEntries            = (long unsigned) nEntries_raw; 
-    skimFile( input_file_path,                      output_directory, nEntries );
+    long unsigned                                   nEntries            = (long unsigned) nEntries_raw;
+    Tagger                                          vetoTagger          = (argc == 5) ? taggerFromName(argvStr[4]) : kDeepJet;
+    skimFile( input_file_path,                      output_directory, nEntries, vetoTagger );
     std::cerr << "###done###"                       << std::endl;
     return 0;
 }
