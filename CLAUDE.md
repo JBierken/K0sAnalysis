@@ -13,7 +13,7 @@ The analysis framework for a CMS displaced-vertexing study with V0s (K0S, Λ). I
 ## Pipeline
 All steps run with CMSSW sourced (`cmsenv` in `CMSSW_15_0_17`, python3, ROOT, uproot, awkward). Most scripts use relative paths (`sys.path.append('../')`, `python3 ../plotting/...`), so **run them from their own directory**.
 
-1. **Skim** (`skimming/`): `make -f make_skim_ztomumu`, then `./skim_ztomumu <in> <out>`, or batch via `skim_submit.py -i <samplelist> -o <outdir>`. The selection keeps events with exactly 2 POG-medium muons (pT > 30/25 GeV, |η| < 2.4, opposite charge), `_passTrigger_mm`, |mμμ − mZ| < 10 GeV and no b-tagged jet (DeepJet `b+bb` > loose WP from `bTagThreshold(campaign, year)`). It adds `_nimloth_*` (event) and `_celeborn_*` (muon) branches. Campaign and year are parsed from the **input file path** (`getYearFromFileName`).
+1. **Skim** (`skimming/`): `make -f make_skim_ztomumu`, then `./skim_ztomumu <in> <out> <nentries|-1> [veto_tagger]`, or batch via `skim_submit.py -i <samplelist> -o <outdir>`. The selection keeps events with exactly 2 POG-medium muons (pT > 30/25 GeV, |η| < 2.4, opposite charge), `_passTrigger_mm`, |mμμ − mZ| < 10 GeV and no b-tagged jet (loose WP). The veto tagger and all loose WPs come from one per-period table, `bTagSettingsTable` (look it up with `bTagSettings(campaign, year)`). Defaults: **RobustParT for 2022–2023BPix, UParT for 2024/2025, and the DeepJet column for Run 2**. The optional 4th argument (`DeepJet|PNet|RobustParT|UParT|default`) overrides the default. `_nimloth_nBJets_<tagger>` is written for all four taggers (−1 if the tagger isn't evaluated in that ntuple or has no WP). WPs without an official BTV value are marked `PLACEHOLDER`. It adds `_nimloth_*` (event) and `_celeborn_*` (muon) branches. Campaign and year are parsed from the **input file path** (`getYearFromFileName`).
 2. **V0 building** (`v0building/`): `v0builder.py -i <in> -o <out> [-s legacy]`, batch via `v0builder_submit.py`, merge via `merge.py`/`mergeeras.py`. Selection is in `v0selections.py::selection_legacy`. It writes trees `laurelin` (K0S) and `telperion` (Λ) with `_RPV`, `_RPVSig`, `_mass`, `_pt`, `_eta`, `_phi`, `_weight`, `_nTrueInt`, …, and copies `hCounter`.
 3. **Analysis** (`analysis/`), driven by `mcvsdata_submit.py`:
    ```bash
@@ -45,17 +45,17 @@ The signal model is a Gaussian or double Gaussian on a pol1/pol2 background in t
 `skimming/skim_ztomumu.cc` breaks quietly when this contract drifts. Check it whenever the V0Analyzer changes:
 - The tree path is `blackJackAndHookers/blackJackAndHookersTree`. Histograms in that directory are copied over.
 - Fixed array sizes must match the ntuplizer headers: `nL_max = 20` (`LeptonAnalyzer.h`), `nJets_max = 100` (`JetAnalyzer.h`).
-- Branches read: `_nL`, `_nLight`, `_nMu`, `_lPOGMedium`, `_lPt`, `_lEta`, `_lPhi`, `_lE`, `_lCharge`, `_passTrigger_mm`, `_nJets`, `_jetPt`, `_jetEta`, `_jetPhi`, `_jetDeepFlavor_b`, `_jetDeepFlavor_bb`. The skim assumes muons are stored first in the lepton arrays.
-- Switching the b-veto tagger (e.g. to `_jetParticleNet_BvsAll`) requires changing the branch reads, the `SetBranchStatus` re-enables and the WP table in `bTagThreshold`.
+- Branches read: `_nL`, `_nLight`, `_nMu`, `_lPOGMedium`, `_lPt`, `_lEta`, `_lPhi`, `_lE`, `_lCharge`, `_passTrigger_mm`, `_nJets`, `_jetPt`, `_jetEta`, `_jetPhi`, and the b-vs-all scores `_jetDeepFlavor`, `_jetParticleNet_BvsAll`, `_jetRobustParT_BvsAll`, `_jetUParT_BvsAll` (each optional; −1 means not evaluated). The skim assumes muons are stored first in the lepton arrays.
+- To add a tagger, extend `Tagger`/`taggerNames`/`taggerBranches` and add a column to `bTagSettingsTable`. To add a period, add a row there and a match in `getYearFromFileName`. Tagger availability in the v1 ntuples: RobustParT is evaluated in 2022/2023 only, UParT in 2024/2025 only, DeepJet and PNet everywhere.
 - Downstream, `v0building/v0builder.py` reads `_V0*` branches, `hCounter` and `nTrueInteractions` from the same directory.
 
 ## Skimmer pitfalls (fixed 2026-11-12, keep in mind)
 - Any branch read in the skim event loop must be re-enabled after the `SetBranchStatus("_jet*", 0)`-style disables, because `GetEntry` does not fill disabled branches. `_jetPt` was missing, so the jet pT cut and the b-veto did nothing. Skims made before the fix (all of `/pnfs/.../K0sAnalysis/skim_results/run3/` as of 2026-11-12) effectively have **no b-veto**, and `_nimloth_nJets` is ~0 in them.
-- `getYearFromFileName` must check sub-campaigns before their parent year (2022EE before 2022, 2023BPix before 2023). Data is matched on the era (Run2022E/F/G, Run2023D) and MC on the campaign name (`Run3Summer22EE`, `RunIII2024Summer24`, …). Unknown years now throw in `bTagThreshold` instead of silently returning 0.
+- `getYearFromFileName` must check sub-campaigns before their parent year (2022EE before 2022, 2023BPix before 2023). Data is matched on the era (Run2022E/F/G, Run2023D) and MC on the campaign name (`Run3Summer22EE`, `RunIII2024Summer24`, …). Unknown periods throw in `bTagSettings` instead of silently returning 0.
 - Test the skimmer without real ntuples by compiling a harness that does `#define main skim_main` + `#include "skim_ztomumu.cc"`. Build it inside `cmsenv`: the system ROOT in `/usr/bin` lacks `Math/Vector4D.h`.
 
 ## Known issues (open)
-- In 2024 MC (the `RunIII2024Summer24MiniAODv6` skims), `_jetDeepFlavor_b/_bb` are all −1000, meaning the tagger label is missing in the ntuple. The b-veto can therefore never fire for 2024/2025 MC, while it can in data. This is being addressed in the V0Analyzer jet-tagging rework.
+- No official BTV loose WPs exist yet for 2025 (any tagger), for DeepJet/PNet/RobustParT in 2024, or for UParT in 2022/2023. These are `PLACEHOLDER`s in `bTagSettingsTable`. The default veto taggers only use placeholders in 2025.
 - In the `normmode=='range'` block of `mcvsdata_fill.py`, `file_total` is computed but no longer used (it was a leftover diagnostic).
 - `mcvsdata_submit.py` hard-codes `CMSSW = '/user/jbierken/CMSSW_15_0_17'`.
 

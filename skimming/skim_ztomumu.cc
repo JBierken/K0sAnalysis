@@ -24,53 +24,12 @@ Apart from event selection, branch reduction is performed.
 // definition of constants
 const static double     ZMass = 91.19;
 
-// definition of b-tag thresholds
-// see e.g. subpages of https://twiki.cern.ch/twiki/bin/viewauth/CMS/BtagRecommendation
-//              ---> Outdated: New Twiki: https://btv-wiki.docs.cern.ch/ 
-// the thresholds correspond to loose working point for Deep-CSV (for Run-2) and DeepJet (for Run-3).
-double bTagThreshold(   const std::string&  campaign, 
-                        const std::string&  year)
-{
-    if(campaign     == "run2preul")
-    {
-        // Run-2: Loose working point for Deep-CSV
-	    if(     year== "2016")          return 0.2217;
-	    else if(year== "2017")          return 0.1522;
-	    else if(year== "2018")          return 0.1241;
-    } 
-    else if(campaign=="run2ul")
-    {
-        // Run-2: Loose working point for Deep-CSV
-	    if(     year=="2016PreVFP")    return 0.2027;
-	    else if(year=="2016PostVFP")   return 0.1918;
-        else if(year=="2017")          return 0.1355;
-        else if(year=="2018")          return 0.1208;
-    }
-    else if (campaign=="run3")
-    {
-        // Run-3: Loose working point for DeepJet (applied to _jetDeepFlavor = b+bb+lepb, AK4 PUPPI jets)
-        // 2022-2023BPix: official values, checked against BTV jsonpog-integration "deepJet_wp_values" (Nov 2026)
-	    if(     year=="2022")          return 0.0583;
-	    else if(year=="2022EE")        return 0.0614;
-	    else if(year=="2023")          return 0.0479;
-	    else if(year=="2023BPix")      return 0.048;
-	    else if(year=="2024")          return 0.048; // PLACEHOLDER (2023BPix value): no official 2024 DeepJet WP (2024_Summer24 only has UParT)
-	    else if(year=="2025")          return 0.048; // PLACEHOLDER (2023BPix value): no official 2025 DeepJet WP yet
-        //else if(year=="2024")          return 0.0246;
-	    //else if(year=="2025")          return 0.0246; // SF not yet available for 2025???
-    }
-    // unknown campaign, or unknown year within a known campaign:
-    // fail loudly instead of silently returning a threshold of 0 (which would tag every jet)
-    std::string msg                     = "ERROR in bTagThreshold:";
-    msg                                 += " campaign '" + campaign + "' or year '" + year + "' not recognized.";
-    throw std::runtime_error(msg);
-}
-
+// ---------------------------------------------------------------------------------------------
+// b-tagging
 // ---------------------------------------------------------------------------------------------
 // b-taggers stored in the V0Analyzer ntuples (AK4 PUPPI jets, see V0Analysis/V0Analyzer JetAnalyzer)
 //   score branch = the b-vs-all discriminant on which the BTV working points are defined
 //   (-1 in the ntuples means: tagger not available in this production, or jet not evaluated)
-// ---------------------------------------------------------------------------------------------
 enum Tagger { kDeepJet = 0, kPNet, kRobustParT, kUParT, nTaggers };
 const std::string taggerNames[nTaggers]    = { "DeepJet",        "PNet",                   "RobustParT",            "UParT"            };
 const std::string taggerBranches[nTaggers] = { "_jetDeepFlavor", "_jetParticleNet_BvsAll", "_jetRobustParT_BvsAll", "_jetUParT_BvsAll" };
@@ -82,49 +41,58 @@ Tagger taggerFromName(const std::string& name)
         std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
         if(name == taggerNames[t] || name == lower) return static_cast<Tagger>(t);
     }
-    throw std::runtime_error("ERROR: unknown b-tagger '" + name + "' (use DeepJet, PNet, RobustParT or UParT)");
+    throw std::runtime_error("ERROR: unknown b-tagger '" + name + "' (use DeepJet, PNet, RobustParT, UParT or default)");
 }
 
-// Loose working points per tagger and year. Returns -1 if there is no working point.
-// Source: BTV jsonpog-integration (cvmfs: /cvmfs/cms.cern.ch/rsync/cms-nanoAOD/jsonpog-integration/POG/BTV/<era>/btagging.json.gz,
-//         corrections "<tagger>_wp_values"), checked Nov 2026:
-//   - 2022, 2022EE, 2023, 2023BPix: DeepJet, ParticleNet, RobustParT
-//   - 2024 (Summer24): UParT only
-//   - 2025: nothing yet
-// Every value without an official BTV number is marked "PLACEHOLDER" (grep for it to update later):
-//   DeepJet 2024/2025, PNet 2024/2025, RobustParT 2024/2025 -> 2023BPix value
-//   UParT 2022-2023BPix -> 2024 value, UParT 2025 -> 2024 value
-// Note: RobustParT is not stored in 2024 MINIv6/2025 ntuples and UParT not in 2022/2023 ntuples;
-//       there the tagger is detected as not evaluated and _nimloth_nBJets_<tagger> = -1 regardless of the WP.
-double looseWP(Tagger tagger, const std::string& campaign, const std::string& year)
+// b-tagging settings per data-taking period:
+//   - vetoTagger: the tagger used for the b-jet veto unless overridden on the command line
+//       Run-2:          DeepJet column (legacy)
+//       2022 - 2023BPix: RobustParT (the BTV-recommended transformer tagger for these campaigns)
+//       2024 and later:  UParT      (the only tagger with official 2024 working points; RobustParT is not in the 2024/2025 ntuples)
+//   - looseWP[tagger]: loose working point on the b-vs-all score, noWP (-1) if there is none
+// Source: https://btv-wiki.docs.cern.ch/ and BTV jsonpog-integration
+//   (/cvmfs/cms.cern.ch/rsync/cms-nanoAOD/jsonpog-integration/POG/BTV/<era>/btagging.json.gz, "<tagger>_wp_values"), checked Nov 2026:
+//   - Run-2: the DeepJet column holds the legacy Deep-CSV loose WPs used in the Run-2 analysis
+//   - 2022, 2022EE, 2023, 2023BPix: official DeepJet, ParticleNet and RobustParT values
+//   - 2024 (Summer24): official UParT value only
+//   - 2025: nothing official yet
+// Every value without an official BTV number is marked PLACEHOLDER (grep for it to update later).
+// Note: a tagger that is not evaluated in the ntuple of a period (RobustParT in 2024/2025, UParT in 2022/2023)
+//       is detected at run time and gets _nimloth_nBJets_<tagger> = -1 regardless of the WP.
+const double noWP = -1.;
+struct PeriodBTagSettings {
+    std::string campaign;
+    std::string year;
+    Tagger      vetoTagger;
+    double      looseWP[nTaggers];
+};
+const std::vector<PeriodBTagSettings> bTagSettingsTable = {
+    // campaign     year            veto tagger     { DeepJet,  PNet,     RobustParT, UParT  }
+    { "run2preul",  "2016",         kDeepJet,       { 0.2217,   noWP,     noWP,       noWP   } },
+    { "run2preul",  "2017",         kDeepJet,       { 0.1522,   noWP,     noWP,       noWP   } },
+    { "run2preul",  "2018",         kDeepJet,       { 0.1241,   noWP,     noWP,       noWP   } },
+    { "run2ul",     "2016PreVFP",   kDeepJet,       { 0.2027,   noWP,     noWP,       noWP   } },
+    { "run2ul",     "2016PostVFP",  kDeepJet,       { 0.1918,   noWP,     noWP,       noWP   } },
+    { "run2ul",     "2017",         kDeepJet,       { 0.1355,   noWP,     noWP,       noWP   } },
+    { "run2ul",     "2018",         kDeepJet,       { 0.1208,   noWP,     noWP,       noWP   } },
+    { "run3",       "2022",         kRobustParT,    { 0.0583,   0.047,    0.0849,     0.0246 } },
+    { "run3",       "2022EE",       kRobustParT,    { 0.0614,   0.0499,   0.0897,     0.0246 } },
+    { "run3",       "2023",         kRobustParT,    { 0.0479,   0.0358,   0.0681,     0.0246 } },
+    { "run3",       "2023BPix",     kRobustParT,    { 0.048,    0.0359,   0.0683,     0.0246 } },
+    { "run3",       "2024",         kUParT,         { 0.048,    0.0359,   0.0683,     0.0246 } },
+    { "run3",       "2025",         kUParT,         { 0.048,    0.0359,   0.0683,     0.0246 } },
+    // PLACEHOLDER: UParT 2022-2023BPix          -> 2024 value (no official WP; UParT is not in these ntuples anyway)
+    // PLACEHOLDER: DeepJet/PNet/RobustParT 2024 -> 2023BPix value (2024_Summer24 only has UParT)
+    // PLACEHOLDER: all of 2025                  -> 2023BPix (DeepJet/PNet/RobustParT) and 2024 (UParT) values
+};
+
+const PeriodBTagSettings& bTagSettings(const std::string& campaign, const std::string& year)
 {
-    if(tagger == kDeepJet) return bTagThreshold(campaign, year);
-    if(campaign != "run3") return -1.;
-    if(tagger == kPNet){
-        if(     year == "2022")         return 0.047;
-        else if(year == "2022EE")       return 0.0499;
-        else if(year == "2023")         return 0.0358;
-        else if(year == "2023BPix")     return 0.0359;
-        else if(year == "2024")         return 0.0359;   // PLACEHOLDER (2023BPix value): no official 2024 WP yet
-        else if(year == "2025")         return 0.0359;   // PLACEHOLDER (2023BPix value): no official 2025 WP yet
+    for(const auto& row : bTagSettingsTable){
+        if(row.campaign == campaign && row.year == year) return row;
     }
-    else if(tagger == kRobustParT){
-        if(     year == "2022")         return 0.0849;
-        else if(year == "2022EE")       return 0.0897;
-        else if(year == "2023")         return 0.0681;
-        else if(year == "2023BPix")     return 0.0683;
-        else if(year == "2024")         return 0.0683;   // PLACEHOLDER (2023BPix value): no official 2024 WP yet
-        else if(year == "2025")         return 0.0683;   // PLACEHOLDER (2023BPix value): no official 2025 WP yet
-    }
-    else if(tagger == kUParT){
-        if(     year == "2022")         return 0.0246;   // PLACEHOLDER (2024 value): no official 2022 WP
-        else if(year == "2022EE")       return 0.0246;   // PLACEHOLDER (2024 value): no official 2022EE WP
-        else if(year == "2023")         return 0.0246;   // PLACEHOLDER (2024 value): no official 2023 WP
-        else if(year == "2023BPix")     return 0.0246;   // PLACEHOLDER (2024 value): no official 2023BPix WP
-        else if(year == "2024")         return 0.0246;
-        else if(year == "2025")         return 0.0246;   // PLACEHOLDER (2024 value): no official 2025 WP yet
-    }
-    return -1.;
+    // fail loudly instead of silently using a threshold of 0 (which would tag every jet)
+    throw std::runtime_error("ERROR in bTagSettings: campaign '" + campaign + "' / year '" + year + "' not in bTagSettingsTable");
 }
 
 bool containsAny(const std::string& s, const std::vector<std::string>& patterns){
@@ -235,7 +203,7 @@ std::vector< std::shared_ptr< TH1 > > getHistogramsFromFile( TFile* f )
 void skimFile(const std::string&        inputFilePath,
 		        const std::string&      outputFilePath,
 		        long unsigned           nEntries,
-                Tagger                  vetoTagger )
+                const std::string&      vetoTaggerName )
 {
 
     std::cout <<    "skimming "         <<  inputFilePath   <<  std::endl;
@@ -243,6 +211,14 @@ void skimFile(const std::string&        inputFilePath,
     std::pair<std::string, std::string> temp = getYearFromFileName(inputFilePath);
     std::string campaign                = temp.first;
     std::string year                    = temp.second;
+
+    // b-tagging settings for this period; the veto tagger is the period default unless overridden
+    const PeriodBTagSettings& bTag      = bTagSettings(campaign, year);
+    const Tagger vetoTagger             = (vetoTaggerName.empty() || vetoTaggerName == "default")
+                                          ? bTag.vetoTagger : taggerFromName(vetoTaggerName);
+    std::cout <<    "period: "          <<  campaign << " " << year
+              <<    ", b-veto tagger: " <<  taggerNames[vetoTagger]
+              <<    (vetoTagger == bTag.vetoTagger ? " (period default)" : " (override)") << std::endl;
 
     // load input histograms and tree
     TFile* inputFilePtr                 = TFile::Open( inputFilePath.c_str() );
@@ -324,7 +300,10 @@ void skimFile(const std::string&        inputFilePath,
         if(hasBranch[t])                            inputTreePtr->SetBranchAddress(taggerBranches[t].c_str(), _jetBTag[t]);
     }
 
-    if(nEntries<=0)                                 nEntries        = inputTreePtr->GetEntries();
+    // nEntries <= 0: process all entries; never read beyond the end of the tree
+    //   (GetEntry past the end leaves the buffers of the last event, which would then be filled again and again)
+    const long unsigned nTreeEntries                = inputTreePtr->GetEntries();
+    if(nEntries<=0 || nEntries>nTreeEntries)        nEntries        = nTreeEntries;
 
     // determine which taggers are usable in this file:
     //   branch present + evaluated (score >= 0) for at least one jet in the b-tag acceptance + a working point for this year.
@@ -346,7 +325,7 @@ void skimFile(const std::string&        inputFilePath,
     double wp[nTaggers];
     std::cout << "b-taggers (veto with " << taggerNames[vetoTagger] << "):" << std::endl;
     for(int t = 0; t < nTaggers; ++t){
-        wp[t]                                       = looseWP(static_cast<Tagger>(t), campaign, year);
+        wp[t]                                       = bTag.looseWP[t];
         usable[t]                                   = hasBranch[t] && evaluated[t] && wp[t] > 0.;
         std::cout << "  " << taggerNames[t] << ": branch=" << (hasBranch[t] ? "yes" : "no")
                   << " evaluated=" << (evaluated[t] ? "yes" : "no") << " looseWP=" << wp[t]
@@ -473,7 +452,7 @@ int main( int argc, char* argv[] ){
     {
         std::cerr               << "### ERROR ###: skimmer requires three or four arguments to run :"   << std::endl;
 	    std::cerr               << "input_file_path, output_file_path, nentries [, veto_tagger]"        << std::endl;
-	    std::cerr               << "veto_tagger: DeepJet (default), PNet, RobustParT or UParT"          << std::endl;
+	    std::cerr               << "veto_tagger: default (per period, see bTagSettingsTable), DeepJet, PNet, RobustParT or UParT" << std::endl;
         return -1;
     }
 
@@ -483,8 +462,8 @@ int main( int argc, char* argv[] ){
     long int                                        nEntries_raw        = std::stol(argvStr[3]);
     if(nEntries_raw < 0)                            nEntries_raw        = 0;
     long unsigned                                   nEntries            = (long unsigned) nEntries_raw;
-    Tagger                                          vetoTagger          = (argc == 5) ? taggerFromName(argvStr[4]) : kDeepJet;
-    skimFile( input_file_path,                      output_directory, nEntries, vetoTagger );
+    std::string                                     vetoTaggerName      = (argc == 5) ? argvStr[4] : "default";
+    skimFile( input_file_path,                      output_directory, nEntries, vetoTaggerName );
     std::cerr << "###done###"                       << std::endl;
     return 0;
 }
