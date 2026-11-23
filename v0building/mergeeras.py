@@ -181,9 +181,9 @@ if __name__=='__main__':
                 'Muon1_Run2024H-MINIv6NANOv15-v1',
             ],
             'Run2024I-MINIv6NANOv15': [
-                'Muon0_Run2024H-MINIv6NANOv15-v1',
-                'Muon1_Run2024I-MINIv6NANOv15_v2-v1',
-                'Muon1_Run2024H-MINIv6NANOv15-v1',
+                'Muon0_Run2024I-MINIv6NANOv15-v1',
+                'Muon0_Run2024I-MINIv6NANOv15_v2-v1',
+                'Muon1_Run2024I-MINIv6NANOv15-v1',
                 'Muon1_Run2024I-MINIv6NANOv15_v2-v1',
             ],
             'Run2025': [
