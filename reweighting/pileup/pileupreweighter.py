@@ -10,10 +10,14 @@ import ROOT
 #import pileuptools as pu
 
 
+# pileup profiles are read from this checkout (they used to be read from CMSSW_14_0_15)
+PILEUPDIR = os.path.dirname(os.path.abspath(__file__))
+
+
 def get_pileup_profile(campaign, year):
     if campaign=='run2preul':
         ### help function to get correct pileup profile fil (should be better)
-        path                    = '/user/jbierken/CMSSW_14_0_15/src/K0sAnalysis/reweighting/pileup/data'
+        path                    = os.path.join(PILEUPDIR, 'data')
         path                    = os.path.join(path, campaign)
         
         if year.startswith('2016'):     year = '2016'
@@ -27,7 +31,7 @@ def get_pileup_profile(campaign, year):
     elif campaign=='run2ul':
         
         ### help function to get correct pileup profile fil (should be better)
-        path                    = '/user/jbierken/CMSSW_14_0_15/src/K0sAnalysis/reweighting/pileup/'
+        path                    = PILEUPDIR
         
         if year.startswith('2016'):     year = '2016'
         if year not in ['2016','2017','2018']:
@@ -41,11 +45,11 @@ def get_pileup_profile(campaign, year):
     elif campaign=='run3':
         
         ### help function to get correct pileup profile fil (should be better)
-        path                    = '/user/jbierken/CMSSW_14_0_15/src/K0sAnalysis/reweighting/pileup/'
+        path                    = PILEUPDIR
         
         #if year.startswith('2022'):     year = '2022'
         #if year.startswith('2023'):     year = '2023'
-        if year not in ['2022', '2022preEE', '2022postEE', '2022combined', '2023', '2023combined', '2023preBPix', '2023postBPix', '2024', '2025']:
+        if year not in ['2022', '2022preEE', '2022postEE', '2022combined', '2023', '2023combined', '2023preBPix', '2023postBPix', '2024', '2025', '2026']:
             msg                 = 'ERROR: year {} not recogized.'.format(year)
             raise Exception(msg)
 

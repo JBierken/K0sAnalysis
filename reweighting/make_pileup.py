@@ -81,6 +81,10 @@ def make_pileup_mc(era,  base_dir=baseDir):
         from SimGeneral\
                 .MixingModule\
                 .mix_2024_25ns_RunIII2024Summer24_PoissonOOTPU_cfi import mix
+    elif era == '2026':     # 2026 is compared to (a split of) the 2024 MC sample
+        from SimGeneral\
+                .MixingModule\
+                .mix_2024_25ns_RunIII2024Summer24_PoissonOOTPU_cfi import mix
     else:
         print('Unrecognized era', args.era)
         sys.exit(0)
@@ -121,6 +125,8 @@ def get_pileup(era, base_dir=baseDir): # code below taken from spark tnp
             '2023':         base_dir + '/pileup/data/run3/pileupHistogram-Cert_Collisions2023_366442_370790_GoldenJson-13p6TeV-66000ub-99bins.root',
             '2024':         base_dir + '/pileup/data/run3/pileupHistogram-Cert_Collisions2024_378981_386951_GoldenJson-13p6TeV-66000ub-99bins.root',
             '2025':         base_dir + '/pileup/data/run3/dataPileupHistogram-2025pp_Golden-66000ub.root',
+            # TODO: 2026 data pileup histogram (Golden JSON, 66000 ub) still to be produced / copied here
+            '2026':         base_dir + '/pileup/data/run3/dataPileupHistogram-2026pp_Golden-66000ub.root',
             }
     mcPileup = {
             # Run-2
@@ -137,6 +143,7 @@ def get_pileup(era, base_dir=baseDir): # code below taken from spark tnp
             '2023':         base_dir + '/pileup/2023/mcPileup.root',
             '2024':         base_dir + '/pileup/2024/mcPileup.root',
             '2025':         base_dir + '/pileup/2025/mcPileup.root',
+            '2026':         base_dir + '/pileup/2026/mcPileup.root',
             }
     
     with uproot.open(dataPileup[era]) as f:

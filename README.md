@@ -7,7 +7,7 @@ In short: K<sup>0</sup><sub>S</sub> → π<sup>+</sup>π<sup>−</sup> decays (a
 The number of reconstructed K<sup>0</sup><sub>S</sub> mesons is compared between data and simulation as a function of the radial displacement Δ<sub>2D</sub> of the vertex from the beam line, in a clean Z → μ<sup>+</sup>μ<sup>−</sup> event sample.
 After normalizing simulation to data at small displacement (Δ<sub>2D</sub> < 0.5 cm), any remaining data/simulation trend with displacement measures how well simulation models displaced track and vertex reconstruction.
 
-The study was originally performed on Run 2 (pre-UL and UL) and is being extended to Run 3 (2022–2025).
+The study was originally performed on Run 2 (pre-UL and UL) and is being extended to Run 3 (2022–2026).
 
 ### Prerequisites
 This code runs on ROOT ntuples (flat trees with variable-length arrays as branches) produced from MiniAOD with a custom ntuplizer that includes a dedicated V0 reconstruction module.

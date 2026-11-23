@@ -130,6 +130,11 @@ def getlumi( campaign, era ):
         elif era=='2025E':          return 14.00 
         elif era=='2025F':          return 26.50 
         elif era=='2025G':          return 22.24 
+        # Run2026
+        # TODO: fill in the Golden-JSON luminosities (brilcalc / PdmV) and remove the exception below
+        elif era in ['2026', '2026A', '2026B', '2026D']:
+            msg = 'ERROR: luminosity for era {} is not filled in yet in tools/lumitools.py'.format(era)
+            raise Exception(msg)
 
     msg = 'ERROR: cannot find luminosity for era {} / {}'.format(campaign, era)
     raise Exception(msg)

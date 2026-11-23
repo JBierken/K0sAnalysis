@@ -20,6 +20,46 @@ from fitting.count_peak import count_peak_unbinned
 from reweighting.pileup.pileupreweighter import PileupReweighter
 
 
+def hash_to_unit(keys):
+    # map integer keys to quasi-uniform values in [0,1) with the splitmix64 finalizer
+    # (deterministic, and well mixed even for consecutive event numbers)
+    x = np.asarray(keys).astype(np.int64).view(np.uint64)
+    with np.errstate(over='ignore'):
+        x = x + np.uint64(0x9E3779B97F4A7C15)
+        x = (x ^ (x >> np.uint64(30))) * np.uint64(0xBF58476D1CE4E5B9)
+        x = (x ^ (x >> np.uint64(27))) * np.uint64(0x94D049BB133111EB)
+        x = x ^ (x >> np.uint64(31))
+    return (x >> np.uint64(11)).astype(np.float64) / float(2**53)
+
+
+def get_split_mask(tree, nentries, splitrange):
+    # boolean mask selecting the entries whose event/run hash lies in splitrange = [lo, hi)
+    lo, hi   = splitrange
+    event_nb = None
+    run_nb   = None
+    for candidate_field in ['_eventNb', '_eventNum', '_eventID', 'event']:
+        if candidate_field in tree.keys():
+            event_nb = tree[candidate_field].array(library='np', entry_stop=nentries)
+            break
+    for candidate_field in ['_runNb', '_runNum', 'run']:
+        if candidate_field in tree.keys():
+            run_nb = tree[candidate_field].array(library='np', entry_stop=nentries)
+            break
+
+    if event_nb is not None:
+        keys = event_nb.astype(np.int64)
+        if run_nb is not None:
+            with np.errstate(over='ignore'):
+                keys = keys * np.int64(1000003) + run_nb.astype(np.int64)
+    else:
+        # fallback: hash of the entry index (still uniform, but depends on entry order)
+        print('WARNING: No event number field found for hash-based split, falling back to entry index.')
+        keys = np.arange(nentries, dtype=np.int64)
+
+    u = hash_to_unit(keys)
+    return (u >= lo) & (u < hi)
+
+
 if __name__=='__main__':
 
     sys.stderr.write('###starting###\n')
@@ -167,7 +207,7 @@ if __name__=='__main__':
                     xsection        = 1, 
                     lumi            = 1, 
                     weightvarname   = '_weight',
-                    splitparity     = None,
+                    splitrange      = None,          # [lo, hi) fraction of MC to keep (hash split)
                     hcountername    = 'hCounter',
                     sidevariable    = None,
                     label           = None,
@@ -201,54 +241,18 @@ if __name__=='__main__':
             msg   +=  ' of which {} will be read (using reweighting factor {}).'.format(  nentries, nentries_reweight)
             print(msg)
 
-            # Optional MC split: select even/odd by hash on event variables (uncorrelated with entry order).
+            # Optional MC split: keep the events whose hash value u in [0,1) falls in splitrange = [lo, hi).
+            # The hash is computed from event/run number, so it is uncorrelated with entry order and kinematics,
+            # and the subsets of different years (see get_mc_split_info in mcvsdata_getfiles.py) are disjoint.
             splitmask = None
-            if (not isdata) and (splitparity in ['even', 'odd']):
-                # Use hash-based split: hash event number and run to get a deterministic but entry-order-independent split
-                # Try to find event number / run number in the file
-                event_nb = None
-                run_nb = None
-                for candidate_field in ['_eventNb', '_eventNum', '_eventID', 'event']:
-                    if candidate_field in tree.keys():
-                        event_nb = tree[candidate_field].array(library='np', entry_stop=nentries)
-                        break
-                
-                for candidate_field in ['_runNb', '_runNum', 'run']:
-                    if candidate_field in tree.keys():
-                        run_nb = tree[candidate_field].array(library='np', entry_stop=nentries)
-                        break
-                
-                if event_nb is not None:
-                    # Hash using event number (and run number if available for more entropy)
-                    if run_nb is not None:
-                        hash_input = event_nb.astype(np.int64) * 10007 + run_nb.astype(np.int64)
-                    else:
-                        hash_input = event_nb.astype(np.int64)
-                    
-                    # Compute parity from hash (independent of entry order)
-                    event_hash = np.mod(np.abs(hash_input), 2)
-                    if splitparity == 'even':
-                        splitmask = (event_hash == 0)
-                    else:
-                        splitmask = (event_hash == 1)
-                    nsel = int(np.count_nonzero(splitmask))
-                    print('Applying MC split {} via hash on event/run number: selected {}/{} entries.'.format(
-                        splitparity, nsel, nentries))
-                    if nsel == 0:
-                        msg = 'ERROR: MC split {} via hash selected 0 events.'.format(splitparity)
-                        raise Exception(msg)
-                else:
-                    # Fallback to entry-index parity if no event number found
-                    print('WARNING: No event number field found for hash-based split, falling back to entry-index parity.')
-                    entryindices = np.arange(nentries, dtype=np.int64)
-                    paritymod = np.mod(entryindices, 2)
-                    if splitparity == 'even':
-                        splitmask = (paritymod == 0)
-                    else:
-                        splitmask = (paritymod == 1)
-                    nsel = int(np.count_nonzero(splitmask))
-                    print('Applying MC split {} on entry order: selected {}/{} entries.'.format(
-                        splitparity, nsel, nentries))
+            if (not isdata) and (splitrange is not None):
+                splitmask = get_split_mask(tree, nentries, splitrange)
+                nsel = int(np.count_nonzero(splitmask))
+                print('Applying MC split [{:.4f}, {:.4f}): selected {}/{} entries.'.format(
+                    splitrange[0], splitrange[1], nsel, nentries))
+                if nsel == 0:
+                    msg = 'ERROR: MC split {} selected 0 events.'.format(splitrange)
+                    raise Exception(msg)
 
             # get weights
             if isdata:
@@ -265,7 +269,7 @@ if __name__=='__main__':
                 elif '2022' in year:
                     year_pu             = year.rstrip('BCD')
                 else:
-                    year_pu             = year.rstrip('BCDEFGHI')
+                    year_pu             = year.rstrip('ABCDEFGHI')
 
                 pileupreweighter    = PileupReweighter(campaign, year_pu)
                 pileupreweighter.initsample(inputfile)
@@ -448,7 +452,7 @@ if __name__=='__main__':
                                       isdata          = False, 
                                       xsection        = xsection, 
                                       lumi            = lumi,
-                                      splitparity     = simdict.get('splitparity', None),
+                                      splitrange      = simdict.get('splitrange', None),
                                       sidevariable    = sidevariable,
                                       label           = simdict['label'].strip(' .'),
                                       nentries        = args.nprocess,
@@ -532,7 +536,7 @@ if __name__=='__main__':
         for simdict in simin:
             xsection     = simdict['xsection']
             lumi         = simdict['luminosity']
-            splitparity  = simdict.get('splitparity', None)
+            splitrange   = simdict.get('splitrange', None)
             
 
             
@@ -544,7 +548,7 @@ if __name__=='__main__':
                             isdata      = False,
                             xsection    = xsection,
                             lumi        = lumi,
-                            splitparity = splitparity,
+                            splitrange  = splitrange,
                             label       = simdict['label'].strip(' .')+'_filetotal',
                             nentries    = args.nprocess,
                             year        = simdict['year'],
@@ -559,7 +563,7 @@ if __name__=='__main__':
                             isdata      =False, 
                             xsection    =xsection, 
                             lumi        =lumi,
-                            splitparity = splitparity,
+                            splitrange  = splitrange,
                             label       =simdict['label'].strip(' .')+'_normrange',
                             sidevariable=sidevariable,
                             nentries    =args.nprocess,
@@ -617,13 +621,13 @@ if __name__=='__main__':
                                 isdata      =False, 
                                 xsection    =xsection, 
                                 lumi        =lumi,
-                                splitparity =simdict.get('splitparity', None),
+                                splitrange  =simdict.get('splitrange', None),
                                 nentries    =args.nprocess,
                                 year        =simdict['year'], 
                                 campaign    =simdict['campaign']
                             )
 
-            print('Eventyield sim {} split={} sumweights = {}'.format(simdict['label'].strip(' .'), simdict.get('splitparity', None), sumweights))
+            print('Eventyield sim {} split={} sumweights = {}'.format(simdict['label'].strip(' .'), simdict.get('splitrange', None), sumweights))
             simsum  += sumweights
     
         # Compare data vs. sim

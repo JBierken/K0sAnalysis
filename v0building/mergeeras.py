@@ -231,6 +231,38 @@ if __name__=='__main__':
                 'Muon1_Run2025G-PromptReco-v1',
             
             ],
+            'Run2026': [
+                'Muon0_Run2026A-PromptReco-v1',
+                'Muon0_Run2026B-PromptReco-v1',
+                'Muon0_Run2026D-PromptReco-v1',
+                'Muon1_Run2026A-PromptReco-v1',
+                'Muon1_Run2026B-PromptReco-v1',
+                'Muon1_Run2026D-PromptReco-v1',
+                'Muon2_Run2026A-PromptReco-v1',
+                'Muon2_Run2026B-PromptReco-v1',
+                'Muon2_Run2026D-PromptReco-v1',
+                'Muon3_Run2026A-PromptReco-v1',
+                'Muon3_Run2026B-PromptReco-v1',
+                'Muon3_Run2026D-PromptReco-v1',
+            ],
+            'Run2026A-PromptReco': [
+                'Muon0_Run2026A-PromptReco-v1',
+                'Muon1_Run2026A-PromptReco-v1',
+                'Muon2_Run2026A-PromptReco-v1',
+                'Muon3_Run2026A-PromptReco-v1',
+            ],
+            'Run2026B-PromptReco': [
+                'Muon0_Run2026B-PromptReco-v1',
+                'Muon1_Run2026B-PromptReco-v1',
+                'Muon2_Run2026B-PromptReco-v1',
+                'Muon3_Run2026B-PromptReco-v1',
+            ],
+            'Run2026D-PromptReco': [
+                'Muon0_Run2026D-PromptReco-v1',
+                'Muon1_Run2026D-PromptReco-v1',
+                'Muon2_Run2026D-PromptReco-v1',
+                'Muon3_Run2026D-PromptReco-v1',
+            ],
         })
 
 

@@ -31,6 +31,9 @@ def getfiles( filedir, includelist, version, check_exist=False, **kwargs ):
 
     return eralist
 
+# years that share the 2024 MC sample (order fixes which hash interval each year gets)
+MC2024_SHARED_YEARS = ['2024', '2025', '2026']
+
 def getfiles_run3( filedir, includelist ):
     
     # initializations
@@ -78,7 +81,7 @@ def getfiles_run3( filedir, includelist ):
     mcdirdict['2024H']              = 'DYto2L-2Jets_Bin-MLL-50-PTLL-100_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_RunIII2024Summer24MiniAODv6-150X_mcRun3_2024_realistic_v2-v3'
     mcdirdict['2024I']              = 'DYto2L-2Jets_Bin-MLL-50-PTLL-100_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_RunIII2024Summer24MiniAODv6-150X_mcRun3_2024_realistic_v2-v3'
     
-    # get MC samples for 2024
+    # get MC samples for 2025 (2024 MC sample, lumi-weighted hash split, see get_mc_split_info)
     mcdirdict['2025']               = 'DYto2L-2Jets_Bin-MLL-50-PTLL-100_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_RunIII2024Summer24MiniAODv6-150X_mcRun3_2024_realistic_v2-v3'
     
     mcdirdict['2025B']              = 'DYto2L-2Jets_Bin-MLL-50-PTLL-100_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_RunIII2024Summer24MiniAODv6-150X_mcRun3_2024_realistic_v2-v3'
@@ -87,6 +90,13 @@ def getfiles_run3( filedir, includelist ):
     mcdirdict['2025E']              = 'DYto2L-2Jets_Bin-MLL-50-PTLL-100_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_RunIII2024Summer24MiniAODv6-150X_mcRun3_2024_realistic_v2-v3'
     mcdirdict['2025F']              = 'DYto2L-2Jets_Bin-MLL-50-PTLL-100_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_RunIII2024Summer24MiniAODv6-150X_mcRun3_2024_realistic_v2-v3'
     mcdirdict['2025G']              = 'DYto2L-2Jets_Bin-MLL-50-PTLL-100_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_RunIII2024Summer24MiniAODv6-150X_mcRun3_2024_realistic_v2-v3'
+
+    # get MC samples for 2026 (2024 MC sample, lumi-weighted hash split, see get_mc_split_info)
+    mcdirdict['2026']               = 'DYto2L-2Jets_Bin-MLL-50-PTLL-100_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_RunIII2024Summer24MiniAODv6-150X_mcRun3_2024_realistic_v2-v3'
+
+    mcdirdict['2026A']              = 'DYto2L-2Jets_Bin-MLL-50-PTLL-100_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_RunIII2024Summer24MiniAODv6-150X_mcRun3_2024_realistic_v2-v3'
+    mcdirdict['2026B']              = 'DYto2L-2Jets_Bin-MLL-50-PTLL-100_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_RunIII2024Summer24MiniAODv6-150X_mcRun3_2024_realistic_v2-v3'
+    mcdirdict['2026D']              = 'DYto2L-2Jets_Bin-MLL-50-PTLL-100_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_RunIII2024Summer24MiniAODv6-150X_mcRun3_2024_realistic_v2-v3'
     
     datadirdict                     = {}
     
@@ -140,18 +150,28 @@ def getfiles_run3( filedir, includelist ):
     datadirdict['2025F']            = 'Run2025F-PromptReco'
     datadirdict['2025G']            = 'Run2025G-PromptReco'
 
+    # get data samples (devided in sub eras) for 2026
+    datadirdict['2026']             = 'Run2026'
+
+    datadirdict['2026A']            = 'Run2026A-PromptReco'
+    datadirdict['2026B']            = 'Run2026B-PromptReco'
+    datadirdict['2026D']            = 'Run2026D-PromptReco'
+
     filename                    = 'selected.root'
 
     def get_mc_split_info(era):
-        # Use hash-based split of 2024-MC subsets for 2024 and 2025.
-        # Hash-based split is independent of entry order, avoiding kinematic biases.
-        # For 2024 data: use even hash parity
-        # For 2025 data: use odd hash parity
-        if era.startswith('2024'):
-            return {'splitmethod': 'hash', 'splitparity': 'even'}
-        if era.startswith('2025'):
-            return {'splitmethod': 'hash', 'splitparity': 'odd'}
-        return {}
+        # The 2024 MC sample is shared by 2024, 2025 and 2026. It is split into statistically
+        # independent subsets with a hash of the event/run number (independent of entry order),
+        # each year getting a fraction of the events proportional to its luminosity.
+        # Per-era entries (e.g. 2025C) use the subset of their year.
+        # Returns {'splitrange': [lo, hi)} with 0 <= lo < hi <= 1 (applied in mcvsdata_fill.py).
+        year = era[:4]
+        if year not in MC2024_SHARED_YEARS: return {}
+        lumis   = [lt.getlumi('run3', y) for y in MC2024_SHARED_YEARS]
+        edges   = np.concatenate([[0.], np.cumsum(lumis)]) / np.sum(lumis)
+        edges[-1] = 1.
+        i       = MC2024_SHARED_YEARS.index(year)
+        return {'splitmethod': 'hash', 'splitrange': [float(edges[i]), float(edges[i+1])]}
 
     # loop over eras
     for era in includelist:
@@ -269,7 +289,7 @@ def getfiles_run3( filedir, includelist ):
     if 'run3' in includelist:
         mcin, datain            = [], []
         
-        for year in ['2022preEE', '2022postEE', '2023preBPix', '2023postBPix', '2024', '2025']:
+        for year in ['2022preEE', '2022postEE', '2023preBPix', '2023postBPix', '2024', '2025', '2026']:
             eralabel = year
             
             mcin.append({   
@@ -290,12 +310,12 @@ def getfiles_run3( filedir, includelist ):
                         'campaign':     'run3'
             })
 
-            label                   = 'run3'
-            eralist.append({    
+        label                   = 'run3'
+        eralist.append({    
                         'mcin':         mcin, 
                         'datain':       datain, 
                         'label':        label
-            })
+        })
 
     # return the eralist
     return eralist
