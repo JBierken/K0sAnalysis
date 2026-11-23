@@ -75,15 +75,14 @@ const std::vector<PeriodBTagSettings> bTagSettingsTable = {
     { "run2ul",     "2016PostVFP",  kDeepJet,       { 0.1918,   noWP,     noWP,       noWP   } },
     { "run2ul",     "2017",         kDeepJet,       { 0.1355,   noWP,     noWP,       noWP   } },
     { "run2ul",     "2018",         kDeepJet,       { 0.1208,   noWP,     noWP,       noWP   } },
-    { "run3",       "2022",         kRobustParT,    { 0.0583,   0.047,    0.0849,     0.0246 } },
-    { "run3",       "2022EE",       kRobustParT,    { 0.0614,   0.0499,   0.0897,     0.0246 } },
-    { "run3",       "2023",         kRobustParT,    { 0.0479,   0.0358,   0.0681,     0.0246 } },
-    { "run3",       "2023BPix",     kRobustParT,    { 0.048,    0.0359,   0.0683,     0.0246 } },
-    { "run3",       "2024",         kUParT,         { 0.048,    0.0359,   0.0683,     0.0246 } },
-    { "run3",       "2025",         kUParT,         { 0.048,    0.0359,   0.0683,     0.0246 } },
-    // PLACEHOLDER: UParT 2022-2023BPix          -> 2024 value (no official WP; UParT is not in these ntuples anyway)
-    // PLACEHOLDER: DeepJet/PNet/RobustParT 2024 -> 2023BPix value (2024_Summer24 only has UParT)
-    // PLACEHOLDER: all of 2025                  -> 2023BPix (DeepJet/PNet/RobustParT) and 2024 (UParT) values
+    { "run3",       "2022",         kRobustParT,    { 0.0583,   0.047,    0.0849,     noWP   } },
+    { "run3",       "2022EE",       kRobustParT,    { 0.0614,   0.0499,   0.0897,     noWP   } },
+    { "run3",       "2023",         kRobustParT,    { 0.0479,   0.0358,   0.0681,     noWP   } },
+    { "run3",       "2023BPix",     kRobustParT,    { 0.048,    0.0359,   0.0683,     noWP   } },
+    { "run3",       "2024",         kUParT,         { noWP,     noWP,     noWP,       0.0246 } },
+    { "run3",       "2025",         kUParT,         { noWP,     noWP,     noWP,       0.0246 } },
+    { "run3",       "2026",         kUParT,         { noWP,     noWP,     noWP,       0.0246 } },
+    // PLACEHOLDER: UParT SF for 2026               -> 2024 (UParT) values
 };
 
 const PeriodBTagSettings& bTagSettings(const std::string& campaign, const std::string& year)
@@ -168,6 +167,10 @@ std::pair<std::string, std::string> getYearFromFileName(const std::string& fileN
     else if( containsAny(fileName, {"Run2025", "RunIII2025", "Run3Summer25", "Run3Winter25"}) )
     {
         return std::make_pair("run3",       "2025");
+    }
+    else if( containsAny(fileName, {"Run2026", "RunIII2026", "Run3Summer26", "Run3Winter26"}) )
+    {
+        return std::make_pair("run3",       "2026");
     }
     else{
 	    std::string msg     = "ERROR: year could not be extracted from filename";
