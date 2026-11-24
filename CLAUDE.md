@@ -55,6 +55,13 @@ The signal model is a Gaussian or double Gaussian on a pol1/pol2 background in t
 - `getYearFromFileName` must check sub-campaigns before their parent year (2022EE before 2022, 2023BPix before 2023). Data is matched on the era (Run2022E/F/G, Run2023D) and MC on the campaign name (`Run3Summer22EE`, `RunIII2024Summer24`, …). Unknown periods throw in `bTagSettings` instead of silently returning 0.
 - Test the skimmer without real ntuples by compiling a harness that does `#define main skim_main` + `#include "skim_ztomumu.cc"`. Build it inside `cmsenv`: the system ROOT in `/usr/bin` lacks `Math/Vector4D.h`.
 
+## Skim job submission (changed 2026-11-24)
+- Each skim job (`skim_submit.py::make_job_commands`) runs the per-file skims and the `hadd` in a temporary directory on the worker's local disk. Only the merged `skimmed_N.root` is copied to `/pnfs`, then read back and compared (`cmp`), with up to 3 tries. The job runs under `set -e`: any failure exits non-zero and writes `###error###` to stderr.
+- Why: writing per-file skims straight to `/pnfs` and having `hadd` read them back occasionally gave unreadable files (`R__unzip: error -5`, ~0.14% of files). With 100–300 files per job that broke ~27% of jobs in the 2026-11-23 round. The old scripts then deleted the per-file skims anyway and exited 0, leaving ~850-byte stub outputs.
+- Keep `-n` small (5–10). Each file takes ~5 min, so 300-file jobs run more than a day.
+- All jobs from one call go into one `condor_submit` (`condortools.submitCommandsAsCondorJobsBatched`): one ClusterId, one ProcId per job.
+- `skim_resubmit.py --since <date> [--dryrun] [-n 10]` resubmits failed jobs. It skips jobs still in `condor_q`, deletes the broken output, and splits large jobs into `skimmed_N-k.root`. It also marks the old executable `# skimjob-superseded` so that a rerun doesn't resubmit the same job again. Run it from `skimming/`.
+
 ## Known issues (open)
 - No official BTV loose WPs exist yet for 2025 (any tagger), for DeepJet/PNet/RobustParT in 2024, or for UParT in 2022/2023. These are `PLACEHOLDER`s in `bTagSettingsTable`. The default veto taggers only use placeholders in 2025.
 - In the `normmode=='range'` block of `mcvsdata_fill.py`, `file_total` is computed but no longer used (it was a leftover diagnostic).

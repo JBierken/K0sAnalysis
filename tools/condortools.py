@@ -12,18 +12,23 @@
 import os
 import sys
 
-def makeUnique(fname):
+# next index to try per base name, so that submitting many jobs in a loop
+# does not re-scan all existing names for every job
+_unique_next = {}
+
+def makeUnique(fname, maxapp=100000):
     ### make a file name unique by appending a number to it,
     # e.g. test.txt -> test1.txt (in case test.txt already exists)
-    # todo: works for now, but find cleaner way to submit jobs in a loop...
     if not os.path.exists(fname): return fname
     [name,ext] = os.path.splitext(fname)
-    app = 1
-    while app < 2500:
+    app = _unique_next.get(fname, 1)
+    while app < maxapp:
         tryname = name+str(app)+ext
-        if not os.path.exists(tryname): return tryname
+        if not os.path.exists(tryname):
+            _unique_next[fname] = app+1
+            return tryname
         app += 1
-    msg = 'ERROR ###: already 2500 files named {} exist.'.format(fname)
+    msg = 'ERROR ###: already {} files named {} exist.'.format(maxapp, fname)
     msg += ' consider choosing more specific names, splitting in folders, etc.'
     raise Exception(msg)
 
@@ -208,3 +213,35 @@ def submitCommandsAsCondorJobs(name, commands, stdout=None, stderr=None, log=Non
                             jobflavour=jobflavour)
         # finally submit the job
         submitCondorJob(jdname)
+
+def submitCommandsAsCondorJobsBatched(name, commands, stdout=None, stderr=None, log=None,
+            cpus=1, mem=1024, disk=10240,
+            home=None,
+            proxy=None,
+            cmssw_version=None,
+            jobflavour=None):
+    ### same as submitCommandsAsCondorJobs (one job per set of commands),
+    # but all jobs go into one job description file and one condor_submit call.
+    # the jobs then share a ClusterId and differ by ProcId,
+    # so the log files are named <name>_{out,err,log}_<ClusterId>_<ProcId>.
+    # returns the list of executables that were created.
+    if len(commands)==0: return []
+    name = os.path.splitext(name)[0]
+    jdname = name+'.txt'
+    shnames = []
+    for commandset in commands:
+        shname = makeUnique(name+'.sh')
+        initJobScript(shname, home=home, cmssw_version=cmssw_version, proxy=proxy)
+        with open(shname,'a') as script:
+            for cmd in commandset: script.write(cmd+'\n')
+        shnames.append(shname)
+    # job description for the first job, then one executable + queue per extra job
+    makeJobDescription(name,shnames[0],stdout=stdout,stderr=stderr,log=log,
+                       cpus=cpus,mem=mem,disk=disk,proxy=proxy,
+                       jobflavour=jobflavour)
+    with open(jdname,'a') as f:
+        for shname in shnames[1:]:
+            f.write('executable = {}\n'.format(shname))
+            f.write('queue\n\n')
+    submitCondorJob(jdname)
+    return shnames

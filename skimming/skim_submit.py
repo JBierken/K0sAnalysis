@@ -8,12 +8,15 @@
 # Output files are named 'skimmed_<index>.root' and placed within the correct subdirectory.
 # The number of output files is always one per job;
 # if the number of input files per job is larger than one, the outputs are hadded into one.
+# The per-file skims and the hadd run on the worker's local scratch disk;
+# only the merged file is copied to the output directory (see make_job_commands).
 
 
 # import external modules
 import os
 import sys
 import argparse
+import subprocess
 from six.moves import input
 # import framework modules
 sys.path.append('../tools')
@@ -21,6 +24,56 @@ import condortools as ct
 CMSSW = '/user/jbierken/CMSSW_15_0_17'
 import listtools as lt
 import sampletools as st
+
+
+# stage-out helper used inside the job scripts: copy, read back and compare, retry up to 3 times
+STAGE_OUT_FUNCTION = '''stage_out() {
+  local src="$1" dst="$2" i
+  for i in 1 2 3; do
+    rm -f "$dst"
+    if cp "$src" "$dst" && cmp -s "$src" "$dst"; then
+      echo "copied $src to $dst (attempt $i)"
+      return 0
+    fi
+    echo "WARNING: copy of $src to $dst failed or does not match (attempt $i)" >&2
+    sleep 60
+  done
+  rm -f "$dst"
+  return 1
+}'''
+
+
+def make_job_commands(skimmer, inputfiles, outputfile, vetotagger=None):
+  ### make the bash commands for one skimming job.
+  # - the '# skimjob-*' header lines record the inputs and output (read back by skim_resubmit.py).
+  # - per-file skims and the hadd are done in a temporary directory on the worker's
+  #   local disk; only the merged file is copied to outputfile and checked after copying.
+  # - any failing command stops the job with a non-zero exit code and writes
+  #   an '###error###' tag to stderr (recognized by tools/jobcheck.py).
+  cmds = []
+  for f in inputfiles: cmds.append('# skimjob-input: '+f)
+  cmds.append('# skimjob-output: '+outputfile)
+  if vetotagger is not None: cmds.append('# skimjob-vetotagger: '+vetotagger)
+  cmds.append('set -e')
+  cmds.append('''trap 'echo "###error###: exit code $? at line $LINENO: $BASH_COMMAND" >&2' ERR''')
+  cmds.append('WORKDIR=$(mktemp -d "${_CONDOR_SCRATCH_DIR:-${TMPDIR:-/tmp}}/skim_XXXXXX")')
+  cmds.append('''trap 'rm -rf "$WORKDIR"' EXIT''')
+  cmds.append(STAGE_OUT_FUNCTION)
+  tempfiles = []
+  for i,f in enumerate(inputfiles):
+    tempfile = '"$WORKDIR"/skim_{}.root'.format(i)
+    cmd = './{} {} {} -1'.format(skimmer, f, tempfile)
+    if vetotagger is not None: cmd += ' '+vetotagger
+    cmds.append(cmd)
+    tempfiles.append(tempfile)
+  cmds.append('hadd -f "$WORKDIR"/merged.root '+' '.join(tempfiles))
+  cmds.append('stage_out "$WORKDIR"/merged.root '+outputfile)
+  return cmds
+
+
+def run_local(cmds):
+  ### run the commands of one job in a local bash shell; returns the exit code
+  return subprocess.call(['bash', '-c', '\n'.join(cmds)])
 
 
 if __name__=='__main__':
@@ -134,7 +187,7 @@ if __name__=='__main__':
   if not go=='y': sys.exit()
 
   # loop over samples
-  workdir = os.getcwd()
+  allcmds = []
   for inputstruct in inputfiles:
     thisoutputdir = inputstruct['outputdir']
     # check if output directory exists; if so, clean it
@@ -147,27 +200,13 @@ if __name__=='__main__':
     thisinputfiles = lt.split(thisinputfiles,args.nfilesperjob)
     # loop over partitions
     for counter, partlist in enumerate(thisinputfiles):
-        # make skim commands for this job
-        cmds = []
-        tempfiles = []
-        for input_file_path in partlist:
-            temp_file_path = os.path.join(thisoutputdir, input_file_path.split('/')[-1])
-            cmd = './'+args.skimmer+' '+input_file_path+' '+temp_file_path+' -1'
-            cmds.append(cmd)
-            tempfiles.append(temp_file_path)
-        # make hadd command for this job
-        cmd = 'hadd -f '+os.path.join(thisoutputdir, 'skimmed_'+str(counter)+'.root')
-        for temp_file_path in tempfiles: cmd += ' '+temp_file_path
-        cmds.append(cmd)
-        # make commands to remove temporary files for this job
-        for temp_file_path in tempfiles:
-            cmd = 'rm '+temp_file_path
-            cmds.append(cmd)
-        # submit job
-        if args.runmode=='local':
-          for cmd in cmds:
-            print(cmd)
-            os.system(cmd)
-        elif args.runmode=='condor':
-            store_dir = CMSSW + '/src/K0sAnalysis/log_automatic_jobs/'
-            ct.submitCommandsAsCondorJob(store_dir + 'cjob_skim', cmds, cmssw_version=CMSSW)
+        outputfile = os.path.join(thisoutputdir, 'skimmed_'+str(counter)+'.root')
+        allcmds.append(make_job_commands(args.skimmer, partlist, outputfile))
+
+  # run or submit the jobs
+  if args.runmode=='local':
+    for cmds in allcmds:
+      if run_local(cmds)!=0: print('### WARNING ###: job failed: {}'.format(cmds[-1]))
+  elif args.runmode=='condor':
+    store_dir = CMSSW + '/src/K0sAnalysis/log_automatic_jobs/'
+    ct.submitCommandsAsCondorJobsBatched(store_dir + 'cjob_skim', allcmds, cmssw_version=CMSSW)
