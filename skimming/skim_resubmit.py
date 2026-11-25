@@ -7,8 +7,12 @@
 #
 # - Only logs modified after --since are considered (older submission rounds are ignored).
 # - Jobs that are still in the condor queue (idle, running or held) are never touched.
-# - A job counts as failed if its _err_ log has unmatched ###starting###/###done### tags
-#   or contains a known error string (see tools/jobcheck.py).
+# - Current-format jobs (set -e, '# skimjob-*' headers) count as failed if condor's
+#   _log_ file shows no normal termination with return value 0. Their stderr is not
+#   scanned: a stage-out attempt can crash and be retried successfully.
+# - Old-format jobs always exited 0, so for them a job counts as failed if its _err_ log
+#   has unmatched ###starting###/###done### tags or contains a known error string
+#   (see tools/jobcheck.py).
 # - The inputs and output of a failed job are read from its executable. Both the
 #   current format ('# skimjob-*' header lines) and the old format (per-file skims
 #   written next to the output, then hadd + rm) are understood.
@@ -27,6 +31,7 @@ import os
 import sys
 import argparse
 import datetime
+import re
 import subprocess
 from six.moves import input
 sys.path.append('../tools')
@@ -68,6 +73,22 @@ def parse_executable(shfile, skimmer):
       info['output'] = parts[2] if parts[1]=='-f' else parts[1]
   if info['output'] is None or len(info['inputs'])==0: return None
   return info
+
+
+def is_new_format(shfile):
+  ### True if the executable was made by skim_submit.make_job_commands
+  with open(shfile) as f:
+    for line in f:
+      if line.startswith('# skimjob-output: '): return True
+  return False
+
+
+def get_return_value(logfile):
+  ### return value of a job from its condor _log_ file, or None if it did not terminate normally
+  if not os.path.exists(logfile): return None
+  with open(logfile) as f: text = f.read()
+  match = re.findall(r'Normal termination \(return value (\d+)\)', text)
+  return int(match[-1]) if match else None
 
 
 def remove(path, dryrun):
@@ -126,7 +147,10 @@ if __name__=='__main__':
       print('WARNING: cannot find the executable for {}; skipping it.'.format(efile))
       nunreadable += 1
       continue
-    failed = (jc.check_start_done(efile, verbose=False) or jc.check_error_content(efile, verbose=False))
+    if is_new_format(shfile):
+      failed = (get_return_value(efile.replace('_err_', '_log_'))!=0)
+    else:
+      failed = (jc.check_start_done(efile, verbose=False) or jc.check_error_content(efile, verbose=False))
     key = (int(cluster), int(proc))
     if shfile not in attempts or key > attempts[shfile][0]:
       attempts[shfile] = (key, failed)
