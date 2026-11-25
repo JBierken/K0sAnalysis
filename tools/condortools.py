@@ -222,8 +222,8 @@ def submitCommandsAsCondorJobsBatched(name, commands, stdout=None, stderr=None, 
             jobflavour=None):
     ### same as submitCommandsAsCondorJobs (one job per set of commands),
     # but all jobs go into one job description file and one condor_submit call.
-    # the jobs then share a ClusterId and differ by ProcId,
-    # so the log files are named <name>_{out,err,log}_<ClusterId>_<ProcId>.
+    # note: condor starts a new cluster whenever 'executable' changes,
+    # so each job still gets its own ClusterId (with ProcId 0).
     # returns the list of executables that were created.
     if len(commands)==0: return []
     name = os.path.splitext(name)[0]
