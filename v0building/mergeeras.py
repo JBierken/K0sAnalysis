@@ -138,6 +138,30 @@ if __name__=='__main__':
                 'Muon1_Run2023D-22Sep2023_v1-v1',
                 'Muon1_Run2023D-22Sep2023_v2-v1'
             ],
+            # per-era merges (names as in mcvsdata_getfiles.py::datadirdict)
+            'Run2022C-22Sep2023-v1': [
+                'DoubleMuon_Run2022C-22Sep2023-v1',
+                'Muon_Run2022C-22Sep2023-v1',
+            ],
+            'Run2023B-22Sep2023-v1': [
+                'Muon0_Run2023B-22Sep2023-v1',
+                'Muon1_Run2023B-22Sep2023-v1',
+            ],
+            'Run2023C-22Sep2023-v1': [
+                'Muon0_Run2023C-22Sep2023_v1-v1',
+                'Muon0_Run2023C-22Sep2023_v2-v1',
+                'Muon0_Run2023C-22Sep2023_v3-v1',
+                'Muon0_Run2023C-22Sep2023_v4-v1',
+                'Muon1_Run2023C-22Sep2023_v1-v1',
+                'Muon1_Run2023C-22Sep2023_v2-v1',
+                'Muon1_Run2023C-22Sep2023_v3-v1',
+                'Muon1_Run2023C-22Sep2023_v4-v2',
+            ],
+            'Run2023D-22Sep2023-v1': [
+                'Muon0_Run2023D-22Sep2023_v2-v1',
+                'Muon1_Run2023D-22Sep2023_v1-v1',
+                'Muon1_Run2023D-22Sep2023_v2-v1',
+            ],
             'Run2024': [
                 'Muon0_Run2024C-MINIv6NANOv15-v1',
                 'Muon0_Run2024D-MINIv6NANOv15-v1',
