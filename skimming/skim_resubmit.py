@@ -26,6 +26,7 @@
 # Run from the skimming directory, e.g.:
 #   python3 skim_resubmit.py --since 2026-11-23 --dryrun
 #   python3 skim_resubmit.py --since 2026-11-23 -n 10
+#   python3 skim_resubmit.py --since 2026-11-23 --reskim-old-format   # also redo all old-format jobs
 
 import os
 import sys
@@ -107,6 +108,9 @@ if __name__=='__main__':
   parser.add_argument('-n', '--nfilesperjob', default=10, type=int)
   parser.add_argument('--runmode', default='condor', choices=['local', 'condor'])
   parser.add_argument('--dryrun', action='store_true', help='only print what would be done')
+  parser.add_argument('--reskim-old-format', action='store_true',
+                      help='also redo every old-format job, even if it looked successful '
+                           '(their hadd wrote directly to /pnfs and some outputs are corrupt)')
   args = parser.parse_args()
 
   # checks
@@ -158,7 +162,8 @@ if __name__=='__main__':
   # failed jobs to resubmit
   failedjobs = []
   for shfile in sorted(attempts):
-    if not attempts[shfile][1]: continue
+    redo = attempts[shfile][1] or (args.reskim_old_format and not is_new_format(shfile))
+    if not redo: continue
     info = parse_executable(shfile, args.skimmer)
     if info is None:
       print('WARNING: cannot parse executable {}; skipping it.'.format(shfile))
@@ -177,6 +182,13 @@ if __name__=='__main__':
     info['newoutputs'] = outputs
     for part, output in zip(parts, outputs):
       allcmds.append(make_job_commands(args.skimmer, part, output, vetotagger=info['vetotagger']))
+
+  # new output names must not clash with existing files (other than the outputs being replaced)
+  replaced = set(info['output'] for info in failedjobs)
+  newnames = [o for info in failedjobs for o in info['newoutputs']]
+  clashes = [o for o in newnames if o not in replaced and os.path.exists(o)]
+  if len(newnames)!=len(set(newnames)) or clashes:
+    raise Exception('ERROR: new output names clash with existing files, e.g. {}'.format(clashes[:5]))
 
   # summary
   print('skipped {} jobs still in the queue and {} logs without executable.'.format(nactive, nunreadable))
