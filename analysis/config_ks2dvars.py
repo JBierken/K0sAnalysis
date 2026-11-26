@@ -22,6 +22,8 @@ config = ({
                 'normalization': {
 	          'normrange':{ 'type':'range', 'info': 'Normalized for #Delta_{2D} < 0.5 cm',
                                 'normvariable': '_RPV', 'normrange':[0.,0.5] },
+                  'normrangeperbin':{ 'type':'rangeperbin', 'info': 'Normalized for #Delta_{2D} < 0.5 cm per bin',
+                                'normvariable': '_RPV', 'normrange':[0.,0.5] },
 	        }
   },
   'rpv_vs_phi': {'variablename': '_RPV',
@@ -44,6 +46,8 @@ config = ({
                 },
                 'normalization': {
 	          'normrange':{ 'type':'range', 'info': 'Normalized for #Delta_{2D} < 0.5 cm',
+                                'normvariable': '_RPV', 'normrange':[0.,0.5] },
+                  'normrangeperbin':{ 'type':'rangeperbin', 'info': 'Normalized for #Delta_{2D} < 0.5 cm per bin',
                                 'normvariable': '_RPV', 'normrange':[0.,0.5] },
 	        }
   },
@@ -69,6 +73,8 @@ config = ({
                 'normalization': {
 	          'normrange':{ 'type':'range', 'info': 'Normalized for #Delta_{2D} < 0.5 cm',
                                 'normvariable': '_RPV', 'normrange':[0.,0.5] },
+                  'normrangeperbin':{ 'type':'rangeperbin', 'info': 'Normalized for #Delta_{2D} < 0.5 cm per bin',
+                                'normvariable': '_RPV', 'normrange':[0.,0.5] },
 	        }
   },
   'rpvsig_vs_pt': {'variablename': '_RPVSig', 
@@ -90,6 +96,8 @@ config = ({
                 },
                 'normalization': {
                   'normrange':{ 'type':'range', 'info': 'Normalized for #Delta_{2D} < 0.5 cm',
+                                'normvariable': '_RPV', 'normrange':[0.,0.5] },
+                  'normrangeperbin':{ 'type':'rangeperbin', 'info': 'Normalized for #Delta_{2D} < 0.5 cm per bin',
                                 'normvariable': '_RPV', 'normrange':[0.,0.5] },
                 }
   },
@@ -113,6 +121,8 @@ config = ({
                 'normalization': {
                   'normrange':{ 'type':'range', 'info': 'Normalized for #Delta_{2D} < 0.5 cm',
                                 'normvariable': '_RPV', 'normrange':[0.,0.5] },
+                  'normrangeperbin':{ 'type':'rangeperbin', 'info': 'Normalized for #Delta_{2D} < 0.5 cm per bin',
+                                'normvariable': '_RPV', 'normrange':[0.,0.5] },
                 }
   },
   'rpvsig_vs_phi': {'variablename': '_RPVSig', 
@@ -134,6 +144,8 @@ config = ({
                 },
                 'normalization': {
                   'normrange':{ 'type':'range', 'info': 'Normalized for #Delta_{2D} < 0.5 cm',
+                                'normvariable': '_RPV', 'normrange':[0.,0.5] },
+                  'normrangeperbin':{ 'type':'rangeperbin', 'info': 'Normalized for #Delta_{2D} < 0.5 cm per bin',
                                 'normvariable': '_RPV', 'normrange':[0.,0.5] },
                 }
   }

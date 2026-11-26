@@ -81,7 +81,7 @@ if __name__=='__main__':
     parser.add_argument(        '--sideplotdir',                                            default=None)
     # arguments for normalization
     parser.add_argument(        '--normmode',                                               default=None,
-                                choices=[None, 'lumi', 'yield', 'range', 'eventyield'])
+                                choices=[None, 'lumi', 'yield', 'range', 'rangeperbin', 'eventyield'])
     parser.add_argument(        '--normvariable',                   type=os.path.abspath,   default=None)
     parser.add_argument(        '--eventtreename',                                          default=None)
     # arguments for secondary binning
@@ -152,7 +152,7 @@ if __name__=='__main__':
 
     # load normalization variable
     normvariable = None # default case if no normalization in range
-    if args.normmode in ['range']:
+    if args.normmode in ['range', 'rangeperbin']:
         if args.normvariable is None:
             msg = 'ERROR: requested normalization in range,'
             msg += ' but normalization variable was not specified.'
@@ -176,6 +176,10 @@ if __name__=='__main__':
             yvariable = json.load(f)
         print('Found following secondary variable:')
         for key,val in yvariable.items(): print('  {}: {}'.format(key,val))
+
+    if args.normmode=='rangeperbin' and yvariable is None:
+        msg = 'ERROR: normalization mode rangeperbin requires a secondary variable (--yvariable).'
+        raise Exception(msg)
 
     # set luminosity and xsection for simulation to 1 if no lumi scaling is requested
     if args.normmode is None:
@@ -588,6 +592,77 @@ if __name__=='__main__':
             simdict['conf_errors']        = simdict['conf_errors']*scale
 
     # ------------------------------------------------------------------------
+    # for normmode 'rangeperbin' (2D only), normalize simulation to data
+    # separately in each bin of the secondary variable (y):
+    # for every y bin j, the scale factor is the ratio of data to simulation
+    # for normvariable in its range (e.g. _RPV in [0, 0.5] cm) within that y bin,
+    # and it is applied to the full row j (all bins of the main variable).
+    if args.normmode=='rangeperbin':
+        print('Normalizing simulation yield to data yield in range, per bin of the secondary variable...')
+        nybins      = len(yvariable['bins'])-1
+
+        # Get Data count per y bin
+        datasum     = np.zeros(nybins)
+        for datadict in datain:
+            counts, _, _, _ = get_histogram(
+                           datadict['file'],
+                           args.treename,
+                           variable    =normvariable,
+                           yvariable   =yvariable,
+                           isdata      =True,
+                           label       =datadict['label'].strip(' .')+'_normrangeperbin',
+                           sidevariable=sidevariable,
+                           nentries    =args.nprocess
+                        )
+            if counts.shape!=(1, nybins):
+                msg = 'ERROR: counts has unexpected shape {}, check the binning of normvariable.'.format(counts.shape)
+                raise Exception(msg)
+            datasum += np.clip(counts[0], 0, None)
+
+        # Get Simulation count per y bin
+        simsum      = np.zeros(nybins)
+        for simdict in simin:
+            counts, _, _, _ = get_histogram(
+                            simdict['file'],
+                            args.treename,
+                            variable    =normvariable,
+                            yvariable   =yvariable,
+                            isdata      =False,
+                            xsection    =simdict['xsection'],
+                            lumi        =simdict['luminosity'],
+                            splitrange  =simdict.get('splitrange', None),
+                            label       =simdict['label'].strip(' .')+'_normrangeperbin',
+                            sidevariable=sidevariable,
+                            nentries    =args.nprocess,
+                            year        =simdict['year'],
+                            campaign    =simdict['campaign']
+                        )
+            if counts.shape!=(1, nybins):
+                msg = 'ERROR: counts has unexpected shape {}, check the binning of normvariable.'.format(counts.shape)
+                raise Exception(msg)
+            simsum += np.clip(counts[0], 0, None)
+
+        # Compare data vs. sim per y bin
+        scale       = np.zeros(nybins)
+        for j in range(nybins):
+            ylow, yhigh = yvariable['bins'][j], yvariable['bins'][j+1]
+            if simsum[j]>0:
+                scale[j] = datasum[j] / simsum[j]
+            else:
+                msg = 'WARNING: simulation yield in normalization range is zero'
+                msg += ' for {} < {} < {}; setting scale factor to 0 for this bin.'.format(
+                        ylow, yvariable['variable'], yhigh)
+                print(msg)
+            print('  y bin {} [{}, {}]: data = {:.6g}, sim = {:.6g}, scale = {:.6g}'.format(
+                    j, ylow, yhigh, datasum[j], simsum[j], scale[j]))
+
+        # Scale each row (y bin) of simulation with its own factor
+        for simdict in simin:
+            for key in ['counts', 'errors', 'confidences', 'conf_errors']:
+                if np.ndim(simdict[key])==2:
+                    simdict[key] = simdict[key]*scale[np.newaxis, :]
+
+    # ------------------------------------------------------------------------
     # for normmode 'eventyield', scale using event weights
     if args.normmode=='eventyield':
         print('Normalizing simulation event yield to data event yield...')
@@ -699,7 +774,7 @@ if __name__=='__main__':
     normalization_st.Write()
   
     # write norm range
-    if args.normmode in ['range']:
+    if args.normmode in ['range', 'rangeperbin']:
         normrange_st    = ROOT.TVectorD(2)
         normrange_st[0] = normvariable['bins'][0]
         normrange_st[1] = normvariable['bins'][1]
@@ -781,7 +856,7 @@ if __name__=='__main__':
         normalization_st.Write()
       
         # write norm range
-        if args.normmode in ['range']:
+        if args.normmode in ['range', 'rangeperbin']:
             normrange_st    = ROOT.TVectorD(2)
             normrange_st[0] = normvariable['bins'][0]
             normrange_st[1] = normvariable['bins'][1]

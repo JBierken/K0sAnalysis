@@ -342,7 +342,7 @@ if __name__=='__main__':
     xvarname            = indict['xvarname']
     yvarname            = indict['yvarname']
     normvariable        = None
-    if indict['normalization'] == 'range':
+    if indict['normalization'] in ['range', 'rangeperbin']:
         normrange         = indict['normrange']
         normvariable      = indict['normvariable']
         #if varname!=normvariable: normrange = None # disable drawing norm range if variables dont match
@@ -395,6 +395,8 @@ if __name__=='__main__':
                     extrainfos.append('Normalized to data')
                 elif norm=='range':
                     extrainfos.append('Normalized in range')
+                elif norm=='rangeperbin':
+                    extrainfos.append('Normalized in range per bin')
                 elif norm=='eventyield':
                     extrainfos.append('Normalized to data events')
                 else:

@@ -20,7 +20,7 @@ def loadobjects(histfile, histdim=1):
     # load normalization
     normalization = f.Get("normalization").GetTitle()
     res['normalization'] = normalization
-    if(normalization in ['range']):
+    if(normalization in ['range', 'rangeperbin']):
         normrange = (f.Get("normrange")[0],f.Get("normrange")[1])
         res['normrange'] = normrange
         normvariable = f.Get("normvariable").GetTitle()
@@ -493,7 +493,7 @@ if __name__=='__main__':
     varname = indict['varname']
     normrange = None
     normvariable = None
-    if indict['normalization'] == 'range':
+    if indict['normalization'] in ['range', 'rangeperbin']:
       normrange = indict['normrange']
       normvariable = indict['normvariable']
       if varname!=normvariable: normrange = None # disable drawing norm range if variables dont match
@@ -571,6 +571,8 @@ if __name__=='__main__':
             extrainfos.append('Normalized to data')
           elif norm=='range':
             extrainfos.append('Normalized in range')
+          elif norm=='rangeperbin':
+            extrainfos.append('Normalized in range per bin')
           elif norm=='eventyield':
             extrainfos.append('Normalized to data events')
           else:
