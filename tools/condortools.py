@@ -76,11 +76,13 @@ def initJobScript(name,
 def makeJobDescription(name, exe, argstring=None, 
                        stdout=None, stderr=None, log=None,
                        cpus=1, mem=1024, disk=10240, 
-                       proxy=None, jobflavour=None):
+                       proxy=None, jobflavour=None, queue='queue'):
     ### create a single job description txt file
     # note: exe can for example be a runnable bash script
     # note: argstring is a single string containing the arguments to exe (space-separated)
     # note: for job flavour: see here: https://batchdocs.web.cern.ch/local/submit.html
+    # note: queue is the (single) queue statement that ends the file; exe and argstring
+    #       may refer to its item variable, e.g. exe='$(jobexe)', queue='queue jobexe from (...)'
     
     # parse arguments
     name = os.path.splitext(name)[0]
@@ -106,8 +108,17 @@ def makeJobDescription(name, exe, argstring=None,
         # (not fully sure whether to put 'yes', 'no' or omit it completely)
         if jobflavour is not None:
             f.write('+JobFlavour = "{}"\n\n'.format(jobflavour))
-        f.write('queue\n\n')
+
+        f.write('{}\n'.format(queue))
     print('makeJobDescription created {}'.format(fname))
+
+def _queueFrom(var, items):
+    ### a single 'queue <var> from (...)' statement with one job per item.
+    # with one variable, condor assigns each full line to it, so items may contain spaces.
+    for item in items:
+        if '\n' in item or item.strip()!=item or item=='' or item.startswith('#') or item.startswith(')'):
+            raise Exception('ERROR: cannot put {!r} in a condor queue statement'.format(item))
+    return 'queue {} from (\n{}\n)'.format(var, '\n'.join(items))
 
 def submitCondorJob(jobDescription):
     ### submit a job description file as a condor job
@@ -155,21 +166,20 @@ def submitCommandsAsCondorCluster(name, commands, stdout=None, stderr=None, log=
         script.write(exe)
         script.write(' $@')
         script.write('\n')
-    # then make the job description
-    # first job:
-    makeJobDescription(name,shname,argstring=argstring,stdout=stdout,stderr=stderr,log=log,
+    # collect the arguments of all jobs
+    argstrings = []
+    for command in commands:
+        [thisexe,thisargstring] = command.split(' ',1)
+        thisnargs = len(thisargstring.split(' '))
+        if( thisexe!=exe or thisnargs!=nargs):
+            print('### ERROR ###: commands are not compatible to put in same cluster')
+            return
+        argstrings.append(thisargstring)
+    # then make the job description, with a single queue statement over all jobs
+    # (multiple queue statements per submit file are deprecated in condor 24 and removed in 25)
+    makeJobDescription(name,shname,argstring='$(jobargs)',stdout=stdout,stderr=stderr,log=log,
                        cpus=cpus,mem=mem,disk=disk,proxy=proxy,
-                       jobflavour=jobflavour)
-    # add other jobs:
-    with open(jdname,'a') as script:
-        for command in commands[1:]:
-            [thisexe,thisargstring] = command.split(' ',1)
-            thisnargs = len(thisargstring.split(' '))
-            if( thisexe!=exe or thisnargs!=nargs):
-                print('### ERROR ###: commands are not compatible to put in same cluster')
-                return
-            script.write('arguments = "{}"\n'.format(thisargstring))
-            script.write('queue\n\n')
+                       jobflavour=jobflavour, queue=_queueFrom('jobargs', argstrings))
     # finally submit the job
     submitCondorJob(jdname)
 
@@ -222,8 +232,7 @@ def submitCommandsAsCondorJobsBatched(name, commands, stdout=None, stderr=None, 
             jobflavour=None):
     ### same as submitCommandsAsCondorJobs (one job per set of commands),
     # but all jobs go into one job description file and one condor_submit call.
-    # note: condor starts a new cluster whenever 'executable' changes,
-    # so each job still gets its own ClusterId (with ProcId 0).
+    # note: all jobs end up in a single cluster (one ProcId per job).
     # returns the list of executables that were created.
     if len(commands)==0: return []
     name = os.path.splitext(name)[0]
@@ -235,13 +244,10 @@ def submitCommandsAsCondorJobsBatched(name, commands, stdout=None, stderr=None, 
         with open(shname,'a') as script:
             for cmd in commandset: script.write(cmd+'\n')
         shnames.append(shname)
-    # job description for the first job, then one executable + queue per extra job
-    makeJobDescription(name,shnames[0],stdout=stdout,stderr=stderr,log=log,
+    # one job description with a single queue statement over all executables
+    # (multiple queue statements per submit file are deprecated in condor 24 and removed in 25)
+    makeJobDescription(name,'$(jobexe)',stdout=stdout,stderr=stderr,log=log,
                        cpus=cpus,mem=mem,disk=disk,proxy=proxy,
-                       jobflavour=jobflavour)
-    with open(jdname,'a') as f:
-        for shname in shnames[1:]:
-            f.write('executable = {}\n'.format(shname))
-            f.write('queue\n\n')
+                       jobflavour=jobflavour, queue=_queueFrom('jobexe', shnames))
     submitCondorJob(jdname)
     return shnames
