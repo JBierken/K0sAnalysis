@@ -45,33 +45,33 @@ if __name__=='__main__':
                         ])
         elif args.version=='run2ul':
             includelist     = ([
-                            #'2016PreVFP',
-                            #'2016PostVFP',
-                            #'2016',
-                            #'2017',
+                            '2016PreVFP',
+                            '2016PostVFP',
+                            '2016',
+                            '2017',
                             '2018',
-                            #'run2'
+                            'run2'
                         ])
         elif args.version=='run3':
             includelist     = ([
                             ## Run2022 
-                            #'2022',
-                            #'2022preEE',
-                            #'2022postEE',
-                            #'2022combined',
+                            '2022',
+                            '2022preEE',
+                            '2022postEE',
+                            '2022combined',
                             ## Run2023
-                            #'2023',
-                            #'2023preBPix',
-                            #'2023postBPix',
-                            #'2023combined',
+                            '2023',
+                            '2023preBPix',
+                            '2023postBPix',
+                            '2023combined',
                             ## Run2024 
                             '2024',
                             ## Run2025 
                             '2025',
                             ## Run2026 
-                            '2026',
+                            #'2026',
                             ## Run-3 
-                            'run3'
+                            #'run3'
                         ])
     elif 'perera' in includelist:
         if args.version=='run2preul':
@@ -98,18 +98,18 @@ if __name__=='__main__':
         elif args.version=='run3':
             includelist     = ([
                             ## Run2022preEE 
-                            #'2022preEEB',
-                            #'2022preEEC',
-                            #'2022preEED',
+                            '2022preEEB',
+                            '2022preEEC',
+                            '2022preEED',
                             ## Run2022postEE 
-                            #'2022postEEE',
-                            #'2022postEEF',
-                            #'2022postEEG',
+                            '2022postEEE',
+                            '2022postEEF',
+                            '2022postEEG',
                             ## Run2023preBPix
-                            #'2023preBPixB',
-                            #'2023preBPixC',
+                            '2023preBPixB',
+                            '2023preBPixC',
                             ## Run2023postBPix
-                            #'2023postBPixD',
+                            '2023postBPixD',
                             ## Run2024 
                             '2024C',
                             '2024D',
@@ -126,9 +126,9 @@ if __name__=='__main__':
                             '2025F',
                             '2025G',
                             ## Run2026 
-                            '2026A',
-                            '2026B',
-                            '2026D',
+                            #'2026A',
+                            #'2026B',
+                            #'2026D',
                         ])
     elif 'detector' in includelist:
         if args.version=='run2preul':
@@ -152,13 +152,13 @@ if __name__=='__main__':
         elif args.version=='run3':
             includelist     = ([
                             '2022preEE',
-                            #'2022postEE',
-                            #'2022',
-                            #'2023preBPix',
-                            #'2023postBPix',
-                            #'2023',
-                            #'2024',
-                            #'run3'
+                            '2022postEE',
+                            '2022',
+                            '2023preBPix',
+                            '2023postBPix',
+                            '2023',
+                            '2024',
+                            'run3'
                         ])
     kwargs                = {}
     if args.version=='run2preul':
@@ -226,7 +226,7 @@ if __name__=='__main__':
                             with open(yvarjson, 'w') as f:
                                 json.dump(yvariabledict, f)
                         # write normalization variable
-                        if norm['type']=='range':
+                        if norm['type'] in ['range', 'rangeperbin']:
                             normvariabledict = ({
                                             'name':     norm['normvariable'],
                                             'label':    norm['normvariable'],
@@ -270,7 +270,7 @@ if __name__=='__main__':
                         cmd += ' --fitstrategy {}'.format(args.fitstrategy)
                         # add args for normalization
                         if norm['type'] is not None:            cmd += ' --normmode {}'.format(norm['type'])
-                        if norm['type']=='range':               cmd += ' --normvariable {}'.format(normvarjson)
+                        if norm['type'] in ['range', 'rangeperbin']: cmd += ' --normvariable {}'.format(normvarjson)
                         if norm['type']=='eventyield':          cmd += ' --eventtreename nimloth'
                         # (hard-coded for now, maybe extend later)
                         # add args for background subtraction
