@@ -38,6 +38,7 @@ All steps run with CMSSW sourced (`cmsenv` in `CMSSW_15_0_17`, python3, ROOT, up
 - **Normalization modes:** `lumi`, `yield`, `eventyield` (uses the `nimloth` tree), `range` and `rangeperbin`. `range` scales total simulation to data in the `normvariable` range, typically `_RPV` ∈ [0, 0.5] cm, and is the main physics result.
 - `rangeperbin` (2D only, config key `normrangeperbin` in `config_ks2dvars.py`) does the same as `range`, but per bin of the y variable (pT/η/φ): each row j gets its own scale factor, data/sim in the `normvariable` range within that y bin. The uncertainty of the scale factors is not propagated, same as for `range`.
 - If `--normmode` is not given, simulation xsec and lumi are set to 1.
+- Simulation is normalized as `_weight × pileup / (hCounter × splitfraction) × xsec × lumi`, where `splitfraction` is the share of generator weight in the event's split range (estimated from the selected events, since the hash is independent of the selection). From 2026-05-11 (`08349cc`) to 2026-11-27 it divided by the sum of the *selected* weights instead, which set every simulation total to xsec×lumi (efficiency 1, ~12× too high in `lumi`/`yield` plots; `range` normalization was unaffected). A missing `hCounter` now raises instead of silently using 1.
 
 ## Fitting (`fitting/count_peak.py`, `tools/fittools.py`)
 The signal model is a Gaussian or double Gaussian on a pol1/pol2 background in the K0S mass window 0.44–0.56 GeV.
@@ -76,6 +77,9 @@ The signal model is a Gaussian or double Gaussian on a pol1/pol2 background in t
 - No official BTV loose WPs exist yet for 2025 (any tagger), for DeepJet/PNet/RobustParT in 2024, or for UParT in 2022/2023. These are `PLACEHOLDER`s in `bTagSettingsTable`. The default veto taggers only use placeholders in 2025.
 - In the `normmode=='range'` block of `mcvsdata_fill.py`, `file_total` is computed but no longer used (it was a leftover diagnostic).
 - `mcvsdata_submit.py` hard-codes `CMSSW = '/user/jbierken/CMSSW_15_0_17'`.
+
+- Data found missing on 2026-11-27 (events per fb⁻¹ in the Z window should be ~540–585k for every era): `Muon0/Run2023D-22Sep2023_v1-v1` was never in `samplelist_2023BPix_data.txt` (2023D at 340k/fb⁻¹); `Muon1/Run2024H-MINIv6NANOv15-v1` is INVALID in DAS and its ntuple has only 18 files, so `-v2` must be ntuplized (2024H at 290k/fb⁻¹); `Run2025C-PromptReco-v1` (runs 392174–393087) and `Run2025F-PromptReco-v2` (397619–397853) were never ntuplized for Muon0/1 (2025C at 220k, 2025F at 402k per fb⁻¹); `Run2026C-PromptReco-v1` (runs 402536–403421, Muon0–3) is not in the samplelists or `lumitools`. To check for more, compare `dasgoclient -query="dataset dataset=/Muon*/Run20XX*/MINIAOD"` with the samplelists.
+- The 2024 MC (`DYto2L-2Jets_Bin-MLL-50-PTLL-100`, shared by 2024–2026) is a pT(ℓℓ) > 100 GeV slice, not inclusive DY: ⟨lepton pT⟩ 83.6 GeV vs 43 GeV in data. Its shapes and the 6688 pb cross-section are wrong for this analysis until an inclusive sample replaces it.
 
 ## Conventions
 - Tree names follow Tolkien naming: `laurelin` (K0S), `telperion` (Λ), `nimloth` (event-level), `celeborn` (muon branches).

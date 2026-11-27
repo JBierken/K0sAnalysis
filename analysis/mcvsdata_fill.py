@@ -225,14 +225,17 @@ if __name__=='__main__':
             sumweights            = 1             # default case for data, overwritten for simulation below
             prescale              = None          # to implement later
             if not isdata:
-                try: 
+                # hCounter holds the sum of generator weights of all generated events (before any selection);
+                # without it the simulation cannot be normalized, so fail instead of guessing
+                try:
                     sumweights     = f[hcountername].values()[0]
                 except:
-                    msg               = 'WARNING: isdata was set to False, but no valid hCounter found in file'
-                    msg               += ' (for provided key {}),'.format(hcountername)
-                    msg               += ' will use sum of weights = 1 for this sample.'
+                    msg               = 'ERROR: isdata was set to False, but no valid hCounter found in file {}'.format(inputfile)
+                    msg               += ' (for provided key {}).'.format(hcountername)
                     msg               += ' Valid keys are {}'.format(f.keys())
-                    print(            msg)
+                    raise Exception(msg)
+                if not sumweights > 0:
+                    raise Exception('ERROR: hCounter in file {} has non-positive sum of weights {}'.format(inputfile, sumweights))
           
             # get main tree and manage number of entries
             tree                  = f[treename]
@@ -263,8 +266,13 @@ if __name__=='__main__':
                 weights    = np.ones(nentries)
             else:
                 rawweights          = tree[weightvarname].array(library='np', entry_stop=nentries)
+                # fraction of the generated sample in this split: the hash is independent of the selection,
+                # so it can be estimated from the selected events in the tree
+                splitfraction       = 1.
                 if splitmask is not None:
+                    splitfraction   = np.sum(rawweights[splitmask]) / np.sum(rawweights)
                     rawweights      = rawweights[splitmask]
+                    print('MC split keeps a fraction {:.4f} of the sum of generator weights.'.format(splitfraction))
 
                 # do pileup reweighting first, so normalization uses post-pileup weights
                 # in case of per-era processing (need more elegant solution, but should work)
@@ -282,16 +290,15 @@ if __name__=='__main__':
                     ntrueint        = ntrueint[splitmask]
                 pileupreweight      = pileupreweighter.getreweight(ntrueint)
 
-                # apply pileup weights to rawweights before normalizing to xsection*lumi
-                adjusted_weights    = np.multiply(rawweights, pileupreweight)
-                sum_adjusted        = np.sum(adjusted_weights)
-                if sum_adjusted == 0:
-                    msg = 'ERROR: sum of adjusted (raw * pileup) weights is zero for file {}'.format(inputfile)
-                    raise Exception(msg)
-                weights             = adjusted_weights / sum_adjusted * xsection * lumi
+                # normalize to xsection*lumi with the sum of generator weights of all generated events
+                # (hCounter, scaled by the split fraction), so that the selection efficiency is kept.
+                # Until 2026-11-27 this divided by the sum of the selected (pileup-reweighted) weights,
+                # which set every simulation total to xsection*lumi (efficiency = 1).
+                # The pileup ratio is normalized to the MC profile (sum(w*mc) = 1), so it needs no extra factor.
+                weights             = np.multiply(rawweights, pileupreweight) / (sumweights * splitfraction) * xsection * lumi
 
-            if splitmask is None:
-                weights               = weights * nentries_reweight
+            # correct for reading only part of the tree (data and simulation)
+            weights               = weights * nentries_reweight
             
 
 
