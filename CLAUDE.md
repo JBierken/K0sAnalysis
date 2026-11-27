@@ -73,7 +73,7 @@ The signal model is a Gaussian or double Gaussian on a pol1/pol2 background in t
 - No official BTV loose WPs exist yet for 2025 (any tagger), for DeepJet/PNet/RobustParT in 2024, or for UParT in 2022/2023. These are `PLACEHOLDER`s in `bTagSettingsTable`. The default veto taggers only use placeholders in 2025.
 - In the `normmode=='range'` block of `mcvsdata_fill.py`, `file_total` is computed but no longer used (it was a leftover diagnostic).
 - `mcvsdata_submit.py` hard-codes `CMSSW = '/user/jbierken/CMSSW_15_0_17'`.
-- 2026 is wired in, but `reweighting/pileup/2026/Pileup_ratio.root` still needs the 2026 data pileup histogram (`reweighting/pileup/data/run3/dataPileupHistogram-2026pp_Golden-66000ub.root`, then `make_pileup.py -e 2026`). 2026 simulation cannot be reweighted until then.
+- 2026 pileup: `reweighting/pileup/2026/Pileup_ratio.root` is the BRIL data/MC weight `PU` from `puWeights_2026pp_Golden_Summer24_25ns_69200ub_bril.histo.root` (made against the Summer24 profile; `make_pileup.py` checks the closure sum(w·mc) = 1). It uses 69.2 mb, while the 2022–2025 data profiles use 66 mb. The file's `PUdown` (−4.6%, ≈66 mb) would match the other years.
 
 ## Conventions
 - Tree names follow Tolkien naming: `laurelin` (K0S), `telperion` (Λ), `nimloth` (event-level), `celeborn` (muon branches).

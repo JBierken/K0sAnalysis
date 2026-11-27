@@ -125,8 +125,12 @@ def get_pileup(era, base_dir=baseDir): # code below taken from spark tnp
             '2023':         base_dir + '/pileup/data/run3/pileupHistogram-Cert_Collisions2023_366442_370790_GoldenJson-13p6TeV-66000ub-99bins.root',
             '2024':         base_dir + '/pileup/data/run3/pileupHistogram-Cert_Collisions2024_378981_386951_GoldenJson-13p6TeV-66000ub-99bins.root',
             '2025':         base_dir + '/pileup/data/run3/dataPileupHistogram-2025pp_Golden-66000ub.root',
-            # TODO: 2026 data pileup histogram (Golden JSON, 66000 ub) still to be produced / copied here
-            '2026':         base_dir + '/pileup/data/run3/dataPileupHistogram-2026pp_Golden-66000ub.root',
+            }
+    # Eras for which BRIL provides data/MC weights directly instead of a data profile.
+    # The weights must have been made against the MC profile in mcPileup[era] (checked below).
+    # 'PU' is nominal (69.2 mb), 'PUup'/'PUdown' are the +-4.6% min-bias cross-section variations.
+    puWeights = {
+            '2026':         base_dir + '/pileup/data/run3/puWeights_2026pp_Golden_Summer24_25ns_69200ub_bril.histo.root',
             }
     mcPileup = {
             # Run-2
@@ -146,20 +150,31 @@ def get_pileup(era, base_dir=baseDir): # code below taken from spark tnp
             '2026':         base_dir + '/pileup/2026/mcPileup.root',
             }
     
-    with uproot.open(dataPileup[era]) as f:
-        data_edges  = f['pileup'].axis(0).edges()
-        data_pileup = f['pileup'].values()
-        data_pileup /= sum(data_pileup)
-    
     with uproot.open(mcPileup[era]) as f:
         mc_edges    = f['pileup'].axis(0).edges()
         mc_pileup   = f['pileup'].values()
         mc_pileup   /= sum(mc_pileup)
-    
-    pileup_edges    = data_edges if len(data_edges) < len(mc_edges) else mc_edges
-    pileup_ratio    = [d/m if m else 1.0 for d, m in zip(
-                        data_pileup[:len(pileup_edges)-1], mc_pileup[:len(pileup_edges)-1])]
-    
+
+    if era in puWeights:
+        with uproot.open(puWeights[era]) as f:
+            pileup_edges    = f['PU'].axis(0).edges()
+            pileup_ratio    = np.array(f['PU'].values(), dtype=np.float64)
+        # closure: weights made against this MC profile satisfy sum(w * mc) = 1
+        n           = min(len(pileup_ratio), len(mc_pileup))
+        closure     = np.sum(pileup_ratio[:n] * mc_pileup[:n])
+        print('Closure of {} weights with {}: sum(w*mc) = {:.4f}'.format(era, mcPileup[era], closure))
+        if abs(closure - 1.) > 0.01:
+            raise Exception('ERROR: pileup weights for {} do not match the MC profile (closure {:.4f})'.format(era, closure))
+    else:
+        with uproot.open(dataPileup[era]) as f:
+            data_edges  = f['pileup'].axis(0).edges()
+            data_pileup = f['pileup'].values()
+            data_pileup /= sum(data_pileup)
+
+        pileup_edges    = data_edges if len(data_edges) < len(mc_edges) else mc_edges
+        pileup_ratio    = [d/m if m else 1.0 for d, m in zip(
+                            data_pileup[:len(pileup_edges)-1], mc_pileup[:len(pileup_edges)-1])]
+
     hist    = TH1.from_numpy((np.array(pileup_ratio), np.array(pileup_edges)))
 
     # Write pileup to ROOT file
