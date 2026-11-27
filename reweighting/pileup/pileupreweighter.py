@@ -53,8 +53,11 @@ def get_pileup_profile(campaign, year):
             msg                 = 'ERROR: year {} not recogized.'.format(year)
             raise Exception(msg)
 
-        year                    = year.rstrip('prepostcombinedABCDEFGHI')
-        pufile                  = os.path.join(path, '{}'.format(year), 'Pileup_ratio.root')
+        # map to the profile directory; the combined samples use the full-year profile.
+        # (this used to be year.rstrip('prepostcombinedABCDEFGHI'), which strips characters,
+        #  not suffixes, and so also turned 2022preEE/2022postEE into 2022)
+        year                    = {'2022combined': '2022', '2023combined': '2023'}.get(year, year)
+        pufile                 = os.path.join(path, '{}'.format(year), 'Pileup_ratio.root')
         histname                = 'pileup'
 
     else:

@@ -116,15 +116,17 @@ def get_pileup(era, base_dir=baseDir): # code below taken from spark tnp
             'UL2016':       base_dir + '/pileup/UL2016/dataPileup_nominal.root',
             'UL2017':       base_dir + '/pileup/UL2017/dataPileup_nominal.root',
             'UL2018':       base_dir + '/pileup/UL2018/dataPileup_nominal.root',
-            # Run-3
-            '2022preEE':    base_dir + '/pileup/data/run3/pileupHistogram-Cert_Collisions2022_355100_357900_eraBCD_GoldenJson-13p6TeV-66000ub-99bins.root',
-            '2022postEE':   base_dir + '/pileup/data/run3/pileupHistogram-Cert_Collisions2022_359022_362760_eraEFG_GoldenJson-13p6TeV-66000ub-99bins.root',
-            '2022':         base_dir + '/pileup/data/run3/pileupHistogram-Cert_Collisions2022_355100_362760_GoldenJson-13p6TeV-66000ub-99bins.root',
-            '2023preBPix':  base_dir + '/pileup/data/run3/pileupHistogram-Cert_Collisions2023_366403_369802_eraBC_GoldenJson-13p6TeV-66000ub-99bins.root',
-            '2023postBPix': base_dir + '/pileup/data/run3/pileupHistogram-Cert_Collisions2023_369803_370790_eraD_GoldenJson-13p6TeV-66000ub-99bins.root',
-            '2023':         base_dir + '/pileup/data/run3/pileupHistogram-Cert_Collisions2023_366442_370790_GoldenJson-13p6TeV-66000ub-99bins.root',
-            '2024':         base_dir + '/pileup/data/run3/pileupHistogram-Cert_Collisions2024_378981_386951_GoldenJson-13p6TeV-66000ub-99bins.root',
-            '2025':         base_dir + '/pileup/data/run3/dataPileupHistogram-2025pp_Golden-66000ub.root',
+            # Run-3: data profiles for a min-bias cross-section of 69.2 mb (since 2026-11-27; 66 mb before).
+            # Note: the old 2024 file named '...-66000ub-99bins.root' is in fact a 69.2 mb profile
+            #       (<PU> = 50.02, recomputed from the 2024 Golden + pileup JSONs).
+            '2022preEE':    base_dir + '/pileup/data/run3/pileupHistogram-Cert_Collisions2022_355100_357900_eraBCD_GoldenJson-13p6TeV-69200ub-99bins.root',
+            '2022postEE':   base_dir + '/pileup/data/run3/pileupHistogram-Cert_Collisions2022_359022_362760_eraEFG_GoldenJson-13p6TeV-69200ub-99bins.root',
+            '2022':         base_dir + '/pileup/data/run3/pileupHistogram-Cert_Collisions2022_355100_362760_GoldenJson-13p6TeV-69200ub-99bins.root',
+            '2023preBPix':  base_dir + '/pileup/data/run3/pileupHistogram-Cert_Collisions2023_366403_369802_eraBC_GoldenJson-13p6TeV-69200ub-99bins.root',
+            '2023postBPix': base_dir + '/pileup/data/run3/pileupHistogram-Cert_Collisions2023_369803_370790_eraD_GoldenJson-13p6TeV-69200ub-99bins.root',
+            '2023':         base_dir + '/pileup/data/run3/pileupHistogram-Cert_Collisions2023_366442_370790_GoldenJson-13p6TeV-69200ub-99bins.root',
+            '2024':         base_dir + '/pileup/data/run3/dataPileupHistogram-2024CDEFGHI_Golden-69200ub.root',
+            '2025':         base_dir + '/pileup/data/run3/dataPileupHistogram-2025pp_Golden-69200ub.root',
             }
     # Eras for which BRIL provides data/MC weights directly instead of a data profile.
     # The weights must have been made against the MC profile in mcPileup[era] (checked below).
