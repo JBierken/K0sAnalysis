@@ -119,6 +119,7 @@ if __name__=='__main__':
                 'Muon1_Run2023C-22Sep2023_v4-v2'
             ],
             'Run2023postBPix': [
+                'Muon0_Run2023D-22Sep2023_v1-v1',
                 'Muon0_Run2023D-22Sep2023_v2-v1',
                 'Muon1_Run2023D-22Sep2023_v1-v1',
                 'Muon1_Run2023D-22Sep2023_v2-v1'
@@ -134,6 +135,7 @@ if __name__=='__main__':
                 'Muon1_Run2023C-22Sep2023_v2-v1',
                 'Muon1_Run2023C-22Sep2023_v3-v1',
                 'Muon1_Run2023C-22Sep2023_v4-v2',
+                'Muon0_Run2023D-22Sep2023_v1-v1',
                 'Muon0_Run2023D-22Sep2023_v2-v1',
                 'Muon1_Run2023D-22Sep2023_v1-v1',
                 'Muon1_Run2023D-22Sep2023_v2-v1'
@@ -158,6 +160,7 @@ if __name__=='__main__':
                 'Muon1_Run2023C-22Sep2023_v4-v2',
             ],
             'Run2023D-22Sep2023-v1': [
+                'Muon0_Run2023D-22Sep2023_v1-v1',
                 'Muon0_Run2023D-22Sep2023_v2-v1',
                 'Muon1_Run2023D-22Sep2023_v1-v1',
                 'Muon1_Run2023D-22Sep2023_v2-v1',
