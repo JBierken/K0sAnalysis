@@ -8,28 +8,35 @@ import numpy as np
 from functools import partial
 
 ### polynomial function
-def poly(x, par, degree=0):
-    # par[k] = coefficient with x**k
+def poly(x, par, degree=0, xcenter=0., xscale=1.):
+    # par[k] = coefficient with t**k, where t = (x-xcenter)/xscale
+    #          (default: t = x, i.e. plain polynomial in x)
     # note: in new versions of ROOT or CMSSW or python,
     #       one cannot rely on len(par) anymore to get the degree
     #       of the polynomial; instead it is passed here explicitly.
+    # note: a centered/scaled variable (t in [-1,1] over the fit range)
+    #       strongly reduces the correlations between the coefficients.
+    t = (x[0]-xcenter)/xscale
     res = 0.
     for k in range(degree+1):
-        res += par[k]*np.power(x[0], k)
+        res += par[k]*np.power(t, k)
     return res
 
 #def poly_fit(hist, fitrange, initialguesses, optionstring="WLQ0"):
-def poly_fit(hist, fitrange, initialguesses, optionstring="RMSE0", funcname="fitfunc"):
+def poly_fit(hist, fitrange, initialguesses, optionstring="RMSE0", funcname="fitfunc", return_fitresult=False,
+             xcenter=0., xscale=1.):
     # args: - histogram to be fitted on
     #        - tuple or list representing range to take into account for fit
     #        - (ordered) list of initial parameter guesses
     #        - option string for TH1F::Fit
+    #        - return_fitresult: also return the TFitResultPtr (needs "S" in optionstring)
+    #        - xcenter, xscale: polynomial in t = (x-xcenter)/xscale (see poly)
     # note: the fitobj object (see below) must be kept in memory explicitly
     #       for using fitfunc (else error "the callable was deleted"),
     #       so it is returned as well, but not meant to be used explicitly.
     
     degree = len(initialguesses)-1
-    fitobj = partial(poly, degree=degree)
+    fitobj = partial(poly, degree=degree, xcenter=xcenter, xscale=xscale)
     fitfunc = ROOT.TF1(funcname, fitobj, fitrange[0], fitrange[1], len(initialguesses))
     for i,val in enumerate(initialguesses):
         fitfunc.SetParameter(i,val)
@@ -37,6 +44,8 @@ def poly_fit(hist, fitrange, initialguesses, optionstring="RMSE0", funcname="fit
     paramdict = collections.OrderedDict()
     for i in range(len(initialguesses)):
         paramdict['a'+str(i)] = float(fitfunc.GetParameter(i))
+    if return_fitresult:
+        return (fitfunc, paramdict, fitobj, fitresult)
     return (fitfunc, paramdict, fitobj)
 
 ### gaussian peak with no background
@@ -70,22 +79,24 @@ def gauss_fit(hist, fitrange, initialguesses, optionstring="RMSE0"):
     return (fitfunc, paramdict, fitobj)
 
 ### polynomial background with gaussian peak
-def poly_plus_gauss(x, par, degree=-1): 
+def poly_plus_gauss(x, par, degree=-1, xcenter=0., xscale=1.):
     # par[0] = mean
     # par[1] = prefactor
     # par[2] = std
-    # par[k>2] = coefficient of x**(k-3)
+    # par[k>2] = coefficient of t**(k-3), with t = (x-xcenter)/xscale (default t = x)
     # note: in new versions of ROOT or CMSSW or python,
     #       one cannot rely on len(par) anymore to get the degree
     #       of the polynomial; instead it is passed here explicitly.
     res = 0.
     if(degree>=0):
-        res = np.sum(np.array([par[k]*np.power(x[0],k-3) for k in range(3, 4+degree)]))
+        t = (x[0]-xcenter)/xscale
+        res = np.sum(np.array([par[k]*np.power(t,k-3) for k in range(3, 4+degree)]))
     if(par[2]==0): return res
     arg1 = (x[0]-par[0])/par[2]
     return res + par[1]*np.exp(-0.5*arg1*arg1)
 
-def poly_plus_gauss_fit(hist, fitrange, initialguesses, optionstring="RMSE0", funcname="fitfunc"):
+def poly_plus_gauss_fit(hist, fitrange, initialguesses, optionstring="RMSE0", funcname="fitfunc",
+                        xcenter=0., xscale=1.):
     # args: - histogram to be fitted on
     #        - tuple or list representing range to take into account for fit
     #        - (ordered) list of initial parameter guesses
@@ -95,7 +106,7 @@ def poly_plus_gauss_fit(hist, fitrange, initialguesses, optionstring="RMSE0", fu
     #       so it is returned as well, but not meant to be used explicitly.
     degree                  = len(initialguesses)-4
     # (note: use -4 since len=3 implies no polynomial, i.e. should be set to -1)
-    fitobj                  = partial(poly_plus_gauss, degree=degree)
+    fitobj                  = partial(poly_plus_gauss, degree=degree, xcenter=xcenter, xscale=xscale)
     fitfunc                 = ROOT.TF1(funcname, fitobj, fitrange[0], fitrange[1], len(initialguesses))
     for i,val in enumerate(initialguesses):
         fitfunc.SetParameter(i,val)
@@ -115,26 +126,28 @@ def poly_plus_gauss_fit(hist, fitrange, initialguesses, optionstring="RMSE0", fu
     return (fitfunc, paramdict, fitobj, fitresult)
 
 ### polynomial background with sum-of-two-gaussians peak (same mean, different std)
-def poly_plus_doublegauss(x, par, degree=-1):
+def poly_plus_doublegauss(x, par, degree=-1, xcenter=0., xscale=1.):
     # par[0] = mean
     # par[1] = prefactor 1
     # par[2] = std 1
     # par[3] = prefactor 2
     # par[4] = std2
-    # par[k>4] = coefficient of x**(k-5)
+    # par[k>4] = coefficient of t**(k-5), with t = (x-xcenter)/xscale (default t = x)
     # note: in new versions of ROOT or CMSSW or python,
     #       one cannot rely on len(par) anymore to get the degree
     #       of the polynomial; instead it is passed here explicitly.
     res = 0.
     if(degree>=0):
-        res = np.sum(np.array([par[k]*np.power(x[0],k-5) for k in range(5, 6+degree)]))
+        t = (x[0]-xcenter)/xscale
+        res = np.sum(np.array([par[k]*np.power(t,k-5) for k in range(5, 6+degree)]))
     if(par[2]==0 or par[4]==0): return res
     arg1 = (x[0]-par[0])/par[2]
     arg2 = (x[0]-par[0])/par[4]
     return res + par[1]*np.exp(-0.5*arg1*arg1) + par[3]*np.exp(-0.5*arg2*arg2)
 
 #def poly_plus_doublegauss_fit(hist, fitrange, initialguesses, optionstring="WLQSE0"):
-def poly_plus_doublegauss_fit(hist, fitrange, initialguesses, optionstring="RMSE0", funcname="fitfunc"):
+def poly_plus_doublegauss_fit(hist, fitrange, initialguesses, optionstring="RMSE0", funcname="fitfunc",
+                              xcenter=0., xscale=1.):
     # args: - histogram to be fitted on
     #        - tuple or list representing rang:we to take into account for fit
     #        - (ordered) list of initial parameter guesses
@@ -143,7 +156,7 @@ def poly_plus_doublegauss_fit(hist, fitrange, initialguesses, optionstring="RMSE
     #       so it is returned as well, but not meant to be used explicitly.
     degree                      = len(initialguesses)-6
     # (note: use -6 since len=5 implies no polynomial, i.e. should be set to -1)
-    fitobj                      = partial(poly_plus_doublegauss, degree=degree)
+    fitobj                      = partial(poly_plus_doublegauss, degree=degree, xcenter=xcenter, xscale=xscale)
     fitfunc                     = ROOT.TF1(funcname, fitobj, fitrange[0], fitrange[1], len(initialguesses))
     
     for i,val in enumerate(initialguesses):
