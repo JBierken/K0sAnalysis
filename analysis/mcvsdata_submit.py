@@ -69,9 +69,9 @@ if __name__=='__main__':
                             ## Run2025 
                             '2025',
                             ## Run2026 
-                            #'2026',
+                            '2026',
                             ## Run-3 
-                            #'run3'
+                            'run3'
                         ])
     elif 'perera' in includelist:
         if args.version=='run2preul':
@@ -126,9 +126,9 @@ if __name__=='__main__':
                             '2025F',
                             '2025G',
                             ## Run2026 
-                            #'2026A',
-                            #'2026B',
-                            #'2026D',
+                            '2026A',
+                            '2026B',
+                            '2026D',
                         ])
     elif 'detector' in includelist:
         if args.version=='run2preul':

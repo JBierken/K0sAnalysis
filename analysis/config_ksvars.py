@@ -4,7 +4,7 @@
 import numpy as np
 
 config = ({
-     'rpv': {'variablename':'_RPV',
+    'rpv': {'variablename':'_RPV',
             'xaxtitle': '#Delta_{2D} (cm)',
             'yaxtitle': 'Reconstructed vertices',
             'treename': 'laurelin',
@@ -21,13 +21,13 @@ config = ({
             },
             'normalization': {
               'normlumi':{'type':'lumi', 'info':'Normalized to luminosity'},
-              #'normeventyield':{'type':'eventyield', 'info':'Normalized to data events'},
-              #'normyield':{'type':'yield', 'info':'Normalized to data events (post-selection)'},
+              'normeventyield':{'type':'eventyield', 'info':'Normalized to data events'},
+              'normyield':{'type':'yield', 'info':'Normalized to data events (post-selection)'},
               'normrange':{'type':'range', 'info': 'Normalized for #Delta_{2D} < 0.5 cm', 
                           'normvariable': '_RPV', 'normrange':[0.,0.5]},
             },
     },   
-     'ks_pt': {'variablename':'_pt',
+    'ks_pt': {'variablename':'_pt',
             'xaxtitle':'K^{0}_{S} transverse momentum (GeV)',
             'yaxtitle': 'Events',
             'treename': 'laurelin',
@@ -44,8 +44,8 @@ config = ({
             },
             'normalization': {
               'normlumi':{'type':'lumi', 'info':'Normalized to luminosity'},
-              #'normeventyield':{'type':'eventyield', 'info':'Normalized to data events'},
-              #'normyield':{'type':'yield', 'info':'Normalized to data events (post-selection)'},
+              'normeventyield':{'type':'eventyield', 'info':'Normalized to data events'},
+              'normyield':{'type':'yield', 'info':'Normalized to data events (post-selection)'},
               'normrange':{'type':'range', 'info': 'Normalized for #Delta_{2D} < 0.5 cm', 
                           'normvariable': '_RPV', 'normrange':[0.,0.5]},
             },

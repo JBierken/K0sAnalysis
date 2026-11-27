@@ -41,21 +41,21 @@ def getfiles_run3( filedir, includelist ):
     mcdirdict                       = {}
 
     # get MC samples for 2022
-    mcdirdict['2022preEE']          = 'DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v4'
+    mcdirdict['2022preEE']          = 'DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_Run3Summer22MiniAODv4-130X_mcRun3_2022_realistic_v5-v5'
     
-    mcdirdict['2022preEEB']         = 'DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v4'
-    mcdirdict['2022preEEC']         = 'DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v4'
-    mcdirdict['2022preEED']         = 'DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v4'
+    mcdirdict['2022preEEB']         = 'DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_Run3Summer22MiniAODv4-130X_mcRun3_2022_realistic_v5-v5'
+    mcdirdict['2022preEEC']         = 'DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_Run3Summer22MiniAODv4-130X_mcRun3_2022_realistic_v5-v5'
+    mcdirdict['2022preEED']         = 'DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_Run3Summer22MiniAODv4-130X_mcRun3_2022_realistic_v5-v5'
     
-    mcdirdict['2022postEE']         = 'DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_Run3Summer22EEMiniAODv3-124X_mcRun3_2022_realistic_postEE_v1-v4'
+    mcdirdict['2022postEE']         = 'DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_Run3Summer22EEMiniAODv4-130X_mcRun3_2022_realistic_postEE_v6-v5'
     
-    mcdirdict['2022postEEE']        = 'DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_Run3Summer22EEMiniAODv3-124X_mcRun3_2022_realistic_postEE_v1-v4'
-    mcdirdict['2022postEEF']        = 'DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_Run3Summer22EEMiniAODv3-124X_mcRun3_2022_realistic_postEE_v1-v4'
-    mcdirdict['2022postEEG']        = 'DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_Run3Summer22EEMiniAODv3-124X_mcRun3_2022_realistic_postEE_v1-v4'
+    mcdirdict['2022postEEE']        = 'DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_Run3Summer22EEMiniAODv4-130X_mcRun3_2022_realistic_postEE_v6-v5'
+    mcdirdict['2022postEEF']        = 'DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_Run3Summer22EEMiniAODv4-130X_mcRun3_2022_realistic_postEE_v6-v5'
+    mcdirdict['2022postEEG']        = 'DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_Run3Summer22EEMiniAODv4-130X_mcRun3_2022_realistic_postEE_v6-v5'
     
     
     mcdirdict['2022']               = ''
-    mcdirdict['2022combined']       = 'DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_Run3Summer22MiniAODv3-124X_mcRun3_2022_realistic_v12-v4'
+    mcdirdict['2022combined']       = 'DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_Run3Summer22MiniAODv4-130X_mcRun3_2022_realistic_v5-v5'
     
     # get MC samples for 2023
     mcdirdict['2023preBPix']        = 'DYto2L-2Jets_MLL-50_TuneCP5_13p6TeV_amcatnloFXFX-pythia8_Run3Summer23MiniAODv4-130X_mcRun3_2023_realistic_v14-v2'
